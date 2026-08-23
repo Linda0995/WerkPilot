@@ -167,6 +167,7 @@ jobs:
 
           set WERKPILOT_ADMIN_INITIAL_PASSWORD=WerkPilot!2026Start
           set WERKPILOT_SEED_DEMO_DATA=true
+          set WERKPILOT_ALLOW_PILOT_DB_RESET=true
           set WERKPILOT_CONNECTION_STRING=Host=localhost;Port=5432;Database=werkpilot;Username=werkpilot;Password=werkpilot_dev
 
           echo Starte WerkPilot-Datenbank...

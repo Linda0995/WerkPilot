@@ -1,3 +1,4 @@
+using Npgsql;
 using Microsoft.EntityFrameworkCore;
 using WerkPilot.Application.Identity;
 using WerkPilot.Domain.Customers;
@@ -18,23 +19,81 @@ public static class DbInitializer
         WerkPilotDbContext dbContext,
         CancellationToken cancellationToken = default)
     {
-        await dbContext.Database.MigrateAsync(cancellationToken);
+        // PostgreSQL advisory lock prevents two WerkPilot processes from
+        // running EF migrations against the same database at the same time.
+        await dbContext.Database.OpenConnectionAsync(cancellationToken);
 
-        await EnsureAdministratorAsync(
-            dbContext,
-            cancellationToken);
-
-        if (!ShouldSeedDemoData())
+        try
         {
-            await dbContext.SaveChangesAsync(cancellationToken);
-            return;
+            await dbContext.Database.ExecuteSqlRawAsync(
+                "SELECT pg_advisory_lock(8675309123456789);",
+                cancellationToken);
+
+            try
+            {
+                await ApplyMigrationsWithPilotRecoveryAsync(
+                    dbContext,
+                    cancellationToken);
+
+                await EnsureAdministratorAsync(
+                    dbContext,
+                    cancellationToken);
+
+                if (!ShouldSeedDemoData())
+                {
+                    await dbContext.SaveChangesAsync(cancellationToken);
+                    return;
+                }
+
+                await EnsureDemoCustomerAsync(
+                    dbContext,
+                    cancellationToken);
+
+                await dbContext.SaveChangesAsync(cancellationToken);
+            }
+            finally
+            {
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "SELECT pg_advisory_unlock(8675309123456789);",
+                    cancellationToken);
+            }
         }
+        finally
+        {
+            await dbContext.Database.CloseConnectionAsync();
+        }
+    }
 
-        await EnsureDemoCustomerAsync(
-            dbContext,
-            cancellationToken);
+    private static async Task ApplyMigrationsWithPilotRecoveryAsync(
+        WerkPilotDbContext dbContext,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            await dbContext.Database.MigrateAsync(cancellationToken);
+        }
+        catch (PostgresException exception)
+            when (exception.SqlState == PostgresErrorCodes.DuplicateTable
+                  && AllowPilotDatabaseReset())
+        {
+            // A prior interrupted pilot start can leave tables behind before
+            // __EFMigrationsHistory records the baseline. For the explicitly
+            // enabled local pilot database only, rebuild the public schema and
+            // apply the validated baseline from scratch.
+            await dbContext.Database.ExecuteSqlRawAsync(
+                "DROP SCHEMA public CASCADE; CREATE SCHEMA public;",
+                cancellationToken);
 
-        await dbContext.SaveChangesAsync(cancellationToken);
+            await dbContext.Database.MigrateAsync(cancellationToken);
+        }
+    }
+
+    private static bool AllowPilotDatabaseReset()
+    {
+        var value = Environment.GetEnvironmentVariable(
+            "WERKPILOT_ALLOW_PILOT_DB_RESET");
+
+        return bool.TryParse(value, out var enabled) && enabled;
     }
 
     private static async Task EnsureAdministratorAsync(
