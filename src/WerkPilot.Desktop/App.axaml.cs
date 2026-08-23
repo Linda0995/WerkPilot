@@ -119,9 +119,9 @@ public partial class App : Avalonia.Application
             var db = scope.ServiceProvider.GetRequiredService<WerkPilotDbContext>();
             await DbInitializer.InitializeAsync(db);
 
-            // Bootstrap succeeded: close placeholder and show login.
-            bootstrapWindow.Close();
-            ShowLogin(desktop);
+            // Keep the bootstrap window alive until the login window has
+            // actually been created and shown.
+            ShowLogin(desktop, bootstrapWindow);
 
             desktop.Exit += async (_, _) =>
             {
@@ -151,7 +151,9 @@ public partial class App : Avalonia.Application
     }
 
 
-    private void ShowLogin(IClassicDesktopStyleApplicationLifetime desktop)
+    private void ShowLogin(
+        IClassicDesktopStyleApplicationLifetime desktop,
+        Avalonia.Controls.Window? previousWindow = null)
     {
         if (_host is null)
             return;
@@ -193,6 +195,11 @@ public partial class App : Avalonia.Application
 
         desktop.MainWindow = loginWindow;
         loginWindow.Show();
+
+        // Close the previous/bootstrap window only after the login window
+        // is attached, shown and registered as the desktop main window.
+        if (previousWindow is not null && !ReferenceEquals(previousWindow, loginWindow))
+            previousWindow.Close();
     }
 
     private void ShowMainWindow(IClassicDesktopStyleApplicationLifetime desktop)
