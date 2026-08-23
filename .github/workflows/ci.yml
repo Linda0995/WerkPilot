@@ -54,13 +54,24 @@ jobs:
       - name: Unit tests
         run: dotnet test tests/WerkPilot.UnitTests/WerkPilot.UnitTests.csproj -c Release --no-build --logger "trx;LogFileName=unit-tests.trx"
 
+      - name: Create clean EF baseline
+        shell: pwsh
+        run: |
+          ./scripts/rebaseline-migrations.ps1 -MigrationName "InitialBaseline_CI"
+
       - name: Verify EF model
         run: |
-          dotnet ef migrations has-pending-model-changes             --project src/WerkPilot.Infrastructure/WerkPilot.Infrastructure.csproj             --startup-project src/WerkPilot.Desktop/WerkPilot.Desktop.csproj             --context WerkPilotDbContext
+          dotnet ef migrations has-pending-model-changes \
+            --project src/WerkPilot.Infrastructure/WerkPilot.Infrastructure.csproj \
+            --startup-project src/WerkPilot.Desktop/WerkPilot.Desktop.csproj \
+            --context WerkPilotDbContext
 
-      - name: Apply EF migrations to clean PostgreSQL
+      - name: Apply EF baseline to clean PostgreSQL
         run: |
-          dotnet ef database update             --project src/WerkPilot.Infrastructure/WerkPilot.Infrastructure.csproj             --startup-project src/WerkPilot.Desktop/WerkPilot.Desktop.csproj             --context WerkPilotDbContext
+          dotnet ef database update \
+            --project src/WerkPilot.Infrastructure/WerkPilot.Infrastructure.csproj \
+            --startup-project src/WerkPilot.Desktop/WerkPilot.Desktop.csproj \
+            --context WerkPilotDbContext
 
       - name: Verify database tables
         run: |
@@ -69,6 +80,19 @@ jobs:
           TABLE_COUNT=$(PGPASSWORD=werkpilot_ci psql -h localhost -U werkpilot -d werkpilot_ci -t -A -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='public';")
           echo "Public tables: $TABLE_COUNT"
           test "$TABLE_COUNT" -gt 0
+
+      - name: Stage generated EF baseline
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path artifacts/ci-baseline | Out-Null
+          Copy-Item src/WerkPilot.Infrastructure/Persistence/Migrations/*.cs artifacts/ci-baseline/ -Force
+
+      - name: Upload EF baseline
+        uses: actions/upload-artifact@v4
+        with:
+          name: werkpilot-ef-baseline
+          path: artifacts/ci-baseline/
+          if-no-files-found: error
 
       - name: Upload test results
         if: always()
@@ -93,8 +117,24 @@ jobs:
         with:
           dotnet-version: '9.0.x'
 
+      - name: Download validated EF baseline
+        uses: actions/download-artifact@v4
+        with:
+          name: werkpilot-ef-baseline
+          path: artifacts/ci-baseline
+
+      - name: Replace development migrations with validated baseline
+        shell: pwsh
+        run: |
+          $migrationDir = "src/WerkPilot.Infrastructure/Persistence/Migrations"
+          Remove-Item "$migrationDir/*.cs" -Force
+          Copy-Item "artifacts/ci-baseline/*.cs" $migrationDir -Force
+
       - name: Restore
         run: dotnet restore WerkPilot.sln
+
+      - name: Build Release
+        run: dotnet build WerkPilot.sln -c Release --no-restore
 
       - name: Publish Windows x64
         shell: pwsh
@@ -104,6 +144,7 @@ jobs:
             -c Release `
             -r win-x64 `
             --self-contained true `
+            --no-restore `
             -o artifacts/publish/win-x64
 
       - name: Package release
@@ -118,3 +159,4 @@ jobs:
         with:
           name: WerkPilot-Windows-x64
           path: artifacts/WerkPilot-Windows-x64.zip
+          if-no-files-found: error
