@@ -1,0 +1,28 @@
+WERKPILOT – AB JETZT OHNE MANUELLE BUILD-FEHLERSUCHE
+
+DU MACHST NUR NOCH DIESE 4 SCHRITTE:
+
+1. Auf github.com anmelden oder kostenloses Konto erstellen.
+2. Neues PRIVATE Repository erstellen:
+   Name: WerkPilot
+   Sichtbarkeit: Private
+   README / .gitignore / License beim Erstellen NICHT zusätzlich anlegen.
+3. Den gesamten INHALT dieses entpackten Ordners in das Repository hochladen.
+4. Danach im GitHub-Repository auf "Actions" gehen.
+
+GitHub macht danach automatisch:
+- .NET 9 Restore
+- kompletten Release-Build
+- Unit-Tests
+- PostgreSQL-Datenbank
+- EF-Migrationsprüfung
+- Datenbankaufbau
+- Windows-x64-Publish
+- fertiges WerkPilot-Windows-ZIP
+
+WICHTIG:
+Wenn beide Jobs grün sind, öffnest du den Workflow-Lauf und lädst unter
+"Artifacts" nur noch "WerkPilot-Windows-x64" herunter.
+
+DAS ist dann das Paket, das fachlich getestet wird.
+Du sollst nicht mehr Docker-/PowerShell-/Compilerfehler manuell suchen.

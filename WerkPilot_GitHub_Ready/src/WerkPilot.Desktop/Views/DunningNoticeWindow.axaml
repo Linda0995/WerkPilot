@@ -1,0 +1,203 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="WerkPilot.Desktop.Views.DunningNoticeWindow"
+        x:DataType="vm:DunningNoticeViewModel"
+        xmlns:vm="using:WerkPilot.Desktop.ViewModels"
+        Title="WerkPilot 0.12.24 RC – Mahnwesen"
+        Width="1480" Height="880">
+  <Grid RowDefinitions="64,*,34">
+    <Border Background="#174F54">
+      <Grid ColumnDefinitions="*,Auto">
+        <TextBlock Margin="24,0"
+                   VerticalAlignment="Center"
+                   FontSize="24"
+                   FontWeight="Bold"
+                   Foreground="White"
+                   Text="Mahnwesen"/>
+        <StackPanel Grid.Column="1"
+                    Margin="0,10,18,10"
+                    Orientation="Horizontal"
+                    Spacing="8">
+          <Button Content="PDF-Mahnschreiben"
+                  Command="{Binding ExportPdfCommand}"/>
+          <Button Content="Aktualisieren"
+                  Command="{Binding RefreshCommand}"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="1"
+          Margin="22"
+          RowDefinitions="Auto,*"
+          ColumnDefinitions="2*,18,4*">
+      <Border Grid.ColumnSpan="3"
+              Padding="12"
+              Margin="0,0,0,14"
+              Background="#EAF3F3"
+              CornerRadius="8">
+        <Grid ColumnDefinitions="2*,10,140,10,100,10,110,10,110,10,Auto">
+          <ComboBox ItemsSource="{Binding OverdueInvoices}"
+                    SelectedItem="{Binding SelectedInvoice}"
+                    DisplayMemberBinding="{Binding InvoiceNumber}"/>
+          <DatePicker Grid.Column="2"
+                      SelectedDate="{Binding NoticeDate}"/>
+          <NumericUpDown Grid.Column="4"
+                         Minimum="0"
+                         Increment="1"
+                         Value="{Binding PaymentTermDays}"/>
+          <NumericUpDown Grid.Column="6"
+                         Minimum="0"
+                         Increment="5"
+                         Value="{Binding FeeAmount}"/>
+          <NumericUpDown Grid.Column="8"
+                         Minimum="0"
+                         Increment="0.1"
+                         Value="{Binding AnnualInterestRatePercent}"/>
+          <Button Grid.Column="10"
+                  Content="Mahnentwurf erstellen"
+                  Command="{Binding CreateCommand}"/>
+        </Grid>
+      </Border>
+
+      <DataGrid Grid.Row="1"
+                ItemsSource="{Binding Notices}"
+                SelectedItem="{Binding SelectedNotice}"
+                AutoGenerateColumns="False"
+                IsReadOnly="True">
+        <DataGrid.Columns>
+          <DataGridTextColumn Header="Mahnnummer"
+                              Binding="{Binding NoticeNumber}"
+                              Width="120"/>
+          <DataGridTextColumn Header="Rechnung"
+                              Binding="{Binding CustomerInvoiceNumber}"
+                              Width="120"/>
+          <DataGridTextColumn Header="Kunde"
+                              Binding="{Binding CustomerName}"
+                              Width="2*"/>
+          <DataGridTextColumn Header="Datum"
+                              Binding="{Binding NoticeDate}"
+                              Width="90"/>
+          <DataGridTextColumn Header="Stufe"
+                              Binding="{Binding Level}"
+                              Width="100"/>
+          <DataGridTextColumn Header="Status"
+                              Binding="{Binding Status}"
+                              Width="90"/>
+        </DataGrid.Columns>
+      </DataGrid>
+
+      <Grid Grid.Row="1"
+            Grid.Column="2"
+            RowDefinitions="Auto,Auto,*">
+        <Grid ColumnDefinitions="*,Auto,Auto">
+          <TextBlock VerticalAlignment="Center"
+                     FontSize="18"
+                     FontWeight="SemiBold"
+                     Text="Mahnbeleg"/>
+          <Button Grid.Column="1"
+                  Margin="4"
+                  Content="Ausstellen"
+                  Command="{Binding IssueCommand}"/>
+          <Button Grid.Column="2"
+                  Margin="4"
+                  Content="Entwurf stornieren"
+                  Command="{Binding CancelCommand}"/>
+        </Grid>
+
+        <Grid Grid.Row="1"
+              Margin="0,10"
+              ColumnDefinitions="*,8,*,8,*,8,*">
+          <Border Padding="12"
+                  Background="#EAF3F3"
+                  CornerRadius="8">
+            <StackPanel>
+              <TextBlock Text="Hauptforderung"/>
+              <TextBlock FontSize="21"
+                         FontWeight="Bold"
+                         Text="{Binding SelectedNotice.PrincipalAmount, StringFormat='{}{0:N2} €'}"/>
+            </StackPanel>
+          </Border>
+          <Border Grid.Column="2"
+                  Padding="12"
+                  Background="#FFF4E5"
+                  CornerRadius="8">
+            <StackPanel>
+              <TextBlock Text="Mahngebühr"/>
+              <TextBlock FontSize="21"
+                         FontWeight="Bold"
+                         Text="{Binding SelectedNotice.FeeAmount, StringFormat='{}{0:N2} €'}"/>
+            </StackPanel>
+          </Border>
+          <Border Grid.Column="4"
+                  Padding="12"
+                  Background="#FFF4E5"
+                  CornerRadius="8">
+            <StackPanel>
+              <TextBlock Text="Verzugszinsen"/>
+              <TextBlock FontSize="21"
+                         FontWeight="Bold"
+                         Text="{Binding SelectedNotice.InterestAmount, StringFormat='{}{0:N2} €'}"/>
+            </StackPanel>
+          </Border>
+          <Border Grid.Column="6"
+                  Padding="12"
+                  Background="#FCE8E6"
+                  CornerRadius="8">
+            <StackPanel>
+              <TextBlock Text="Gesamtforderung"/>
+              <TextBlock FontSize="21"
+                         FontWeight="Bold"
+                         Text="{Binding SelectedNotice.TotalDue, StringFormat='{}{0:N2} €'}"/>
+            </StackPanel>
+          </Border>
+        </Grid>
+
+        <Border Grid.Row="2"
+                Padding="16"
+                BorderBrush="#D7DEDF"
+                BorderThickness="1"
+                CornerRadius="8">
+          <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
+                ColumnDefinitions="180,*">
+            <TextBlock Text="Kunde"/>
+            <TextBlock Grid.Column="1"
+                       FontWeight="SemiBold"
+                       Text="{Binding SelectedNotice.CustomerName}"/>
+            <TextBlock Grid.Row="1"
+                       Text="Rechnung"/>
+            <TextBlock Grid.Row="1"
+                       Grid.Column="1"
+                       Text="{Binding SelectedNotice.CustomerInvoiceNumber}"/>
+            <TextBlock Grid.Row="2"
+                       Text="Mahnstufe"/>
+            <TextBlock Grid.Row="2"
+                       Grid.Column="1"
+                       Text="{Binding SelectedNotice.Level}"/>
+            <TextBlock Grid.Row="3"
+                       Text="Überfällige Tage"/>
+            <TextBlock Grid.Row="3"
+                       Grid.Column="1"
+                       Text="{Binding SelectedNotice.OverdueDays}"/>
+            <TextBlock Grid.Row="4"
+                       Text="Zinssatz p.a."/>
+            <TextBlock Grid.Row="4"
+                       Grid.Column="1"
+                       Text="{Binding SelectedNotice.AnnualInterestRatePercent, StringFormat='{}{0:N3} %'}"/>
+            <TextBlock Grid.Row="5"
+                       Text="Zahlungsfrist"/>
+            <TextBlock Grid.Row="5"
+                       Grid.Column="1"
+                       Text="{Binding SelectedNotice.PaymentDeadline}"/>
+          </Grid>
+        </Border>
+      </Grid>
+    </Grid>
+
+    <Border Grid.Row="2"
+            Background="#EEF2F3"
+            Padding="12,0">
+      <TextBlock VerticalAlignment="Center"
+                 Text="{Binding StatusText}"/>
+    </Border>
+  </Grid>
+</Window>

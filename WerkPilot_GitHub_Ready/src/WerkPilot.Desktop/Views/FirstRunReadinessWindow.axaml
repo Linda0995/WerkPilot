@@ -1,0 +1,102 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="WerkPilot.Desktop.Views.FirstRunReadinessWindow"
+        x:DataType="vm:FirstRunReadinessViewModel"
+        xmlns:vm="using:WerkPilot.Desktop.ViewModels"
+        Title="WerkPilot 0.12.24 RC – Erststart-Prüfung"
+        Width="820"
+        Height="620">
+  <Grid RowDefinitions="64,*,34">
+    <Border Background="#174F54">
+      <Grid ColumnDefinitions="*,Auto">
+        <TextBlock Margin="24,0"
+                   VerticalAlignment="Center"
+                   FontSize="24"
+                   FontWeight="Bold"
+                   Foreground="White"
+                   Text="Erststart- und Installationsprüfung"/>
+        <Button Grid.Column="1"
+                Margin="0,12,18,12"
+                Content="Neu prüfen"
+                Command="{Binding RefreshCommand}"/>
+      </Grid>
+    </Border>
+
+    <StackPanel Grid.Row="1"
+                Margin="24"
+                Spacing="16">
+      <TextBlock FontSize="18"
+                 FontWeight="SemiBold"
+                 Text="WerkPilot Startbereitschaft"/>
+
+      <Grid ColumnDefinitions="260,*"
+            RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
+        <TextBlock Text="Produktversion"/>
+        <TextBlock Grid.Column="1"
+                   Text="{Binding ProductVersion}"/>
+
+        <TextBlock Grid.Row="1"
+                   Text="Umgebung"/>
+        <TextBlock Grid.Row="1"
+                   Grid.Column="1"
+                   Text="{Binding EnvironmentName}"/>
+
+        <TextBlock Grid.Row="2"
+                   Text="Datenbank konfiguriert"/>
+        <CheckBox Grid.Row="2"
+                  Grid.Column="1"
+                  IsEnabled="False"
+                  IsChecked="{Binding DatabaseConfigured}"/>
+
+        <TextBlock Grid.Row="3"
+                   Text="Datenbank erreichbar"/>
+        <CheckBox Grid.Row="3"
+                  Grid.Column="1"
+                  IsEnabled="False"
+                  IsChecked="{Binding DatabaseReachable}"/>
+
+        <TextBlock Grid.Row="4"
+                   Text="Admin-Bootstrap gesetzt"/>
+        <CheckBox Grid.Row="4"
+                  Grid.Column="1"
+                  IsEnabled="False"
+                  IsChecked="{Binding AdminBootstrapConfigured}"/>
+
+        <TextBlock Grid.Row="5"
+                   Text="Demo-Modus aktiv"/>
+        <CheckBox Grid.Row="5"
+                  Grid.Column="1"
+                  IsEnabled="False"
+                  IsChecked="{Binding DemoModeEnabled}"/>
+      </Grid>
+
+      <Border Padding="16"
+              Background="#F5F7F7"
+              CornerRadius="8">
+        <StackPanel Spacing="8">
+          <TextBlock FontWeight="SemiBold"
+                     Text="Status"/>
+          <TextBlock TextWrapping="Wrap"
+                     Text="{Binding Status}"/>
+          <CheckBox Content="Startbereit"
+                    IsEnabled="False"
+                    IsChecked="{Binding IsReady}"/>
+        </StackPanel>
+      </Border>
+
+      <Border Padding="14"
+              Background="#FFF4E5"
+              CornerRadius="8">
+        <TextBlock TextWrapping="Wrap"
+                   Text="Die Prüfung zeigt keine Kennwörter oder Connection-Strings. Sie prüft nur, ob Konfiguration vorhanden und die Datenbank erreichbar ist."/>
+      </Border>
+    </StackPanel>
+
+    <Border Grid.Row="2"
+            Background="#EEF2F3"
+            Padding="12,0">
+      <TextBlock VerticalAlignment="Center"
+                 Text="WerkPilot RC – Installationsbereitschaft"/>
+    </Border>
+  </Grid>
+</Window>

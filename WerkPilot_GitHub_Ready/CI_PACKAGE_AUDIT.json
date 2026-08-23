@@ -1,0 +1,14 @@
+{
+  "checks": {
+    "workflow_exists": true,
+    "linux_build": true,
+    "postgres_service": true,
+    "unit_tests": true,
+    "ef_check": true,
+    "db_update": true,
+    "windows_job": true,
+    "windows_publish": true,
+    "artifact_upload": true
+  },
+  "all": true
+}

@@ -1,0 +1,64 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="WerkPilot.Desktop.Views.CompanySettingsWindow"
+        x:DataType="vm:CompanySettingsViewModel"
+        xmlns:vm="using:WerkPilot.Desktop.ViewModels"
+        Title="WerkPilot 0.12.24 RC – Firmenstammdaten"
+        Width="760" Height="820"
+        MinWidth="650" MinHeight="650">
+  <Grid RowDefinitions="64,*,34">
+    <Border Background="#174F54">
+      <TextBlock Margin="24,0" VerticalAlignment="Center" FontSize="23"
+                 FontWeight="Bold" Foreground="White"
+                 Text="Firmenstammdaten &amp; Angebotsvorlage"/>
+    </Border>
+
+    <ScrollViewer Grid.Row="1">
+      <StackPanel Margin="24" Spacing="10">
+        <TextBlock FontSize="20" FontWeight="SemiBold" Text="Unternehmen"/>
+        <TextBox Watermark="Firmenname" Text="{Binding CompanyName}"/>
+        <TextBox Watermark="Straße" Text="{Binding Street}"/>
+        <Grid ColumnDefinitions="120,10,*,10,80">
+          <TextBox Watermark="PLZ" Text="{Binding PostalCode}"/>
+          <TextBox Grid.Column="2" Watermark="Ort" Text="{Binding City}"/>
+          <TextBox Grid.Column="4" Watermark="Land" Text="{Binding CountryCode}"/>
+        </Grid>
+        <Grid ColumnDefinitions="*,10,*">
+          <TextBox Watermark="E-Mail" Text="{Binding Email}"/>
+          <TextBox Grid.Column="2" Watermark="Telefon" Text="{Binding Phone}"/>
+        </Grid>
+        <Grid ColumnDefinitions="*,10,*">
+          <TextBox Watermark="UID/ATU" Text="{Binding VatId}"/>
+          <TextBox Grid.Column="2" Watermark="Website" Text="{Binding Website}"/>
+        </Grid>
+
+        <Separator Margin="0,12"/>
+        <TextBlock FontSize="20" FontWeight="SemiBold" Text="Angebotsvorlage"/>
+        <TextBlock Text="Einleitungstext"/>
+        <TextBox Text="{Binding OfferIntroText}" AcceptsReturn="True"
+                 TextWrapping="Wrap" MinHeight="110"/>
+        <TextBlock Text="Abschlusstext"/>
+        <TextBox Text="{Binding OfferClosingText}" AcceptsReturn="True"
+                 TextWrapping="Wrap" MinHeight="110"/>
+        <TextBlock Text="Währungscode"/>
+        <TextBox Width="120" HorizontalAlignment="Left" Text="{Binding CurrencyCode}"/>
+
+        <Separator Margin="0,12"/>
+        <TextBlock FontSize="20" FontWeight="SemiBold" Text="E-Mail-Vorlage für Angebote"/>
+        <TextBlock Text="Verfügbare Platzhalter: {OfferNumber}, {OfferTitle}, {CompanyName}, {CustomerName}, {ContactPerson}, {ValidUntil}, {GrossTotal}"/>
+        <TextBlock Text="Betreff"/>
+        <TextBox Text="{Binding OfferEmailSubjectTemplate}"/>
+        <TextBlock Text="Nachricht"/>
+        <TextBox Text="{Binding OfferEmailBodyTemplate}" AcceptsReturn="True"
+                 TextWrapping="Wrap" MinHeight="150"/>
+
+        <Button Margin="0,14,0,0" Height="42" HorizontalAlignment="Right"
+                Content="Einstellungen speichern" Command="{Binding SaveCommand}"/>
+      </StackPanel>
+    </ScrollViewer>
+
+    <Border Grid.Row="2" Background="#EEF2F3" Padding="12,0">
+      <TextBlock VerticalAlignment="Center" Text="{Binding StatusText}"/>
+    </Border>
+  </Grid>
+</Window>

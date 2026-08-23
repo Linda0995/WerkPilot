@@ -1,0 +1,299 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="WerkPilot.Desktop.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        xmlns:vm="using:WerkPilot.Desktop.ViewModels"
+        Title="WerkPilot 0.12.0"
+        Width="1500" Height="900"
+        MinWidth="1180" MinHeight="720">
+  <Grid RowDefinitions="64,*,34" ColumnDefinitions="220,*">
+    <Border Grid.Row="0" Grid.ColumnSpan="2" Background="#174F54">
+      <Grid ColumnDefinitions="220,*,Auto,Auto">
+        <TextBlock Margin="24,0" VerticalAlignment="Center" FontSize="24"
+                   FontWeight="Bold" Foreground="White" Text="WERKPILOT"/>
+        <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="18"
+                   Foreground="White" Text="Version 0.12.24 RC · Basic Release Candidate"/>
+        <StackPanel Grid.Column="2" Margin="20,0" VerticalAlignment="Center">
+          <TextBlock Foreground="White" FontWeight="SemiBold" Text="{Binding SignedInUser}"/>
+          <TextBlock Foreground="#CFE4E5" FontSize="11" Text="{Binding SignedInRole}"/>
+        </StackPanel>
+        <Button Grid.Column="3" Margin="0,12,16,12" Content="Abmelden"
+                Command="{Binding LogoutCommand}"/>
+      </Grid>
+    </Border>
+
+    <Border Grid.Row="1" Background="#123E42" Padding="14">
+      <StackPanel Spacing="8">
+        <Button Content="Dashboard" HorizontalContentAlignment="Left"/>
+        <Button Content="Benachrichtigungen" HorizontalContentAlignment="Left" Command="{Binding OpenNotificationsCommand}"/>
+        <Button Content="Globale Suche" HorizontalContentAlignment="Left" Command="{Binding OpenGlobalSearchCommand}"/>
+        <Button Content="Schnellzugriff" HorizontalContentAlignment="Left" Command="{Binding OpenWorkbenchCommand}"/>
+        <Button Content="CRM-Kontaktjournal" HorizontalContentAlignment="Left" Command="{Binding OpenCrmJournalCommand}"/>
+        <Button Content="Kundenübersicht 360°" HorizontalContentAlignment="Left" Command="{Binding OpenCustomer360Command}"/>
+        <Button Content="Zeiterfassung" HorizontalContentAlignment="Left" Command="{Binding OpenTimeTrackingCommand}"/>
+        <Button Content="Nachkalkulation" HorizontalContentAlignment="Left" Command="{Binding OpenProjectCostControllingCommand}"/>
+        <Button Content="Lagerbestand" HorizontalContentAlignment="Left" Command="{Binding OpenInventoryCommand}"/>
+        <Button Content="Inventur" HorizontalContentAlignment="Left" Command="{Binding OpenInventoryCountCommand}"/>
+        <Button Content="Lieferantenbestellungen" HorizontalContentAlignment="Left" Command="{Binding OpenSupplierOrdersCommand}"/>
+        <Button Content="Eingangsrechnungen" HorizontalContentAlignment="Left" Command="{Binding OpenSupplierInvoicesCommand}"/>
+        <Button Content="Liquiditätsvorschau" HorizontalContentAlignment="Left" Command="{Binding OpenSupplierLiquidityCommand}"/>
+        <Button Content="Ausgangsrechnungen" HorizontalContentAlignment="Left" Command="{Binding OpenCustomerInvoicesCommand}"/>
+        <Button Content="Forderungen" HorizontalContentAlignment="Left" Command="{Binding OpenReceivablesCommand}"/>
+        <Button Content="Gutschriften" HorizontalContentAlignment="Left" Command="{Binding OpenCustomerCreditNotesCommand}"/>
+        <Button Content="Mahnwesen" HorizontalContentAlignment="Left" Command="{Binding OpenDunningNoticesCommand}"/>
+        <Button Content="Belegversand" HorizontalContentAlignment="Left" Command="{Binding OpenDocumentEmailCommand}"/>
+        <Button Content="Kommunikationsakte" HorizontalContentAlignment="Left" Command="{Binding OpenCustomerCommunicationCommand}"/>
+        <Button Content="Wiedervorlagen" HorizontalContentAlignment="Left" Command="{Binding OpenCustomerFollowUpsCommand}"/>
+        <Button Content="Meine Arbeit" HorizontalContentAlignment="Left" Command="{Binding OpenMyWorkCommand}"/>
+        <Button Content="Team-Arbeit" HorizontalContentAlignment="Left" Command="{Binding OpenTeamWorkCommand}"/>
+        <Button Content="Aufgabenübergabe" HorizontalContentAlignment="Left" Command="{Binding OpenWorkReassignmentCommand}"/>
+        <Button Content="Abwesenheiten" HorizontalContentAlignment="Left" Command="{Binding OpenUserAbsencesCommand}"/>
+        <Button Content="Basic-Prozessprüfung" HorizontalContentAlignment="Left" Command="{Binding OpenBasicWorkflowAuditCommand}"/>
+        <Button Content="Systemdiagnose" HorizontalContentAlignment="Left" Command="{Binding OpenReleaseDiagnosticsCommand}"/>
+        <Button Content="Erststart-Prüfung" HorizontalContentAlignment="Left" Command="{Binding OpenFirstRunReadinessCommand}"/>
+        <TextBlock Margin="14,-5,0,4" Foreground="#CFE4E5" FontSize="11" Text="{Binding UnreadNotificationCount, StringFormat='Ungelesen: {0}'}"/>
+        <Button Content="Kunden" HorizontalContentAlignment="Left"/>
+        <Button Content="Angebote" HorizontalContentAlignment="Left" Command="{Binding OpenOffersCommand}"/>
+        <Button Content="Kalkulation" HorizontalContentAlignment="Left" Command="{Binding OpenCalculationCommand}"/>
+        <Button Content="Materialstamm" HorizontalContentAlignment="Left" Command="{Binding OpenMaterialCommand}"/>
+        <Button Content="Bestelllisten" HorizontalContentAlignment="Left" Command="{Binding OpenPurchaseListsCommand}"/>
+        <Button Content="Projekte" HorizontalContentAlignment="Left" Command="{Binding OpenProjectsCommand}"/>
+        <Button Content="Dokumente" HorizontalContentAlignment="Left" Command="{Binding OpenDocumentsCommand}"/>
+        <Button Content="Firmenstammdaten" HorizontalContentAlignment="Left"
+                Command="{Binding OpenCompanySettingsCommand}"/>
+        <Separator Margin="0,12"/>
+        <TextBlock Foreground="#CFE4E5" Text="WerkPilot 0.12.0"/>
+        <TextBlock Foreground="#9FC1C3" FontSize="12" Text="PostgreSQL · Avalonia · .NET 9"/>
+      </StackPanel>
+    </Border>
+
+    <Grid Grid.Row="1" Grid.Column="1" Margin="24" RowDefinitions="Auto,Auto,Auto,Auto,*">
+      <TextBlock FontSize="30" FontWeight="SemiBold" Text="Dashboard &amp; Kunden"/>
+
+      <Grid Grid.Row="1" Margin="0,18,0,18" ColumnDefinitions="*,16,*,16,*,16,*">
+        <Border Padding="18" Background="#EAF3F3" CornerRadius="10">
+          <StackPanel><TextBlock Text="Aktive Kunden"/><TextBlock FontSize="28" FontWeight="Bold" Text="{Binding CustomerCount}"/></StackPanel>
+        </Border>
+        <Border Grid.Column="2" Padding="18" Background="#EAF3F3" CornerRadius="10">
+          <StackPanel><TextBlock Text="Favoriten"/><TextBlock FontSize="28" FontWeight="Bold" Text="{Binding FavoriteCount}"/></StackPanel>
+        </Border>
+        <Border Grid.Column="4" Padding="18" Background="#F3F4F5" CornerRadius="10">
+          <StackPanel><TextBlock Text="Offene Angebote"/><TextBlock FontSize="28" FontWeight="Bold" Text="{Binding OpenOfferCount}"/><TextBlock FontSize="11" Text="{Binding OpenOfferVolumeNet, StringFormat='Netto {0:N2} €'}"/></StackPanel>
+        </Border>
+        <Border Grid.Column="6" Padding="18" Background="#F3F4F5" CornerRadius="10">
+          <StackPanel><TextBlock Text="Aktive Projekte"/><TextBlock FontSize="28" FontWeight="Bold" Text="{Binding ActiveProjectCount}"/><TextBlock FontSize="11" Text="{Binding OpenProjectTaskCount, StringFormat='Offene Aufgaben: {0}'}"/></StackPanel>
+        </Border>
+      </Grid>
+
+      <Grid Grid.Row="2" Margin="0,0,0,14" ColumnDefinitions="*,Auto,Auto,20,*,Auto">
+        <TextBox Watermark="Name, Nummer, UID, E-Mail, Telefon, Ort oder Kontakt …" Text="{Binding SearchText}"/>
+        <Button Grid.Column="1" Margin="8,0,0,0" Content="Suchen" Command="{Binding SearchCommand}"/>
+        <CheckBox Grid.Column="2" Margin="14,0,0,0" VerticalAlignment="Center"
+                  Content="Papierkorb anzeigen" IsChecked="{Binding IncludeDeleted}"/>
+        <TextBox Grid.Column="4" Watermark="Neuer Firmenkunde …" Text="{Binding NewCustomerName}"/>
+        <Button Grid.Column="5" Margin="8,0,0,0" Content="Kunde anlegen" Command="{Binding AddCustomerCommand}"/>
+      </Grid>
+
+      <Grid Grid.Row="3" Margin="0,0,0,14" ColumnDefinitions="2*,12,2*,12,2*,12,2*">
+        <Border Padding="12" Background="#F5F7F7" CornerRadius="8">
+          <Grid RowDefinitions="Auto,*">
+            <Grid ColumnDefinitions="*,Auto,Auto">
+              <TextBlock FontSize="17" FontWeight="SemiBold" Text="Projektaufgaben"/>
+              <TextBlock Grid.Column="1" Margin="10,0" Text="{Binding DueTaskCount, StringFormat='Fällig: {0}'}"/>
+              <TextBlock Grid.Column="2" FontWeight="Bold" Text="{Binding OverdueTaskCount, StringFormat='Überfällig: {0}'}"/>
+            </Grid>
+            <DataGrid Grid.Row="1" Margin="0,8,0,0" Height="150"
+                      ItemsSource="{Binding DueTasks}" AutoGenerateColumns="False" IsReadOnly="True">
+              <DataGrid.Columns>
+                <DataGridTextColumn Header="Projekt" Binding="{Binding ProjectNumber}" Width="100"/>
+                <DataGridTextColumn Header="Aufgabe" Binding="{Binding TaskTitle}" Width="2*"/>
+                <DataGridTextColumn Header="Fällig" Binding="{Binding DueDate}" Width="85"/>
+              </DataGrid.Columns>
+            </DataGrid>
+          </Grid>
+        </Border>
+
+        <Border Grid.Column="2" Padding="12" Background="#FFF4E5" CornerRadius="8">
+          <Grid RowDefinitions="Auto,*">
+            <Grid ColumnDefinitions="*,Auto,Auto">
+              <TextBlock FontSize="17" FontWeight="SemiBold" Text="CRM-Wiedervorlagen"/>
+              <TextBlock Grid.Column="1" Margin="10,0"
+                         Text="{Binding OpenCrmFollowUpCount, StringFormat='Offen: {0}'}"/>
+              <TextBlock Grid.Column="2" FontWeight="Bold"
+                         Text="{Binding OverdueCrmFollowUpCount, StringFormat='Überfällig: {0}'}"/>
+            </Grid>
+            <DataGrid Grid.Row="1" Margin="0,8,0,0" Height="150"
+                      ItemsSource="{Binding CrmFollowUps}" AutoGenerateColumns="False" IsReadOnly="True">
+              <DataGrid.Columns>
+                <DataGridTextColumn Header="Kunde" Binding="{Binding CustomerName}" Width="*"/>
+                <DataGridTextColumn Header="Wiedervorlage" Binding="{Binding Subject}" Width="2*"/>
+                <DataGridTextColumn Header="Verantwortlich" Binding="{Binding FollowUpOwner}" Width="*"/>
+                <DataGridTextColumn Header="Fällig" Binding="{Binding FollowUpDate}" Width="85"/>
+              </DataGrid.Columns>
+            </DataGrid>
+          </Grid>
+        </Border>
+
+        <Border Grid.Column="4" Padding="12" Background="#FCE8E6" CornerRadius="8">
+          <Grid RowDefinitions="Auto,*">
+            <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+              <TextBlock FontSize="17" FontWeight="SemiBold" Text="Kunden-Aufgaben"/>
+              <TextBlock Grid.Column="1" Margin="8,0"
+                         Text="{Binding DueTodayCustomerFollowUpCount, StringFormat='Heute: {0}'}"/>
+              <TextBlock Grid.Column="2" Margin="8,0"
+                         FontWeight="Bold"
+                         Text="{Binding OverdueCustomerFollowUpCount, StringFormat='Überfällig: {0}'}"/>
+              <TextBlock Grid.Column="3"
+                         FontWeight="Bold"
+                         Text="{Binding UrgentCustomerFollowUpCount, StringFormat='Dringend: {0}'}"/>
+            </Grid>
+            <DataGrid Grid.Row="1" Margin="0,8,0,0" Height="150"
+                      ItemsSource="{Binding CustomerFollowUps}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True">
+              <DataGrid.Columns>
+                <DataGridTextColumn Header="Kunde" Binding="{Binding CustomerName}" Width="*"/>
+                <DataGridTextColumn Header="Aufgabe" Binding="{Binding Title}" Width="2*"/>
+                <DataGridTextColumn Header="Prio" Binding="{Binding Priority}" Width="70"/>
+                <DataGridTextColumn Header="Fällig" Binding="{Binding DueAtUtc}" Width="120"/>
+              </DataGrid.Columns>
+            </DataGrid>
+          </Grid>
+        </Border>
+
+        <Border Grid.Column="6" Padding="12" Background="#F5F7F7" CornerRadius="8">
+          <Grid RowDefinitions="Auto,*">
+            <Grid ColumnDefinitions="*,Auto">
+              <TextBlock FontSize="17" FontWeight="SemiBold" Text="Aktuelle Vorgänge"/>
+              <TextBlock Grid.Column="1"
+                         Text="{Binding OpenCustomerFollowUpCount, StringFormat='Kunden-Aufgaben offen: {0}'}"/>
+            </Grid>
+            <DataGrid Grid.Row="1" Margin="0,8,0,0" Height="150"
+                      ItemsSource="{Binding RecentItems}" AutoGenerateColumns="False" IsReadOnly="True">
+              <DataGrid.Columns>
+                <DataGridTextColumn Header="Typ" Binding="{Binding Type}" Width="82"/>
+                <DataGridTextColumn Header="Nummer" Binding="{Binding Number}" Width="100"/>
+                <DataGridTextColumn Header="Titel" Binding="{Binding Title}" Width="2*"/>
+                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="85"/>
+              </DataGrid.Columns>
+            </DataGrid>
+          </Grid>
+        </Border>
+      </Grid>
+
+      <Grid Grid.Row="4" ColumnDefinitions="5*,18,4*">
+        <Border BorderBrush="#D7DEDF" BorderThickness="1" CornerRadius="8" Padding="1">
+          <DataGrid ItemsSource="{Binding Customers}" SelectedItem="{Binding SelectedCustomer}"
+                    AutoGenerateColumns="False" IsReadOnly="True" GridLinesVisibility="Horizontal">
+            <DataGrid.Columns>
+              <DataGridCheckBoxColumn Header="★" Binding="{Binding IsFavorite}" Width="50"/>
+              <DataGridTextColumn Header="Kundennummer" Binding="{Binding CustomerNumber}" Width="145"/>
+              <DataGridTextColumn Header="Kunde" Binding="{Binding DisplayName}" Width="2*"/>
+              <DataGridTextColumn Header="Ort" Binding="{Binding BillingCity}" Width="*"/>
+              <DataGridTextColumn Header="E-Mail" Binding="{Binding Email}" Width="2*"/>
+              <DataGridCheckBoxColumn Header="Papierkorb" Binding="{Binding IsDeleted}" Width="90"/>
+            </DataGrid.Columns>
+          </DataGrid>
+        </Border>
+
+        <Border Grid.Column="2" BorderBrush="#D7DEDF" BorderThickness="1" CornerRadius="8" Padding="18">
+          <ScrollViewer>
+            <StackPanel Spacing="10">
+              <TextBlock FontSize="21" FontWeight="SemiBold" Text="Kundendetails"/>
+              <TextBlock Text="Firmen-/Kundenname"/>
+              <TextBox Text="{Binding EditName}"/>
+
+              <Grid ColumnDefinitions="*,10,*">
+                <StackPanel><TextBlock Text="Telefon"/><TextBox Text="{Binding EditPhone}"/></StackPanel>
+                <StackPanel Grid.Column="2"><TextBlock Text="E-Mail"/><TextBox Text="{Binding EditEmail}"/></StackPanel>
+              </Grid>
+
+              <TextBlock FontWeight="SemiBold" Margin="0,8,0,0" Text="Rechnungsadresse"/>
+              <TextBox Watermark="Straße" Text="{Binding BillingStreet}"/>
+              <Grid ColumnDefinitions="100,10,*,10,70">
+                <TextBox Watermark="PLZ" Text="{Binding BillingPostalCode}"/>
+                <TextBox Grid.Column="2" Watermark="Ort" Text="{Binding BillingCity}"/>
+                <TextBox Grid.Column="4" Watermark="Land" Text="{Binding BillingCountryCode}"/>
+              </Grid>
+
+              <CheckBox Content="Lieferadresse entspricht Rechnungsadresse"
+                        IsChecked="{Binding DeliveryEqualsBilling}"/>
+              <TextBlock FontWeight="SemiBold" Text="Lieferadresse"/>
+              <TextBox Watermark="Straße" Text="{Binding DeliveryStreet}" IsEnabled="{Binding !DeliveryEqualsBilling}"/>
+              <Grid ColumnDefinitions="100,10,*,10,70">
+                <TextBox Watermark="PLZ" Text="{Binding DeliveryPostalCode}" IsEnabled="{Binding !DeliveryEqualsBilling}"/>
+                <TextBox Grid.Column="2" Watermark="Ort" Text="{Binding DeliveryCity}" IsEnabled="{Binding !DeliveryEqualsBilling}"/>
+                <TextBox Grid.Column="4" Watermark="Land" Text="{Binding DeliveryCountryCode}" IsEnabled="{Binding !DeliveryEqualsBilling}"/>
+              </Grid>
+
+              <Grid ColumnDefinitions="*,10,*">
+                <StackPanel>
+                  <TextBlock Text="UID/ATU"/>
+                  <TextBox Text="{Binding EditVatId}"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                  <TextBlock Text="Steuerprofil"/>
+                  <ComboBox ItemsSource="{Binding TaxProfiles}" SelectedItem="{Binding EditTaxProfile}"/>
+                </StackPanel>
+              </Grid>
+
+              <TextBlock Text="Notizen"/>
+              <TextBox Text="{Binding EditNotes}" AcceptsReturn="True" MinHeight="70" TextWrapping="Wrap"/>
+
+              <WrapPanel HorizontalAlignment="Right">
+                <Button Margin="4" Content="Speichern" Command="{Binding SaveCustomerCommand}"/>
+                <Button Margin="4" Content="Favorit" Command="{Binding ToggleFavoriteCommand}"/>
+                <Button Margin="4" Content="Papierkorb" Command="{Binding MoveToTrashCommand}"/>
+                <Button Margin="4" Content="Wiederherstellen" Command="{Binding RestoreCommand}"/>
+              </WrapPanel>
+
+              <Separator Margin="0,10"/>
+              <TextBlock FontSize="19" FontWeight="SemiBold" Text="Ansprechpartner"/>
+              <DataGrid ItemsSource="{Binding Contacts}" SelectedItem="{Binding SelectedContact}"
+                        AutoGenerateColumns="False" IsReadOnly="True" Height="145">
+                <DataGrid.Columns>
+                  <DataGridCheckBoxColumn Header="Haupt" Binding="{Binding IsPrimary}" Width="60"/>
+                  <DataGridTextColumn Header="Bezeichnung" Binding="{Binding Label}" Width="*"/>
+                  <DataGridTextColumn Header="E-Mail" Binding="{Binding Email}" Width="2*"/>
+                </DataGrid.Columns>
+              </DataGrid>
+
+              <TextBox Watermark="Bezeichnung, z. B. Einkauf" Text="{Binding NewContactLabel}"/>
+              <Grid ColumnDefinitions="*,10,*">
+                <TextBox Watermark="E-Mail" Text="{Binding NewContactEmail}"/>
+                <TextBox Grid.Column="2" Watermark="Telefon" Text="{Binding NewContactPhone}"/>
+              </Grid>
+              <CheckBox Content="Als Hauptansprechpartner anlegen" IsChecked="{Binding NewContactIsPrimary}"/>
+
+              <WrapPanel HorizontalAlignment="Right">
+                <Button Margin="4" Content="Hinzufügen" Command="{Binding AddContactCommand}"/>
+                <Button Margin="4" Content="Als Hauptkontakt" Command="{Binding SetPrimaryContactCommand}"/>
+                <Button Margin="4" Content="Entfernen" Command="{Binding RemoveContactCommand}"/>
+              </WrapPanel>
+
+              <Separator Margin="0,10"/>
+              <TextBlock FontSize="19" FontWeight="SemiBold" Text="Änderungsverlauf"/>
+              <ItemsControl ItemsSource="{Binding History}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <Border Margin="0,3" Padding="8" Background="#F5F7F7" CornerRadius="5">
+                      <StackPanel>
+                        <TextBlock FontWeight="SemiBold" Text="{Binding Action}"/>
+                        <TextBlock TextWrapping="Wrap" Text="{Binding Description}"/>
+                        <TextBlock FontSize="11" Foreground="#667174" Text="{Binding OccurredAtUtc}"/>
+                      </StackPanel>
+                    </Border>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
+          </ScrollViewer>
+        </Border>
+      </Grid>
+    </Grid>
+
+    <Border Grid.Row="2" Grid.ColumnSpan="2" Background="#EEF2F3" Padding="12,0">
+      <TextBlock VerticalAlignment="Center" Text="{Binding StatusText}"/>
+    </Border>
+  </Grid>
+</Window>

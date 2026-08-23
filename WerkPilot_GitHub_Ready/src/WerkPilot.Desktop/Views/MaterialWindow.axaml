@@ -1,0 +1,76 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="WerkPilot.Desktop.Views.MaterialWindow"
+        x:DataType="vm:MaterialViewModel"
+        xmlns:vm="using:WerkPilot.Desktop.ViewModels"
+        Title="WerkPilot 0.12.24 RC – Materialstamm"
+        Width="1280" Height="780"
+        MinWidth="980" MinHeight="620">
+  <Grid RowDefinitions="64,*,34">
+    <Border Background="#174F54">
+      <TextBlock Margin="24,0" VerticalAlignment="Center" FontSize="24"
+                 FontWeight="Bold" Foreground="White" Text="Materialstamm"/>
+    </Border>
+
+    <Grid Grid.Row="1" Margin="22" RowDefinitions="Auto,*" ColumnDefinitions="3*,18,2*">
+      <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto" Grid.ColumnSpan="3" Margin="0,0,0,14">
+        <TextBox Watermark="Artikelnummer, Beschreibung oder Lieferant"
+                 Text="{Binding SearchText}"/>
+        <Button Grid.Column="1" Margin="8,0,0,0"
+                Content="Suchen" Command="{Binding RefreshCommand}"/>
+        <CheckBox Grid.Column="2" Margin="14,0,0,0"
+                  VerticalAlignment="Center"
+                  Content="Inaktive anzeigen"
+                  IsChecked="{Binding IncludeInactive}"/>
+        <Button Grid.Column="3" Margin="12,0,0,0"
+                Content="CSV importieren" Command="{Binding ImportCsvCommand}"/>
+        <Button Grid.Column="4" Margin="8,0,0,0"
+                Content="CSV exportieren" Command="{Binding ExportCsvCommand}"/>
+      </Grid>
+
+      <DataGrid Grid.Row="1"
+                ItemsSource="{Binding Items}"
+                SelectedItem="{Binding SelectedItem}"
+                AutoGenerateColumns="False"
+                IsReadOnly="True">
+        <DataGrid.Columns>
+          <DataGridTextColumn Header="Artikelnummer" Binding="{Binding ArticleNumber}" Width="140"/>
+          <DataGridTextColumn Header="Beschreibung" Binding="{Binding Description}" Width="2*"/>
+          <DataGridTextColumn Header="Einheit" Binding="{Binding Unit}" Width="80"/>
+          <DataGridTextColumn Header="Einkaufspreis" Binding="{Binding PurchasePrice}" Width="110"/>
+          <DataGridTextColumn Header="Lieferant" Binding="{Binding Supplier}" Width="*"/>
+          <DataGridCheckBoxColumn Header="Aktiv" Binding="{Binding IsActive}" Width="60"/>
+          <DataGridCheckBoxColumn Header="Preis alt?" Binding="{Binding IsPriceOutdated}" Width="75"/>
+          <DataGridTextColumn Header="Preistage" Binding="{Binding PriceAgeDays}" Width="75"/>
+        </DataGrid.Columns>
+      </DataGrid>
+
+      <Border Grid.Row="1" Grid.Column="2" Padding="18"
+              BorderBrush="#D7DEDF" BorderThickness="1" CornerRadius="8">
+        <StackPanel Spacing="10">
+          <TextBlock FontSize="20" FontWeight="SemiBold" Text="Materialartikel"/>
+          <TextBox Watermark="Artikelnummer" Text="{Binding ArticleNumber}"/>
+          <TextBox Watermark="Beschreibung" Text="{Binding Description}"/>
+          <Grid ColumnDefinitions="100,10,*">
+            <TextBox Watermark="Einheit" Text="{Binding Unit}"/>
+            <NumericUpDown Grid.Column="2" Minimum="0" Increment="0.1"
+                           Value="{Binding PurchasePrice}"/>
+          </Grid>
+          <TextBox Watermark="Lieferant" Text="{Binding Supplier}"/>
+          <TextBox Watermark="Lieferanten-Artikelnummer"
+                   Text="{Binding SupplierArticleNumber}"/>
+          <WrapPanel HorizontalAlignment="Right">
+            <Button Margin="4" Content="Neu anlegen" Command="{Binding CreateCommand}"/>
+            <Button Margin="4" Content="Aktualisieren" Command="{Binding UpdateCommand}"/>
+            <Button Margin="4" Content="Aktivieren/Deaktivieren"
+                    Command="{Binding ToggleActiveCommand}"/>
+          </WrapPanel>
+        </StackPanel>
+      </Border>
+    </Grid>
+
+    <Border Grid.Row="2" Background="#EEF2F3" Padding="12,0">
+      <TextBlock VerticalAlignment="Center" Text="{Binding StatusText}"/>
+    </Border>
+  </Grid>
+</Window>

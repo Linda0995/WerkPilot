@@ -1,0 +1,154 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="WerkPilot.Desktop.Views.DocumentEmailWindow"
+        x:DataType="vm:DocumentEmailViewModel"
+        xmlns:vm="using:WerkPilot.Desktop.ViewModels"
+        Title="WerkPilot 0.12.24 RC – Belegversand"
+        Width="1540" Height="960">
+  <Grid RowDefinitions="64,*,34">
+    <Border Background="#174F54">
+      <Grid ColumnDefinitions="*,Auto">
+        <TextBlock Margin="24,0" VerticalAlignment="Center"
+                   FontSize="24" FontWeight="Bold" Foreground="White"
+                   Text="Belegversand, Vorlagen und Wiederholungen"/>
+        <Button Grid.Column="1" Margin="0,12,18,12"
+                Content="Aktualisieren" Command="{Binding RefreshCommand}"/>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="1" Margin="22"
+          RowDefinitions="Auto,Auto,3*,18,2*">
+      <Border Padding="12" Background="#EAF3F3" CornerRadius="8">
+        <Grid ColumnDefinitions="210,12,*,12,Auto">
+          <ComboBox ItemsSource="{Binding DocumentTypes}"
+                    SelectedItem="{Binding SelectedDocumentType}"/>
+          <ComboBox Grid.Column="2"
+                    ItemsSource="{Binding Documents}"
+                    SelectedItem="{Binding SelectedDocument}"
+                    DisplayMemberBinding="{Binding DisplayText}"/>
+          <Button Grid.Column="4" Content="Vorschau laden"
+                  Command="{Binding LoadPreviewCommand}"/>
+        </Grid>
+      </Border>
+
+      <Grid Grid.Row="1" Margin="0,12,0,0"
+            ColumnDefinitions="*,12,*,12,Auto,12,Auto">
+        <Border Padding="10" Background="#F5F7F7" CornerRadius="7">
+          <StackPanel>
+            <TextBlock Text="SMTP-Status" FontWeight="SemiBold"/>
+            <TextBlock Text="{Binding SmtpStatusText}" TextWrapping="Wrap"/>
+          </StackPanel>
+        </Border>
+        <Border Grid.Column="2" Padding="10" Background="#F5F7F7" CornerRadius="7">
+          <StackPanel>
+            <TextBlock Text="Versandwarteschlange" FontWeight="SemiBold"/>
+            <TextBlock Text="{Binding QueueStatusText}" TextWrapping="Wrap"/>
+          </StackPanel>
+        </Border>
+        <Button Grid.Column="4" Content="SMTP prüfen"
+                Command="{Binding TestSmtpCommand}"/>
+        <Button Grid.Column="6" Content="Fällige Sendungen verarbeiten"
+                Command="{Binding ProcessQueueCommand}"/>
+      </Grid>
+
+      <Grid Grid.Row="2" Margin="0,14,0,0"
+            ColumnDefinitions="3*,18,2*">
+        <Border Padding="14" BorderBrush="#D7DEDF"
+                BorderThickness="1" CornerRadius="8">
+          <Grid RowDefinitions="Auto,Auto,Auto,*">
+            <TextBlock FontSize="18" FontWeight="SemiBold"
+                       Text="E-Mail bearbeiten"/>
+            <TextBox Grid.Row="1" Margin="0,12,0,0"
+                     Watermark="Empfänger" Text="{Binding Recipient}"/>
+            <TextBox Grid.Row="2" Margin="0,10,0,0"
+                     Watermark="Betreff" Text="{Binding Subject}"/>
+            <TextBox Grid.Row="3" Margin="0,10,0,0"
+                     AcceptsReturn="True" TextWrapping="Wrap"
+                     Watermark="Nachricht" Text="{Binding Body}"/>
+          </Grid>
+        </Border>
+
+        <Grid Grid.Column="2" RowDefinitions="2*,12,*">
+          <Border Padding="14" BorderBrush="#D7DEDF"
+                  BorderThickness="1" CornerRadius="8">
+            <Grid RowDefinitions="Auto,Auto,Auto,Auto,*,Auto">
+              <TextBlock FontSize="18" FontWeight="SemiBold"
+                         Text="E-Mail-Vorlagen"/>
+              <ComboBox Grid.Row="1" Margin="0,12,0,0"
+                        ItemsSource="{Binding Templates}"
+                        SelectedItem="{Binding SelectedTemplate}"
+                        DisplayMemberBinding="{Binding Name}"/>
+              <TextBox Grid.Row="2" Margin="0,10,0,0"
+                       Watermark="Vorlagenname"
+                       Text="{Binding TemplateName}"/>
+              <CheckBox Grid.Row="3" Margin="0,10,0,0"
+                        Content="Als Standardvorlage verwenden"
+                        IsChecked="{Binding TemplateIsDefault}"/>
+              <TextBlock Grid.Row="4" Margin="0,10,0,0"
+                         TextWrapping="Wrap"
+                         Text="Platzhalter: {{Belegnummer}}, {{Kundenname}}, {{Firmenname}}, {{Anhang}}"/>
+              <StackPanel Grid.Row="5" Margin="0,12,0,0"
+                          Orientation="Horizontal"
+                          HorizontalAlignment="Right" Spacing="8">
+                <Button Content="Vorlage anwenden"
+                        Command="{Binding ApplyTemplateCommand}"/>
+                <Button Content="Vorlage speichern"
+                        Command="{Binding SaveTemplateCommand}"/>
+              </StackPanel>
+            </Grid>
+          </Border>
+
+          <Border Grid.Row="2" Padding="14"
+                  BorderBrush="#D7DEDF" BorderThickness="1"
+                  CornerRadius="8">
+            <Grid RowDefinitions="Auto,Auto,Auto">
+              <TextBlock FontSize="18" FontWeight="SemiBold"
+                         Text="Versand"/>
+              <TextBlock Grid.Row="1" Margin="0,10,0,0"
+                         Text="{Binding AttachmentFileName}"/>
+              <Button Grid.Row="2" Margin="0,14,0,0"
+                      HorizontalAlignment="Right"
+                      Padding="24,10"
+                      Content="Beleg jetzt versenden"
+                      Command="{Binding SendCommand}"/>
+            </Grid>
+          </Border>
+        </Grid>
+      </Grid>
+
+      <Grid Grid.Row="4" RowDefinitions="Auto,*,Auto">
+        <TextBlock FontSize="18" FontWeight="SemiBold"
+                   Text="Versandprotokoll und Warteschlange"/>
+        <DataGrid Grid.Row="1" Margin="0,10,0,0"
+                  ItemsSource="{Binding Dispatches}"
+                  SelectedItem="{Binding SelectedDispatch}"
+                  AutoGenerateColumns="False" IsReadOnly="True">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="Zeitpunkt" Binding="{Binding CreatedAtUtc}" Width="145"/>
+            <DataGridTextColumn Header="Beleg" Binding="{Binding DocumentNumber}" Width="125"/>
+            <DataGridTextColumn Header="Empfänger" Binding="{Binding Recipient}" Width="2*"/>
+            <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="85"/>
+            <DataGridTextColumn Header="Versuche" Binding="{Binding AttemptCount}" Width="70"/>
+            <DataGridTextColumn Header="Letzter Versuch" Binding="{Binding LastAttemptAtUtc}" Width="145"/>
+            <DataGridTextColumn Header="Nächster Versuch" Binding="{Binding NextRetryAtUtc}" Width="145"/>
+            <DataGridTextColumn Header="Fehler" Binding="{Binding ErrorMessage}" Width="2*"/>
+          </DataGrid.Columns>
+        </DataGrid>
+        <Grid Grid.Row="2" Margin="0,10,0,0"
+              ColumnDefinitions="*,180,10,Auto,10,Auto">
+          <TextBlock VerticalAlignment="Center"
+                     Text="Fehlgeschlagene Sendungen können sofort oder zu einem späteren Zeitpunkt erneut eingeplant werden."/>
+          <DatePicker Grid.Column="1" SelectedDate="{Binding RetryAt}"/>
+          <Button Grid.Column="3" Content="Wiederholung vormerken"
+                  Command="{Binding ScheduleRetryCommand}"/>
+          <Button Grid.Column="5" Content="Jetzt erneut senden"
+                  Command="{Binding RetryCommand}"/>
+        </Grid>
+      </Grid>
+    </Grid>
+
+    <Border Grid.Row="2" Background="#EEF2F3" Padding="12,0">
+      <TextBlock VerticalAlignment="Center" Text="{Binding StatusText}"/>
+    </Border>
+  </Grid>
+</Window>

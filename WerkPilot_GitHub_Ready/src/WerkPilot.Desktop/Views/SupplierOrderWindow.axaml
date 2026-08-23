@@ -1,0 +1,121 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="WerkPilot.Desktop.Views.SupplierOrderWindow"
+        x:DataType="vm:SupplierOrderViewModel"
+        xmlns:vm="using:WerkPilot.Desktop.ViewModels"
+        Title="WerkPilot 0.12.24 RC – Lieferantenbestellungen"
+        Width="1450" Height="900"
+        MinWidth="1160" MinHeight="720">
+  <Grid RowDefinitions="64,*,34">
+    <Border Background="#174F54">
+      <Grid ColumnDefinitions="*,Auto">
+        <TextBlock Margin="24,0" VerticalAlignment="Center"
+                   FontSize="24" FontWeight="Bold" Foreground="White"
+                   Text="Lieferantenbestellungen"/>
+        <StackPanel Grid.Column="1" Margin="0,10,18,10"
+                    Orientation="Horizontal" Spacing="8">
+          <Button Content="CSV exportieren" Command="{Binding ExportCommand}"/>
+          <Button Content="Aktualisieren" Command="{Binding RefreshCommand}"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="1" Margin="22"
+          RowDefinitions="Auto,*"
+          ColumnDefinitions="2*,18,4*">
+      <Border Grid.ColumnSpan="3"
+              Padding="12"
+              Margin="0,0,0,14"
+              Background="#EAF3F3"
+              CornerRadius="8">
+        <Grid ColumnDefinitions="2*,10,150,10,150,10,180,10,Auto">
+          <ComboBox ItemsSource="{Binding Suppliers}"
+                    SelectedItem="{Binding SelectedSupplier}"/>
+          <DatePicker Grid.Column="2"
+                      SelectedDate="{Binding OrderDate}"/>
+          <DatePicker Grid.Column="4"
+                      SelectedDate="{Binding ExpectedDeliveryDate}"/>
+          <TextBox Grid.Column="6"
+                   Watermark="Lieferantenreferenz"
+                   Text="{Binding SupplierReference}"/>
+          <Button Grid.Column="8"
+                  Content="Aus Nachbestellung erzeugen"
+                  Command="{Binding CreateFromSuggestionsCommand}"/>
+        </Grid>
+      </Border>
+
+      <DataGrid Grid.Row="1"
+                ItemsSource="{Binding Orders}"
+                SelectedItem="{Binding SelectedOrder}"
+                AutoGenerateColumns="False"
+                IsReadOnly="True">
+        <DataGrid.Columns>
+          <DataGridTextColumn Header="Nummer" Binding="{Binding OrderNumber}" Width="120"/>
+          <DataGridTextColumn Header="Lieferant" Binding="{Binding SupplierName}" Width="2*"/>
+          <DataGridTextColumn Header="Datum" Binding="{Binding OrderDate}" Width="90"/>
+          <DataGridTextColumn Header="Liefertermin" Binding="{Binding ExpectedDeliveryDate}" Width="100"/>
+          <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="110"/>
+          <DataGridTextColumn Header="Netto" Binding="{Binding TotalNet}" Width="95"/>
+          <DataGridTextColumn Header="Offen" Binding="{Binding OpenQuantity}" Width="75"/>
+        </DataGrid.Columns>
+      </DataGrid>
+
+      <Grid Grid.Row="1"
+            Grid.Column="2"
+            RowDefinitions="Auto,*,Auto">
+        <Grid ColumnDefinitions="*,Auto,Auto">
+          <TextBlock VerticalAlignment="Center"
+                     FontSize="18"
+                     FontWeight="SemiBold"
+                     Text="Bestellpositionen"/>
+          <Button Grid.Column="1" Margin="4"
+                  Content="Als bestellt markieren"
+                  Command="{Binding MarkOrderedCommand}"/>
+          <Button Grid.Column="2" Margin="4"
+                  Content="Stornieren"
+                  Command="{Binding CancelCommand}"/>
+        </Grid>
+
+        <DataGrid Grid.Row="1"
+                  Margin="0,10"
+                  ItemsSource="{Binding Lines}"
+                  SelectedItem="{Binding SelectedLine}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="Artikel" Binding="{Binding ArticleNumber}" Width="110"/>
+            <DataGridTextColumn Header="Beschreibung" Binding="{Binding Description}" Width="2*"/>
+            <DataGridTextColumn Header="Bestellt" Binding="{Binding OrderedQuantity}" Width="80"/>
+            <DataGridTextColumn Header="Eingegangen" Binding="{Binding ReceivedQuantity}" Width="90"/>
+            <DataGridTextColumn Header="Offen" Binding="{Binding OpenQuantity}" Width="75"/>
+            <DataGridTextColumn Header="Einheit" Binding="{Binding Unit}" Width="65"/>
+            <DataGridTextColumn Header="Preis" Binding="{Binding UnitPriceNet}" Width="90"/>
+            <DataGridTextColumn Header="Summe" Binding="{Binding LineTotalNet}" Width="95"/>
+          </DataGrid.Columns>
+        </DataGrid>
+
+        <Border Grid.Row="2"
+                Padding="12"
+                BorderBrush="#D7DEDF"
+                BorderThickness="1"
+                CornerRadius="8">
+          <Grid ColumnDefinitions="150,10,*,10,Auto">
+            <NumericUpDown Minimum="0"
+                           Increment="1"
+                           Value="{Binding ReceiveQuantity}"/>
+            <TextBox Grid.Column="2"
+                     Watermark="Lieferschein oder Wareneingangsreferenz"
+                     Text="{Binding DeliveryReference}"/>
+            <Button Grid.Column="4"
+                    Content="Wareneingang buchen"
+                    Command="{Binding ReceiveCommand}"/>
+          </Grid>
+        </Border>
+      </Grid>
+    </Grid>
+
+    <Border Grid.Row="2" Background="#EEF2F3" Padding="12,0">
+      <TextBlock VerticalAlignment="Center" Text="{Binding StatusText}"/>
+    </Border>
+  </Grid>
+</Window>

@@ -1,0 +1,147 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="WerkPilot.Desktop.Views.ProjectCostControllingWindow"
+        x:DataType="vm:ProjectCostControllingViewModel"
+        xmlns:vm="using:WerkPilot.Desktop.ViewModels"
+        Title="WerkPilot 0.12.24 RC – Projektabschluss und Nachkalkulation"
+        Width="1450" Height="900">
+  <Grid RowDefinitions="64,*,34">
+    <Border Background="#174F54">
+      <Grid ColumnDefinitions="*,Auto">
+        <TextBlock Margin="24,0" VerticalAlignment="Center"
+                   FontSize="24" FontWeight="Bold" Foreground="White"
+                   Text="Projektabschluss und Nachkalkulation"/>
+        <StackPanel Grid.Column="1" Margin="0,10,18,10"
+                    Orientation="Horizontal" Spacing="8">
+          <Button Content="CSV-Abschlussbericht"
+                  Command="{Binding ExportClosingCsvCommand}"/>
+          <Button Content="Markdown-Abschlussbericht"
+                  Command="{Binding ExportClosingMarkdownCommand}"/>
+          <Button Content="Aktualisieren"
+                  Command="{Binding RefreshCommand}"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="1" Margin="22" RowDefinitions="Auto,Auto,Auto,*,Auto">
+      <ComboBox Width="600" HorizontalAlignment="Left"
+                ItemsSource="{Binding Projects}"
+                SelectedItem="{Binding SelectedProject}"
+                DisplayMemberBinding="{Binding ProjectNumber}"/>
+
+      <Grid Grid.Row="1" Margin="0,14"
+            ColumnDefinitions="*,10,*,10,*,10,*">
+        <Border Padding="12" Background="#EAF3F3" CornerRadius="8">
+          <StackPanel><TextBlock Text="Soll-Kosten"/><TextBlock FontSize="22" FontWeight="Bold" Text="{Binding PlannedTotalCost, StringFormat='{}{0:N2} €'}"/></StackPanel>
+        </Border>
+        <Border Grid.Column="2" Padding="12" Background="#EAF3F3" CornerRadius="8">
+          <StackPanel><TextBlock Text="Ist-Kosten"/><TextBlock FontSize="22" FontWeight="Bold" Text="{Binding ActualTotalCost, StringFormat='{}{0:N2} €'}"/></StackPanel>
+        </Border>
+        <Border Grid.Column="4" Padding="12" Background="#FFF4E5" CornerRadius="8">
+          <StackPanel><TextBlock Text="Abweichung"/><TextBlock FontSize="22" FontWeight="Bold" Text="{Binding VarianceAmount, StringFormat='{}{0:+0.00;-0.00;0.00} €'}"/></StackPanel>
+        </Border>
+        <Border Grid.Column="6" Padding="12" Background="#F5F7F7" CornerRadius="8">
+          <StackPanel><TextBlock Text="Budgetverbrauch"/><TextBlock FontSize="22" FontWeight="Bold" Text="{Binding UtilizationPercent, StringFormat='{}{0:N1} %'}"/><TextBlock Text="{Binding ControllingStatus}"/></StackPanel>
+        </Border>
+      </Grid>
+
+
+      <Grid Grid.Row="2" Margin="0,0,0,14"
+            ColumnDefinitions="*,10,*,10,*,10,*">
+        <Border Padding="12" Background="#EAF3F3" CornerRadius="8">
+          <StackPanel>
+            <TextBlock Text="Netto-Verkaufspreis"/>
+            <TextBlock FontSize="22" FontWeight="Bold"
+                       Text="{Binding RevenueNet, StringFormat='{}{0:N2} €'}"/>
+          </StackPanel>
+        </Border>
+        <Border Grid.Column="2" Padding="12" Background="#F5F7F7" CornerRadius="8">
+          <StackPanel>
+            <TextBlock Text="Geplanter Deckungsbeitrag"/>
+            <TextBlock FontSize="22" FontWeight="Bold"
+                       Text="{Binding PlannedContributionMargin, StringFormat='{}{0:N2} €'}"/>
+            <TextBlock Text="{Binding PlannedMarginPercent, StringFormat='Geplante Marge: {0:N1} %'}"/>
+          </StackPanel>
+        </Border>
+        <Border Grid.Column="4" Padding="12" Background="#FFF4E5" CornerRadius="8">
+          <StackPanel>
+            <TextBlock Text="Aktueller Deckungsbeitrag"/>
+            <TextBlock FontSize="22" FontWeight="Bold"
+                       Text="{Binding ActualContributionMargin, StringFormat='{}{0:N2} €'}"/>
+            <TextBlock Text="{Binding ActualMarginPercent, StringFormat='Aktuelle Marge: {0:N1} %'}"/>
+          </StackPanel>
+        </Border>
+        <Border Grid.Column="6" Padding="12" Background="#F5F7F7" CornerRadius="8">
+          <StackPanel>
+            <TextBlock Text="Ergebnisabweichung"/>
+            <TextBlock FontSize="22" FontWeight="Bold"
+                       Text="{Binding ResultVariance, StringFormat='{}{0:+0.00;-0.00;0.00} €'}"/>
+            <TextBlock Text="{Binding ProfitabilityStatus}"/>
+          </StackPanel>
+        </Border>
+      </Grid>
+
+      <Grid Grid.Row="3" ColumnDefinitions="3*,18,2*">
+        <DataGrid ItemsSource="{Binding ActualCosts}"
+                  SelectedItem="{Binding SelectedCost}"
+                  AutoGenerateColumns="False" IsReadOnly="True">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="Datum" Binding="{Binding CostDate}" Width="100"/>
+            <DataGridTextColumn Header="Kostenart" Binding="{Binding CostType}" Width="130"/>
+            <DataGridTextColumn Header="Beschreibung" Binding="{Binding Description}" Width="2*"/>
+            <DataGridTextColumn Header="Referenz" Binding="{Binding Reference}" Width="*"/>
+            <DataGridTextColumn Header="Netto" Binding="{Binding AmountNet}" Width="110"/>
+          </DataGrid.Columns>
+        </DataGrid>
+
+        <Border Grid.Column="2" Padding="16"
+                BorderBrush="#D7DEDF" BorderThickness="1" CornerRadius="8">
+          <StackPanel Spacing="9">
+            <TextBlock FontSize="19" FontWeight="SemiBold" Text="Ist-Kosten buchen"/>
+            <ComboBox ItemsSource="{Binding CostTypes}" SelectedItem="{Binding CostType}"/>
+            <TextBox Watermark="Beschreibung" Text="{Binding Description}"/>
+            <NumericUpDown Minimum="0" Increment="10" Value="{Binding AmountNet}"/>
+            <DatePicker SelectedDate="{Binding CostDate}"/>
+            <TextBox Watermark="Rechnung, Lieferschein oder Referenz" Text="{Binding Reference}"/>
+            <WrapPanel HorizontalAlignment="Right">
+              <Button Margin="4" Content="Neu buchen" Command="{Binding CreateCommand}"/>
+              <Button Margin="4" Content="Aktualisieren" Command="{Binding UpdateCommand}"/>
+            </WrapPanel>
+          </StackPanel>
+        </Border>
+      </Grid>
+
+      <DataGrid Grid.Row="4" Margin="0,14,0,0" Height="190"
+                AutoGenerateColumns="False" IsReadOnly="True">
+        <DataGrid.Columns>
+          <DataGridTextColumn Header="Kostenart" Width="2*"/>
+          <DataGridTextColumn Header="Soll" Width="*"/>
+          <DataGridTextColumn Header="Ist" Width="*"/>
+        </DataGrid.Columns>
+      </DataGrid>
+
+      <Grid Grid.Row="4" Margin="12,22,12,12" ColumnDefinitions="2*,*,*"
+            IsHitTestVisible="False">
+        <StackPanel Grid.Column="0" Spacing="11">
+          <TextBlock Text="Material"/><TextBlock Text="Arbeitszeit"/><TextBlock Text="Fremdleistung"/><TextBlock Text="Gemeinkosten"/>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Spacing="11">
+          <TextBlock Text="{Binding PlannedMaterialCost, StringFormat='{}{0:N2} €'}"/>
+          <TextBlock Text="{Binding PlannedLaborCost, StringFormat='{}{0:N2} €'}"/>
+          <TextBlock Text="{Binding PlannedExternalServiceCost, StringFormat='{}{0:N2} €'}"/>
+          <TextBlock Text="{Binding PlannedOverheadCost, StringFormat='{}{0:N2} €'}"/>
+        </StackPanel>
+        <StackPanel Grid.Column="2" Spacing="11">
+          <TextBlock Text="{Binding ActualMaterialCost, StringFormat='{}{0:N2} €'}"/>
+          <TextBlock Text="{Binding ActualLaborCost, StringFormat='{}{0:N2} €'}"/>
+          <TextBlock Text="{Binding ActualExternalServiceCost, StringFormat='{}{0:N2} €'}"/>
+          <TextBlock Text="{Binding ActualOverheadCost, StringFormat='{}{0:N2} €'}"/>
+        </StackPanel>
+      </Grid>
+    </Grid>
+
+    <Border Grid.Row="2" Background="#EEF2F3" Padding="12,0">
+      <TextBlock VerticalAlignment="Center" Text="{Binding StatusText}"/>
+    </Border>
+  </Grid>
+</Window>

@@ -1,0 +1,59 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="WerkPilot.Desktop.Views.ReceivablesWindow"
+        x:DataType="vm:ReceivablesViewModel"
+        xmlns:vm="using:WerkPilot.Desktop.ViewModels"
+        Title="WerkPilot 0.12.24 RC – Forderungsmanagement"
+        Width="1400" Height="820">
+  <Grid RowDefinitions="64,Auto,*,34">
+    <Border Background="#174F54">
+      <Grid ColumnDefinitions="*,Auto">
+        <TextBlock Margin="24,0" VerticalAlignment="Center"
+                   FontSize="24" FontWeight="Bold" Foreground="White"
+                   Text="Forderungsmanagement"/>
+        <Button Grid.Column="1" Margin="0,12,18,12"
+                Content="Aktualisieren" Command="{Binding RefreshCommand}"/>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="1" Margin="22,16,22,12"
+          ColumnDefinitions="*,10,*,10,*,10,*,10,*">
+      <Border Padding="12" Background="#EAF3F3" CornerRadius="8">
+        <StackPanel><TextBlock Text="Gesamt offen"/><TextBlock FontSize="22" FontWeight="Bold" Text="{Binding TotalOpenAmount, StringFormat='{}{0:N2} €'}"/></StackPanel>
+      </Border>
+      <Border Grid.Column="2" Padding="12" Background="#FCE8E6" CornerRadius="8">
+        <StackPanel><TextBlock Text="Überfällig"/><TextBlock FontSize="22" FontWeight="Bold" Text="{Binding OverdueAmount, StringFormat='{}{0:N2} €'}"/></StackPanel>
+      </Border>
+      <Border Grid.Column="4" Padding="12" Background="#FFF4E5" CornerRadius="8">
+        <StackPanel><TextBlock Text="Fällig 7 Tage"/><TextBlock FontSize="22" FontWeight="Bold" Text="{Binding DueWithin7Days, StringFormat='{}{0:N2} €'}"/></StackPanel>
+      </Border>
+      <Border Grid.Column="6" Padding="12" Background="#FFF4E5" CornerRadius="8">
+        <StackPanel><TextBlock Text="Fällig 14 Tage"/><TextBlock FontSize="22" FontWeight="Bold" Text="{Binding DueWithin14Days, StringFormat='{}{0:N2} €'}"/></StackPanel>
+      </Border>
+      <Border Grid.Column="8" Padding="12" Background="#F5F7F7" CornerRadius="8">
+        <StackPanel><TextBlock Text="Fällig 30 Tage"/><TextBlock FontSize="22" FontWeight="Bold" Text="{Binding DueWithin30Days, StringFormat='{}{0:N2} €'}"/></StackPanel>
+      </Border>
+    </Grid>
+
+    <DataGrid Grid.Row="2" Margin="22,0,22,16"
+              ItemsSource="{Binding Items}"
+              AutoGenerateColumns="False"
+              IsReadOnly="True">
+      <DataGrid.Columns>
+        <DataGridTextColumn Header="Rechnung" Binding="{Binding InvoiceNumber}" Width="120"/>
+        <DataGridTextColumn Header="Kunde" Binding="{Binding CustomerName}" Width="2*"/>
+        <DataGridTextColumn Header="Fällig" Binding="{Binding DueDate}" Width="100"/>
+        <DataGridTextColumn Header="Tage überfällig" Binding="{Binding DaysOverdue}" Width="100"/>
+        <DataGridTextColumn Header="Brutto" Binding="{Binding GrossTotal}" Width="100"/>
+        <DataGridTextColumn Header="Offen" Binding="{Binding OpenAmount}" Width="100"/>
+        <DataGridCheckBoxColumn Header="Überfällig" Binding="{Binding IsOverdue}" Width="85"/>
+        <DataGridTextColumn Header="Mahnstufe" Binding="{Binding DunningLevel}" Width="110"/>
+        <DataGridTextColumn Header="Letzte Mahnung" Binding="{Binding LastDunningDate}" Width="110"/>
+      </DataGrid.Columns>
+    </DataGrid>
+
+    <Border Grid.Row="3" Background="#EEF2F3" Padding="12,0">
+      <TextBlock VerticalAlignment="Center" Text="{Binding StatusText}"/>
+    </Border>
+  </Grid>
+</Window>

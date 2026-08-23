@@ -1,0 +1,128 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="WerkPilot.Desktop.Views.CalculationWindow"
+        x:DataType="vm:CalculationViewModel"
+        xmlns:vm="using:WerkPilot.Desktop.ViewModels"
+        Title="WerkPilot 0.12.24 RC – Kalkulation"
+        Width="1320" Height="820"
+        MinWidth="1050" MinHeight="680">
+  <Grid RowDefinitions="64,*,34">
+    <Border Background="#174F54">
+      <Grid ColumnDefinitions="*,Auto">
+        <TextBlock Margin="24,0" VerticalAlignment="Center" FontSize="24"
+                   FontWeight="Bold" Foreground="White"
+                   Text="Angebotskalkulation"/>
+        <Button Grid.Column="1" Margin="0,12,18,12"
+                Content="Aktualisieren" Command="{Binding RefreshCommand}"/>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="1" Margin="22" RowDefinitions="Auto,Auto,*,Auto,Auto">
+      <ComboBox Width="520" HorizontalAlignment="Left"
+                ItemsSource="{Binding Offers}"
+                SelectedItem="{Binding SelectedOffer}"
+                DisplayMemberBinding="{Binding OfferNumber}"/>
+
+      <Border Grid.Row="1" Margin="0,16,0,14" Padding="14"
+              Background="#EAF3F3" CornerRadius="10">
+        <Grid ColumnDefinitions="160,10,2*,10,100,10,130,10,Auto">
+          <ComboBox ItemsSource="{Binding CostTypes}"
+                    SelectedItem="{Binding NewCostType}"/>
+          <TextBox Grid.Column="2" Watermark="Beschreibung"
+                   Text="{Binding NewDescription}"/>
+          <NumericUpDown Grid.Column="4" Minimum="0.001" Increment="1"
+                         Value="{Binding NewQuantity}"/>
+          <NumericUpDown Grid.Column="6" Minimum="0" Increment="1"
+                         Value="{Binding NewUnitCost}"/>
+          <StackPanel Grid.Column="8" Orientation="Horizontal" Spacing="6">
+            <Button Content="Hinzufügen" Command="{Binding AddItemCommand}"/>
+            <Button Content="Aktualisieren" Command="{Binding UpdateItemCommand}"/>
+            <Button Content="Entfernen" Command="{Binding RemoveItemCommand}"/>
+          </StackPanel>
+        </Grid>
+      </Border>
+
+      <DataGrid Grid.Row="2"
+                ItemsSource="{Binding Items}"
+                SelectedItem="{Binding SelectedItem}"
+                AutoGenerateColumns="False"
+                IsReadOnly="True">
+        <DataGrid.Columns>
+          <DataGridTextColumn Header="Pos." Binding="{Binding PositionNumber}" Width="60"/>
+          <DataGridTextColumn Header="Kostenart" Binding="{Binding CostType}" Width="140"/>
+          <DataGridTextColumn Header="Beschreibung" Binding="{Binding Description}" Width="2*"/>
+          <DataGridTextColumn Header="Menge/Stunden" Binding="{Binding Quantity}" Width="110"/>
+          <DataGridTextColumn Header="Einstand/Stundensatz" Binding="{Binding UnitCost}" Width="150"/>
+          <DataGridTextColumn Header="Gesamtkosten" Binding="{Binding TotalCost}" Width="130"/>
+        </DataGrid.Columns>
+      </DataGrid>
+
+      <Grid Grid.Row="3" Margin="0,16,0,0" ColumnDefinitions="*,20,330">
+        <Border Padding="14" Background="#F5F7F7" CornerRadius="8">
+          <Grid ColumnDefinitions="*,20,*">
+            <StackPanel>
+              <TextBlock FontWeight="SemiBold" Text="Kostenübersicht"/>
+              <TextBlock Text="{Binding MaterialCost, StringFormat='Material: {0:N2} €'}"/>
+              <TextBlock Text="{Binding LaborCost, StringFormat='Arbeitszeit: {0:N2} €'}"/>
+              <TextBlock Text="{Binding ExternalServiceCost, StringFormat='Fremdleistung: {0:N2} €'}"/>
+              <TextBlock Text="{Binding OverheadCost, StringFormat='Gemeinkosten: {0:N2} €'}"/>
+            </StackPanel>
+            <StackPanel Grid.Column="2">
+              <TextBlock FontWeight="SemiBold" Text="Firmenziel"/>
+              <StackPanel Orientation="Horizontal" Spacing="6">
+                <NumericUpDown Width="120" Minimum="0" Maximum="500" Increment="1"
+                               Value="{Binding ProfitTargetPercent}"/>
+                <Button Content="Übernehmen" Command="{Binding ApplyProfitTargetCommand}"/>
+              </StackPanel>
+            </StackPanel>
+          </Grid>
+        </Border>
+
+        <Border Grid.Column="2" Padding="14" Background="#EAF3F3" CornerRadius="8">
+          <StackPanel Spacing="5">
+            <TextBlock FontSize="17" FontWeight="SemiBold" Text="Ergebnis"/>
+            <Grid ColumnDefinitions="*,Auto">
+              <TextBlock Text="Gesamtkosten"/>
+              <TextBlock Grid.Column="1" Text="{Binding TotalCost, StringFormat='{}{0:N2} €'}"/>
+            </Grid>
+            <Grid ColumnDefinitions="*,Auto">
+              <TextBlock Text="Zielgewinn"/>
+              <TextBlock Grid.Column="1" Text="{Binding TargetProfitAmount, StringFormat='{}{0:N2} €'}"/>
+            </Grid>
+            <Grid ColumnDefinitions="*,Auto">
+              <TextBlock FontWeight="Bold" Text="Empfohlener Nettoverkaufspreis"/>
+              <TextBlock Grid.Column="1" FontWeight="Bold"
+                         Text="{Binding RecommendedNetPrice, StringFormat='{}{0:N2} €'}"/>
+            </Grid>
+            <Button Margin="0,10,0,0" Content="Bestellliste erzeugen"
+                    Command="{Binding CreatePurchaseListCommand}"/>
+          </StackPanel>
+        </Border>
+      </Grid>
+
+      <Border Grid.Row="4" Margin="0,14,0,0" Padding="12"
+              BorderBrush="#D7DEDF" BorderThickness="1" CornerRadius="8">
+        <StackPanel>
+          <TextBlock FontSize="18" FontWeight="SemiBold" Text="Bestellliste aus Kalkulation"/>
+          <DataGrid ItemsSource="{Binding PurchaseList}" AutoGenerateColumns="False"
+                    IsReadOnly="True" Height="180">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="Artikel" Binding="{Binding ArticleNumber}" Width="120"/>
+              <DataGridTextColumn Header="Beschreibung" Binding="{Binding Description}" Width="2*"/>
+              <DataGridTextColumn Header="Lieferant" Binding="{Binding Supplier}" Width="*"/>
+              <DataGridTextColumn Header="Menge" Binding="{Binding RequiredQuantity}" Width="90"/>
+              <DataGridTextColumn Header="Einheit" Binding="{Binding Unit}" Width="70"/>
+              <DataGridTextColumn Header="Aktueller Preis" Binding="{Binding CurrentPurchasePrice}" Width="110"/>
+              <DataGridTextColumn Header="Schätzwert" Binding="{Binding EstimatedTotal}" Width="110"/>
+              <DataGridCheckBoxColumn Header="Preis alt?" Binding="{Binding IsPriceOutdated}" Width="80"/>
+            </DataGrid.Columns>
+          </DataGrid>
+        </StackPanel>
+      </Border>
+    </Grid>
+
+    <Border Grid.Row="2" Background="#EEF2F3" Padding="12,0">
+      <TextBlock VerticalAlignment="Center" Text="{Binding StatusText}"/>
+    </Border>
+  </Grid>
+</Window>

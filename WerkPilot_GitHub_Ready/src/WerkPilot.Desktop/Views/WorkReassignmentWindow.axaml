@@ -1,0 +1,94 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="WerkPilot.Desktop.Views.WorkReassignmentWindow"
+        x:DataType="vm:WorkReassignmentViewModel"
+        xmlns:vm="using:WerkPilot.Desktop.ViewModels"
+        Title="WerkPilot 0.12.24 RC – Aufgabenübergabe"
+        Width="820"
+        Height="600">
+  <Grid RowDefinitions="64,*,34">
+    <Border Background="#174F54">
+      <Grid ColumnDefinitions="*,Auto">
+        <TextBlock Margin="24,0"
+                   VerticalAlignment="Center"
+                   FontSize="24"
+                   FontWeight="Bold"
+                   Foreground="White"
+                   Text="Aufgabenübergabe und Vertretung"/>
+        <Button Grid.Column="1"
+                Margin="0,12,18,12"
+                Content="Aktualisieren"
+                Command="{Binding RefreshCommand}"/>
+      </Grid>
+    </Border>
+
+    <Border Grid.Row="1"
+            Margin="24"
+            Padding="22"
+            BorderBrush="#D7DEDF"
+            BorderThickness="1"
+            CornerRadius="10">
+      <StackPanel Spacing="14">
+        <TextBlock FontSize="18"
+                   FontWeight="SemiBold"
+                   Text="Offene Arbeit gesammelt übergeben"/>
+
+        <TextBlock TextWrapping="Wrap"
+                   Text="WerkPilot übergibt ausschließlich offene bzw. in Bearbeitung befindliche Aufgaben. Abgeschlossene Aufgaben bleiben unverändert. Jede Übergabe wird im Audit-Trail protokolliert."/>
+
+        <Grid ColumnDefinitions="*,18,*">
+          <StackPanel>
+            <TextBlock Margin="0,0,0,5"
+                       Text="Bisher verantwortlich"/>
+            <ComboBox ItemsSource="{Binding Users}"
+                      SelectedItem="{Binding SourceUser}"
+                      DisplayMemberBinding="{Binding DisplayName}"/>
+          </StackPanel>
+
+          <StackPanel Grid.Column="2">
+            <TextBlock Margin="0,0,0,5"
+                       Text="Neue Vertretung"/>
+            <ComboBox ItemsSource="{Binding Users}"
+                      SelectedItem="{Binding TargetUser}"
+                      DisplayMemberBinding="{Binding DisplayName}"/>
+          </StackPanel>
+        </Grid>
+
+        <TextBox Watermark="Übergabegrund, z. B. Urlaub, Krankenstand, Kapazitätsausgleich"
+                 Text="{Binding Reason}"/>
+
+        <Border Padding="14"
+                Background="#F5F7F7"
+                CornerRadius="8">
+          <StackPanel Spacing="8">
+            <TextBlock FontWeight="SemiBold"
+                       Text="Zu übergebende Bereiche"/>
+            <CheckBox Content="Kunden-Wiedervorlagen"
+                      IsChecked="{Binding IncludeCustomerFollowUps}"/>
+            <CheckBox Content="Projektaufgaben"
+                      IsChecked="{Binding IncludeProjectTasks}"/>
+          </StackPanel>
+        </Border>
+
+        <Border Padding="12"
+                Background="#FFF4E5"
+                CornerRadius="8">
+          <TextBlock TextWrapping="Wrap"
+                     Text="Hinweis: Die Übergabe verändert Verantwortlichkeiten sofort. Fälligkeiten, Prioritäten, Notizen und Aufgabenstatus bleiben unverändert."/>
+        </Border>
+
+        <Button HorizontalAlignment="Right"
+                Padding="24,10"
+                Content="Offene Aufgaben übergeben"
+                Command="{Binding TransferCommand}"/>
+      </StackPanel>
+    </Border>
+
+    <Border Grid.Row="2"
+            Background="#EEF2F3"
+            Padding="12,0">
+      <TextBlock VerticalAlignment="Center"
+                 Text="{Binding StatusText}"/>
+    </Border>
+  </Grid>
+</Window>

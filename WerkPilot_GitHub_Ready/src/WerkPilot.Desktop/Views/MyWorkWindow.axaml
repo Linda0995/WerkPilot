@@ -1,0 +1,150 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="WerkPilot.Desktop.Views.MyWorkWindow"
+        x:DataType="vm:MyWorkViewModel"
+        xmlns:vm="using:WerkPilot.Desktop.ViewModels"
+        Title="WerkPilot 0.12.24 RC – Meine Arbeit"
+        Width="1450"
+        Height="860">
+  <Grid RowDefinitions="64,Auto,*,34">
+    <Border Background="#174F54">
+      <Grid ColumnDefinitions="*,Auto,Auto">
+        <StackPanel Margin="24,0"
+                    VerticalAlignment="Center">
+          <TextBlock FontSize="24"
+                     FontWeight="Bold"
+                     Foreground="White"
+                     Text="Meine Arbeit"/>
+          <TextBlock Foreground="White"
+                     Text="{Binding UserDisplayName}"/>
+        </StackPanel>
+        <CheckBox Grid.Column="1"
+                  Margin="0,0,18,0"
+                  VerticalAlignment="Center"
+                  Foreground="White"
+                  Content="Nur kritisch"
+                  IsChecked="{Binding OnlyCritical}"/>
+        <Button Grid.Column="2"
+                Margin="0,12,18,12"
+                Content="Aktualisieren"
+                Command="{Binding RefreshCommand}"/>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="1"
+          Margin="22,18,22,0"
+          ColumnDefinitions="*,10,*,10,*,10,*,10,*,10,*">
+      <Border Padding="12"
+              Background="#EAF3F3"
+              CornerRadius="8">
+        <StackPanel>
+          <TextBlock Text="Offen"/>
+          <TextBlock FontSize="24"
+                     FontWeight="Bold"
+                     Text="{Binding OpenCount}"/>
+        </StackPanel>
+      </Border>
+      <Border Grid.Column="2"
+              Padding="12"
+              Background="#FFF4E5"
+              CornerRadius="8">
+        <StackPanel>
+          <TextBlock Text="Heute fällig"/>
+          <TextBlock FontSize="24"
+                     FontWeight="Bold"
+                     Text="{Binding DueTodayCount}"/>
+        </StackPanel>
+      </Border>
+      <Border Grid.Column="4"
+              Padding="12"
+              Background="#FCE8E6"
+              CornerRadius="8">
+        <StackPanel>
+          <TextBlock Text="Überfällig"/>
+          <TextBlock FontSize="24"
+                     FontWeight="Bold"
+                     Text="{Binding OverdueCount}"/>
+        </StackPanel>
+      </Border>
+      <Border Grid.Column="6"
+              Padding="12"
+              Background="#FCE8E6"
+              CornerRadius="8">
+        <StackPanel>
+          <TextBlock Text="Dringend"/>
+          <TextBlock FontSize="24"
+                     FontWeight="Bold"
+                     Text="{Binding UrgentCount}"/>
+        </StackPanel>
+      </Border>
+      <Border Grid.Column="8"
+              Padding="12"
+              Background="#F5F7F7"
+              CornerRadius="8">
+        <StackPanel>
+          <TextBlock Text="Kunden-Aufgaben"/>
+          <TextBlock FontSize="24"
+                     FontWeight="Bold"
+                     Text="{Binding CustomerFollowUpCount}"/>
+        </StackPanel>
+      </Border>
+      <Border Grid.Column="10"
+              Padding="12"
+              Background="#F5F7F7"
+              CornerRadius="8">
+        <StackPanel>
+          <TextBlock Text="Projekt-Aufgaben"/>
+          <TextBlock FontSize="24"
+                     FontWeight="Bold"
+                     Text="{Binding ProjectTaskCount}"/>
+        </StackPanel>
+      </Border>
+    </Grid>
+
+    <DataGrid Grid.Row="2"
+              Margin="22,16,22,18"
+              ItemsSource="{Binding Items}"
+              AutoGenerateColumns="False"
+              IsReadOnly="True">
+      <DataGrid.Columns>
+        <DataGridCheckBoxColumn Header="Überfällig"
+                                Binding="{Binding IsOverdue}"
+                                Width="75"/>
+        <DataGridCheckBoxColumn Header="Heute"
+                                Binding="{Binding IsDueToday}"
+                                Width="60"/>
+        <DataGridTextColumn Header="Art"
+                            Binding="{Binding TypeText}"
+                            Width="110"/>
+        <DataGridTextColumn Header="Referenz"
+                            Binding="{Binding Reference}"
+                            Width="120"/>
+        <DataGridTextColumn Header="Kontext"
+                            Binding="{Binding Context}"
+                            Width="2*"/>
+        <DataGridTextColumn Header="Aufgabe"
+                            Binding="{Binding Title}"
+                            Width="3*"/>
+        <DataGridTextColumn Header="Priorität"
+                            Binding="{Binding Priority}"
+                            Width="90"/>
+        <DataGridTextColumn Header="Status"
+                            Binding="{Binding Status}"
+                            Width="100"/>
+        <DataGridTextColumn Header="Fällig"
+                            Binding="{Binding DueAtUtc}"
+                            Width="145"/>
+        <DataGridTextColumn Header="Verantwortlich"
+                            Binding="{Binding AssignedTo}"
+                            Width="150"/>
+      </DataGrid.Columns>
+    </DataGrid>
+
+    <Border Grid.Row="3"
+            Background="#EEF2F3"
+            Padding="12,0">
+      <TextBlock VerticalAlignment="Center"
+                 Text="{Binding StatusText}"/>
+    </Border>
+  </Grid>
+</Window>

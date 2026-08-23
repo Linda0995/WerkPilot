@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: werkpilot-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: werkpilot
+      POSTGRES_USER: werkpilot
+      POSTGRES_PASSWORD: werkpilot_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - werkpilot_postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U werkpilot -d werkpilot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  werkpilot_postgres:

@@ -1,0 +1,92 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="WerkPilot.Desktop.Views.CrmJournalWindow"
+        x:DataType="vm:CrmJournalViewModel"
+        xmlns:vm="using:WerkPilot.Desktop.ViewModels"
+        Title="WerkPilot 0.12.24 RC – CRM-Kontaktjournal"
+        Width="1400" Height="840"
+        MinWidth="1100" MinHeight="680">
+  <Grid RowDefinitions="64,*,34">
+    <Border Background="#174F54">
+      <Grid ColumnDefinitions="*,Auto">
+        <TextBlock Margin="24,0" VerticalAlignment="Center" FontSize="24"
+                   FontWeight="Bold" Foreground="White"
+                   Text="CRM-Kontaktjournal"/>
+        <Button Grid.Column="1" Margin="0,12,18,12"
+                Content="Aktualisieren" Command="{Binding RefreshCommand}"/>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="1" Margin="22"
+          RowDefinitions="Auto,*"
+          ColumnDefinitions="2*,18,3*">
+      <Grid Grid.ColumnSpan="3" ColumnDefinitions="2*,Auto" Margin="0,0,0,14">
+        <ComboBox ItemsSource="{Binding Customers}"
+                  SelectedItem="{Binding SelectedCustomer}"
+                  DisplayMemberBinding="{Binding DisplayName}"/>
+        <CheckBox Grid.Column="1" Margin="16,0,0,0"
+                  VerticalAlignment="Center"
+                  Content="Offene Wiedervorlagen bis 30 Tage"
+                  IsChecked="{Binding ShowOpenFollowUps}"/>
+      </Grid>
+
+      <DataGrid Grid.Row="1"
+                ItemsSource="{Binding Interactions}"
+                SelectedItem="{Binding SelectedInteraction}"
+                AutoGenerateColumns="False"
+                IsReadOnly="True">
+        <DataGrid.Columns>
+          <DataGridTextColumn Header="Datum" Binding="{Binding OccurredAtUtc}" Width="150"/>
+          <DataGridTextColumn Header="Art" Binding="{Binding InteractionType}" Width="90"/>
+          <DataGridTextColumn Header="Betreff" Binding="{Binding Subject}" Width="2*"/>
+          <DataGridTextColumn Header="Ansprechpartner" Binding="{Binding ContactPerson}" Width="*"/>
+          <DataGridTextColumn Header="Wiedervorlage" Binding="{Binding FollowUpDate}" Width="105"/>
+          <DataGridCheckBoxColumn Header="Erledigt" Binding="{Binding FollowUpCompleted}" Width="75"/>
+        </DataGrid.Columns>
+      </DataGrid>
+
+      <Border Grid.Row="1" Grid.Column="2"
+              Padding="16" BorderBrush="#D7DEDF"
+              BorderThickness="1" CornerRadius="8">
+        <ScrollViewer>
+          <StackPanel Spacing="10">
+            <TextBlock FontSize="20" FontWeight="SemiBold" Text="Kontakt erfassen"/>
+            <Grid ColumnDefinitions="160,10,*">
+              <ComboBox ItemsSource="{Binding InteractionTypes}"
+                        SelectedItem="{Binding InteractionType}"/>
+              <DatePicker Grid.Column="2" SelectedDate="{Binding OccurredAt}"/>
+            </Grid>
+            <TextBox Watermark="Betreff" Text="{Binding Subject}"/>
+            <TextBox Watermark="Gesprächsnotiz / Inhalt"
+                     Text="{Binding Notes}"
+                     AcceptsReturn="True"
+                     TextWrapping="Wrap"
+                     MinHeight="180"/>
+            <TextBox Watermark="Ansprechpartner"
+                     Text="{Binding ContactPerson}"/>
+
+            <Separator Margin="0,8"/>
+            <TextBlock FontSize="18" FontWeight="SemiBold" Text="Wiedervorlage"/>
+            <Grid ColumnDefinitions="160,10,*">
+              <DatePicker SelectedDate="{Binding FollowUpDate}"/>
+              <TextBox Grid.Column="2"
+                       Watermark="Verantwortlich"
+                       Text="{Binding FollowUpOwner}"/>
+            </Grid>
+
+            <WrapPanel HorizontalAlignment="Right">
+              <Button Margin="4" Content="Neu speichern" Command="{Binding CreateCommand}"/>
+              <Button Margin="4" Content="Aktualisieren" Command="{Binding UpdateCommand}"/>
+              <Button Margin="4" Content="Wiedervorlage erledigt / offen"
+                      Command="{Binding ToggleFollowUpCommand}"/>
+            </WrapPanel>
+          </StackPanel>
+        </ScrollViewer>
+      </Border>
+    </Grid>
+
+    <Border Grid.Row="2" Background="#EEF2F3" Padding="12,0">
+      <TextBlock VerticalAlignment="Center" Text="{Binding StatusText}"/>
+    </Border>
+  </Grid>
+</Window>

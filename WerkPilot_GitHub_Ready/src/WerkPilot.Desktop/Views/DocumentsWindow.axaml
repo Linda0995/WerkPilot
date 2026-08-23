@@ -1,0 +1,190 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="WerkPilot.Desktop.Views.DocumentsWindow"
+        x:DataType="vm:DocumentsViewModel"
+        xmlns:vm="using:WerkPilot.Desktop.ViewModels"
+        Title="WerkPilot 0.12.24 RC – Digitale Projektakte"
+        Width="1420" Height="860"
+        MinWidth="1120" MinHeight="700">
+  <Grid RowDefinitions="64,*,34">
+    <Border Background="#174F54">
+      <Grid ColumnDefinitions="*,Auto">
+        <TextBlock Margin="24,0" VerticalAlignment="Center"
+                   FontSize="24" FontWeight="Bold"
+                   Foreground="White" Text="Digitale Projektakte"/>
+        <Button Grid.Column="1" Margin="0,12,18,12"
+                Content="Aktualisieren"
+                Command="{Binding RefreshCommand}"/>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="1" Margin="22"
+          RowDefinitions="Auto,*"
+          ColumnDefinitions="2*,18,3*">
+      <Grid Grid.ColumnSpan="3"
+            ColumnDefinitions="2*,10,Auto"
+            Margin="0,0,0,14">
+        <ComboBox ItemsSource="{Binding Projects}"
+                  SelectedItem="{Binding SelectedProject}"
+                  DisplayMemberBinding="{Binding ProjectNumber}"/>
+        <CheckBox Grid.Column="2"
+                  VerticalAlignment="Center"
+                  Content="Papierkorb anzeigen"
+                  IsChecked="{Binding IncludeDeleted}"/>
+      </Grid>
+
+      <Border Grid.Row="1" Padding="14"
+              BorderBrush="#D7DEDF"
+              BorderThickness="1"
+              CornerRadius="8">
+        <Grid RowDefinitions="Auto,*,Auto">
+          <TextBlock FontSize="19"
+                     FontWeight="SemiBold"
+                     Text="Ordner"/>
+
+          <DataGrid Grid.Row="1"
+                    Margin="0,10,0,10"
+                    ItemsSource="{Binding Folders}"
+                    SelectedItem="{Binding SelectedFolder}"
+                    AutoGenerateColumns="False"
+                    IsReadOnly="True">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="Ordner"
+                                  Binding="{Binding Name}"
+                                  Width="2*"/>
+              <DataGridTextColumn Header="Überordner"
+                                  Binding="{Binding ParentFolderId}"
+                                  Width="*"/>
+              <DataGridCheckBoxColumn Header="Papierkorb"
+                                      Binding="{Binding IsDeleted}"
+                                      Width="85"/>
+            </DataGrid.Columns>
+          </DataGrid>
+
+          <StackPanel Grid.Row="2" Spacing="8">
+            <TextBox Watermark="Neuer Ordnername"
+                     Text="{Binding NewFolderName}"/>
+            <Button HorizontalAlignment="Right"
+                    Content="Ordner anlegen"
+                    Command="{Binding CreateFolderCommand}"/>
+
+            <Separator Margin="0,4"/>
+
+            <TextBox Watermark="Ausgewählten Ordner umbenennen"
+                     Text="{Binding RenameFolderName}"/>
+            <ComboBox ItemsSource="{Binding Folders}"
+                      SelectedItem="{Binding TargetFolder}"
+                      DisplayMemberBinding="{Binding Name}"/>
+            <WrapPanel HorizontalAlignment="Right">
+              <Button Margin="4"
+                      Content="Umbenennen"
+                      Command="{Binding RenameFolderCommand}"/>
+              <Button Margin="4"
+                      Content="Verschieben"
+                      Command="{Binding MoveFolderCommand}"/>
+              <Button Margin="4"
+                      Content="Papierkorb"
+                      Command="{Binding TrashFolderCommand}"/>
+              <Button Margin="4"
+                      Content="Wiederherstellen"
+                      Command="{Binding RestoreFolderCommand}"/>
+            </WrapPanel>
+          </StackPanel>
+        </Grid>
+      </Border>
+
+      <Border Grid.Row="1" Grid.Column="2"
+              Padding="14"
+              BorderBrush="#D7DEDF"
+              BorderThickness="1"
+              CornerRadius="8">
+        <Grid RowDefinitions="Auto,*,Auto">
+          <Grid ColumnDefinitions="*,Auto">
+            <TextBlock FontSize="19"
+                       FontWeight="SemiBold"
+                       Text="Dateien"/>
+            <Button Grid.Column="1"
+                    Content="Dateien auswählen …"
+                    Command="{Binding SelectFilesCommand}"/>
+          </Grid>
+
+          <DataGrid Grid.Row="1"
+                    Margin="0,10,0,10"
+                    ItemsSource="{Binding Files}"
+                    SelectedItem="{Binding SelectedFile}"
+                    AutoGenerateColumns="False"
+                    IsReadOnly="True">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="Datei"
+                                  Binding="{Binding DisplayName}"
+                                  Width="2*"/>
+              <DataGridTextColumn Header="Typ"
+                                  Binding="{Binding ContentType}"
+                                  Width="*"/>
+              <DataGridTextColumn Header="Größe"
+                                  Binding="{Binding SizeBytes}"
+                                  Width="90"/>
+              <DataGridTextColumn Header="Ordner"
+                                  Binding="{Binding FolderId}"
+                                  Width="*"/>
+              <DataGridCheckBoxColumn Header="Papierkorb"
+                                      Binding="{Binding IsDeleted}"
+                                      Width="85"/>
+            </DataGrid.Columns>
+          </DataGrid>
+
+          <StackPanel Grid.Row="2" Spacing="8">
+            <TextBlock FontSize="11"
+                       Foreground="#667174"
+                       Text="Mehrere Dateien können über den nativen Dateiauswahldialog gleichzeitig importiert werden."/>
+
+            <Expander Header="Manueller Pfadimport">
+              <StackPanel Spacing="8">
+                <TextBox Watermark="Vollständiger Dateipfad"
+                         Text="{Binding ImportPath}"/>
+                <TextBox Watermark="Anzeigename, optional"
+                         Text="{Binding ImportDisplayName}"/>
+                <Button HorizontalAlignment="Right"
+                        Content="Pfad importieren"
+                        Command="{Binding ImportFileCommand}"/>
+              </StackPanel>
+            </Expander>
+
+            <Separator Margin="0,4"/>
+
+            <TextBox Watermark="Ausgewählte Datei umbenennen"
+                     Text="{Binding RenameFileName}"/>
+            <ComboBox ItemsSource="{Binding Folders}"
+                      SelectedItem="{Binding TargetFolder}"
+                      DisplayMemberBinding="{Binding Name}"/>
+
+            <WrapPanel HorizontalAlignment="Right">
+              <Button Margin="4"
+                      Content="Umbenennen"
+                      Command="{Binding RenameFileCommand}"/>
+              <Button Margin="4"
+                      Content="Verschieben"
+                      Command="{Binding MoveFileCommand}"/>
+              <Button Margin="4"
+                      Content="Öffnen"
+                      Command="{Binding OpenFileCommand}"/>
+              <Button Margin="4"
+                      Content="Papierkorb"
+                      Command="{Binding TrashFileCommand}"/>
+              <Button Margin="4"
+                      Content="Wiederherstellen"
+                      Command="{Binding RestoreFileCommand}"/>
+            </WrapPanel>
+          </StackPanel>
+        </Grid>
+      </Border>
+    </Grid>
+
+    <Border Grid.Row="2"
+            Background="#EEF2F3"
+            Padding="12,0">
+      <TextBlock VerticalAlignment="Center"
+                 Text="{Binding StatusText}"/>
+    </Border>
+  </Grid>
+</Window>

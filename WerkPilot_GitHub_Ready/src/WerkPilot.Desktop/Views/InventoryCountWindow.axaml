@@ -1,0 +1,129 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="WerkPilot.Desktop.Views.InventoryCountWindow"
+        x:DataType="vm:InventoryCountViewModel"
+        xmlns:vm="using:WerkPilot.Desktop.ViewModels"
+        Title="WerkPilot 0.12.24 RC – Geführte Inventur"
+        Width="1450" Height="900"
+        MinWidth="1160" MinHeight="720">
+  <Grid RowDefinitions="64,*,34">
+    <Border Background="#174F54">
+      <Grid ColumnDefinitions="*,Auto">
+        <TextBlock Margin="24,0" VerticalAlignment="Center"
+                   FontSize="24" FontWeight="Bold" Foreground="White"
+                   Text="Geführte Inventur"/>
+        <StackPanel Grid.Column="1"
+                    Margin="0,10,18,10"
+                    Orientation="Horizontal"
+                    Spacing="8">
+          <Button Content="CSV exportieren" Command="{Binding ExportCommand}"/>
+          <Button Content="Aktualisieren" Command="{Binding RefreshCommand}"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="1"
+          Margin="22"
+          RowDefinitions="Auto,*"
+          ColumnDefinitions="2*,18,4*">
+      <Border Grid.ColumnSpan="3"
+              Padding="12"
+              Margin="0,0,0,14"
+              Background="#EAF3F3"
+              CornerRadius="8">
+        <Grid ColumnDefinitions="2*,10,160,10,180,10,Auto">
+          <TextBox Watermark="Inventurbezeichnung"
+                   Text="{Binding Title}"/>
+          <DatePicker Grid.Column="2"
+                      SelectedDate="{Binding CountDate}"/>
+          <TextBox Grid.Column="4"
+                   Watermark="Lagerort, leer = alle"
+                   Text="{Binding StorageLocation}"/>
+          <Button Grid.Column="6"
+                  Content="Inventur anlegen"
+                  Command="{Binding CreateCommand}"/>
+        </Grid>
+      </Border>
+
+      <DataGrid Grid.Row="1"
+                ItemsSource="{Binding Counts}"
+                SelectedItem="{Binding SelectedCount}"
+                AutoGenerateColumns="False"
+                IsReadOnly="True">
+        <DataGrid.Columns>
+          <DataGridTextColumn Header="Nummer" Binding="{Binding CountNumber}" Width="130"/>
+          <DataGridTextColumn Header="Bezeichnung" Binding="{Binding Title}" Width="2*"/>
+          <DataGridTextColumn Header="Datum" Binding="{Binding CountDate}" Width="95"/>
+          <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="110"/>
+          <DataGridTextColumn Header="Offen" Binding="{Binding OpenLineCount}" Width="65"/>
+          <DataGridTextColumn Header="Differenz Menge" Binding="{Binding AbsoluteDifferenceQuantity}" Width="100"/>
+          <DataGridTextColumn Header="Differenzwert" Binding="{Binding AbsoluteDifferenceValue}" Width="100"/>
+          <DataGridTextColumn Header="Preiswarnungen" Binding="{Binding OutdatedPriceCount}" Width="100"/>
+        </DataGrid.Columns>
+      </DataGrid>
+
+      <Grid Grid.Row="1"
+            Grid.Column="2"
+            RowDefinitions="Auto,*,Auto">
+        <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+          <TextBlock VerticalAlignment="Center"
+                     FontSize="18"
+                     FontWeight="SemiBold"
+                     Text="Inventurpositionen"/>
+          <Button Grid.Column="1" Margin="4"
+                  Content="Zählung starten"
+                  Command="{Binding StartCommand}"/>
+          <Button Grid.Column="2" Margin="4"
+                  Content="Inventur buchen"
+                  Command="{Binding PostCommand}"/>
+          <Button Grid.Column="3" Margin="4"
+                  Content="Stornieren"
+                  Command="{Binding CancelCommand}"/>
+        </Grid>
+
+        <DataGrid Grid.Row="1"
+                  Margin="0,10"
+                  ItemsSource="{Binding Lines}"
+                  SelectedItem="{Binding SelectedLine}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="Artikel" Binding="{Binding ArticleNumber}" Width="110"/>
+            <DataGridTextColumn Header="Beschreibung" Binding="{Binding Description}" Width="2*"/>
+            <DataGridTextColumn Header="Lagerort" Binding="{Binding StorageLocation}" Width="100"/>
+            <DataGridTextColumn Header="Soll" Binding="{Binding ExpectedQuantity}" Width="75"/>
+            <DataGridTextColumn Header="Gezählt" Binding="{Binding CountedQuantity}" Width="75"/>
+            <DataGridTextColumn Header="Differenz" Binding="{Binding DifferenceQuantity}" Width="80"/>
+            <DataGridTextColumn Header="Einheit" Binding="{Binding Unit}" Width="65"/>
+            <DataGridTextColumn Header="Einkaufspreis" Binding="{Binding PurchasePrice}" Width="95"/>
+            <DataGridTextColumn Header="Differenzwert" Binding="{Binding DifferenceValue}" Width="95"/>
+            <DataGridCheckBoxColumn Header="Preis prüfen" Binding="{Binding IsPriceOutdated}" Width="80"/>
+            <DataGridCheckBoxColumn Header="Erfasst" Binding="{Binding IsCounted}" Width="70"/>
+          </DataGrid.Columns>
+        </DataGrid>
+
+        <Border Grid.Row="2"
+                Padding="12"
+                BorderBrush="#D7DEDF"
+                BorderThickness="1"
+                CornerRadius="8">
+          <Grid ColumnDefinitions="150,10,*,10,Auto">
+            <NumericUpDown Minimum="0"
+                           Increment="1"
+                           Value="{Binding CountedQuantity}"/>
+            <TextBox Grid.Column="2"
+                     Watermark="Zählnotiz"
+                     Text="{Binding Note}"/>
+            <Button Grid.Column="4"
+                    Content="Zählmenge speichern"
+                    Command="{Binding RecordCountCommand}"/>
+          </Grid>
+        </Border>
+      </Grid>
+    </Grid>
+
+    <Border Grid.Row="2" Background="#EEF2F3" Padding="12,0">
+      <TextBlock VerticalAlignment="Center" Text="{Binding StatusText}"/>
+    </Border>
+  </Grid>
+</Window>

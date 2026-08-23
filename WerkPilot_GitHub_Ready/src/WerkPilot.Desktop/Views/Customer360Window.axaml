@@ -1,0 +1,142 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="WerkPilot.Desktop.Views.Customer360Window"
+        x:DataType="vm:Customer360ViewModel"
+        xmlns:vm="using:WerkPilot.Desktop.ViewModels"
+        Title="WerkPilot 0.12.24 RC – Kundenübersicht 360°"
+        Width="1480" Height="900"
+        MinWidth="1180" MinHeight="720">
+  <Grid RowDefinitions="64,*,34">
+    <Border Background="#174F54">
+      <Grid ColumnDefinitions="*,Auto">
+        <TextBlock Margin="24,0" VerticalAlignment="Center"
+                   FontSize="24" FontWeight="Bold"
+                   Foreground="White"
+                   Text="Kundenübersicht 360°"/>
+        <Button Grid.Column="1" Margin="0,12,18,12"
+                Content="Aktualisieren"
+                Command="{Binding RefreshCommand}"/>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="1" Margin="22" RowDefinitions="Auto,Auto,*">
+      <ComboBox Width="620" HorizontalAlignment="Left"
+                ItemsSource="{Binding Customers}"
+                SelectedItem="{Binding SelectedCustomer}"
+                DisplayMemberBinding="{Binding DisplayName}"/>
+
+      <Grid Grid.Row="1" Margin="0,14"
+            ColumnDefinitions="*,12,*,12,*,12,*">
+        <Border Padding="14" Background="#EAF3F3" CornerRadius="8">
+          <StackPanel>
+            <TextBlock Text="Offenes Angebotsvolumen"/>
+            <TextBlock FontSize="24" FontWeight="Bold"
+                       Text="{Binding OpenOfferVolumeNet, StringFormat='{}{0:N2} €'}"/>
+          </StackPanel>
+        </Border>
+        <Border Grid.Column="2" Padding="14" Background="#EAF3F3" CornerRadius="8">
+          <StackPanel>
+            <TextBlock Text="Aktive Projekte"/>
+            <TextBlock FontSize="24" FontWeight="Bold"
+                       Text="{Binding ActiveProjectCount}"/>
+          </StackPanel>
+        </Border>
+        <Border Grid.Column="4" Padding="14" Background="#FFF4E5" CornerRadius="8">
+          <StackPanel>
+            <TextBlock Text="Offene Wiedervorlagen"/>
+            <TextBlock FontSize="24" FontWeight="Bold"
+                       Text="{Binding OpenFollowUpCount}"/>
+          </StackPanel>
+        </Border>
+        <Border Grid.Column="6" Padding="14" Background="#F5F7F7" CornerRadius="8">
+          <StackPanel>
+            <TextBlock Text="Letzter Kontakt"/>
+            <TextBlock FontSize="18" FontWeight="SemiBold"
+                       Text="{Binding LastContactText}"/>
+          </StackPanel>
+        </Border>
+      </Grid>
+
+      <TabControl Grid.Row="2">
+        <TabItem Header="Angebote">
+          <DataGrid ItemsSource="{Binding Offers}"
+                    AutoGenerateColumns="False"
+                    IsReadOnly="True">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="Nummer" Binding="{Binding OfferNumber}" Width="130"/>
+              <DataGridTextColumn Header="Titel" Binding="{Binding Title}" Width="2*"/>
+              <DataGridTextColumn Header="Datum" Binding="{Binding OfferDate}" Width="100"/>
+              <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100"/>
+              <DataGridTextColumn Header="Netto" Binding="{Binding NetTotal}" Width="120"/>
+            </DataGrid.Columns>
+          </DataGrid>
+        </TabItem>
+
+        <TabItem Header="Projekte">
+          <DataGrid ItemsSource="{Binding Projects}"
+                    AutoGenerateColumns="False"
+                    IsReadOnly="True">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="Nummer" Binding="{Binding ProjectNumber}" Width="130"/>
+              <DataGridTextColumn Header="Projekt" Binding="{Binding Title}" Width="2*"/>
+              <DataGridTextColumn Header="Verantwortlich" Binding="{Binding ProjectManager}" Width="*"/>
+              <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100"/>
+              <DataGridTextColumn Header="Fortschritt %" Binding="{Binding ProgressPercent}" Width="110"/>
+            </DataGrid.Columns>
+          </DataGrid>
+        </TabItem>
+
+        <TabItem Header="CRM-Kontakte">
+          <DataGrid ItemsSource="{Binding Interactions}"
+                    AutoGenerateColumns="False"
+                    IsReadOnly="True">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="Datum" Binding="{Binding OccurredAtUtc}" Width="150"/>
+              <DataGridTextColumn Header="Art" Binding="{Binding InteractionType}" Width="90"/>
+              <DataGridTextColumn Header="Betreff" Binding="{Binding Subject}" Width="2*"/>
+              <DataGridTextColumn Header="Ansprechpartner" Binding="{Binding ContactPerson}" Width="*"/>
+              <DataGridTextColumn Header="Erstellt von" Binding="{Binding CreatedBy}" Width="*"/>
+            </DataGrid.Columns>
+          </DataGrid>
+        </TabItem>
+
+        <TabItem Header="Wiedervorlagen">
+          <DataGrid ItemsSource="{Binding OpenFollowUps}"
+                    AutoGenerateColumns="False"
+                    IsReadOnly="True">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="Fällig" Binding="{Binding FollowUpDate}" Width="110"/>
+              <DataGridTextColumn Header="Betreff" Binding="{Binding Subject}" Width="2*"/>
+              <DataGridTextColumn Header="Verantwortlich" Binding="{Binding FollowUpOwner}" Width="*"/>
+              <DataGridTextColumn Header="Ansprechpartner" Binding="{Binding ContactPerson}" Width="*"/>
+            </DataGrid.Columns>
+          </DataGrid>
+        </TabItem>
+
+        <TabItem Header="Dokumente">
+          <Grid RowDefinitions="*,Auto">
+            <DataGrid ItemsSource="{Binding Documents}"
+                      SelectedItem="{Binding SelectedDocument}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True">
+              <DataGrid.Columns>
+                <DataGridTextColumn Header="Datei" Binding="{Binding DisplayName}" Width="2*"/>
+                <DataGridTextColumn Header="Typ" Binding="{Binding ContentType}" Width="*"/>
+                <DataGridTextColumn Header="Importiert" Binding="{Binding UploadedAtUtc}" Width="160"/>
+                <DataGridTextColumn Header="Größe" Binding="{Binding SizeBytes}" Width="100"/>
+              </DataGrid.Columns>
+            </DataGrid>
+            <Button Grid.Row="1" Margin="0,10,0,0"
+                    HorizontalAlignment="Right"
+                    Content="Dokument öffnen"
+                    Command="{Binding OpenDocumentCommand}"/>
+          </Grid>
+        </TabItem>
+      </TabControl>
+    </Grid>
+
+    <Border Grid.Row="2" Background="#EEF2F3" Padding="12,0">
+      <TextBlock VerticalAlignment="Center" Text="{Binding StatusText}"/>
+    </Border>
+  </Grid>
+</Window>

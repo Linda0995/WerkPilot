@@ -1,0 +1,48 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="WerkPilot.Desktop.Views.WorkbenchWindow"
+        x:DataType="vm:WorkbenchViewModel"
+        xmlns:vm="using:WerkPilot.Desktop.ViewModels"
+        Title="WerkPilot 0.12.24 RC – Schnellzugriff"
+        Width="1050" Height="720">
+  <Grid RowDefinitions="64,*,34">
+    <Border Background="#174F54">
+      <Grid ColumnDefinitions="*,Auto">
+        <TextBlock Margin="24,0" VerticalAlignment="Center" FontSize="24"
+                   FontWeight="Bold" Foreground="White" Text="Schnellzugriff"/>
+        <Button Grid.Column="1" Margin="0,12,18,12" Content="Aktualisieren"
+                Command="{Binding RefreshCommand}"/>
+      </Grid>
+    </Border>
+    <Grid Grid.Row="1" Margin="22" RowDefinitions="Auto,*,Auto,*">
+      <TextBlock FontSize="20" FontWeight="SemiBold" Text="Favoriten"/>
+      <DataGrid Grid.Row="1" ItemsSource="{Binding Favorites}" SelectedItem="{Binding SelectedItem}"
+                AutoGenerateColumns="False" IsReadOnly="True">
+        <DataGrid.Columns>
+          <DataGridTextColumn Header="Bereich" Binding="{Binding ItemType}" Width="110"/>
+          <DataGridTextColumn Header="Nummer" Binding="{Binding Number}" Width="140"/>
+          <DataGridTextColumn Header="Titel" Binding="{Binding Title}" Width="2*"/>
+          <DataGridTextColumn Header="Zusatz" Binding="{Binding Subtitle}" Width="2*"/>
+        </DataGrid.Columns>
+      </DataGrid>
+      <Grid Grid.Row="2" Margin="0,14,0,8" ColumnDefinitions="*,Auto,Auto">
+        <TextBlock FontSize="20" FontWeight="SemiBold" Text="Zuletzt verwendet"/>
+        <Button Grid.Column="1" Margin="4" Content="Favorit umschalten" Command="{Binding ToggleFavoriteCommand}"/>
+        <Button Grid.Column="2" Margin="4" Content="Öffnen" Command="{Binding OpenCommand}"/>
+      </Grid>
+      <DataGrid Grid.Row="3" ItemsSource="{Binding Recent}" SelectedItem="{Binding SelectedItem}"
+                AutoGenerateColumns="False" IsReadOnly="True">
+        <DataGrid.Columns>
+          <DataGridCheckBoxColumn Header="★" Binding="{Binding IsFavorite}" Width="50"/>
+          <DataGridTextColumn Header="Bereich" Binding="{Binding ItemType}" Width="110"/>
+          <DataGridTextColumn Header="Nummer" Binding="{Binding Number}" Width="140"/>
+          <DataGridTextColumn Header="Titel" Binding="{Binding Title}" Width="2*"/>
+          <DataGridTextColumn Header="Zuletzt geöffnet" Binding="{Binding LastOpenedAtUtc}" Width="170"/>
+        </DataGrid.Columns>
+      </DataGrid>
+    </Grid>
+    <Border Grid.Row="2" Background="#EEF2F3" Padding="12,0">
+      <TextBlock VerticalAlignment="Center" Text="{Binding StatusText}"/>
+    </Border>
+  </Grid>
+</Window>

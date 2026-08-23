@@ -1,0 +1,137 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="WerkPilot.Desktop.Views.CustomerFollowUpWindow"
+        x:DataType="vm:CustomerFollowUpViewModel"
+        xmlns:vm="using:WerkPilot.Desktop.ViewModels"
+        Title="WerkPilot 0.12.24 RC – Wiedervorlagen"
+        Width="1520" Height="900">
+  <Grid RowDefinitions="64,*,34">
+    <Border Background="#174F54">
+      <Grid ColumnDefinitions="*,Auto,Auto">
+        <TextBlock Margin="24,0" VerticalAlignment="Center"
+                   FontSize="24" FontWeight="Bold" Foreground="White"
+                   Text="Kunden-Wiedervorlagen und Aufgaben"/>
+        <CheckBox Grid.Column="1" Margin="0,0,16,0"
+                  VerticalAlignment="Center"
+                  Foreground="White"
+                  Content="Erledigte anzeigen"
+                  IsChecked="{Binding ShowCompleted}"/>
+        <Button Grid.Column="2" Margin="0,12,18,12"
+                Content="Aktualisieren" Command="{Binding RefreshCommand}"/>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="1" Margin="22"
+          ColumnDefinitions="5*,18,3*">
+      <DataGrid ItemsSource="{Binding FollowUps}"
+                SelectedItem="{Binding SelectedFollowUp}"
+                AutoGenerateColumns="False" IsReadOnly="True">
+        <DataGrid.Columns>
+          <DataGridCheckBoxColumn Header="Überfällig"
+                                  Binding="{Binding IsOverdue}"
+                                  Width="75"/>
+          <DataGridTextColumn Header="Fällig"
+                              Binding="{Binding DueAtUtc}"
+                              Width="145"/>
+          <DataGridTextColumn Header="Priorität"
+                              Binding="{Binding Priority}"
+                              Width="90"/>
+          <DataGridTextColumn Header="Status"
+                              Binding="{Binding Status}"
+                              Width="100"/>
+          <DataGridTextColumn Header="Kunde"
+                              Binding="{Binding CustomerName}"
+                              Width="2*"/>
+          <DataGridTextColumn Header="Aufgabe"
+                              Binding="{Binding Title}"
+                              Width="3*"/>
+          <DataGridTextColumn Header="Verantwortlich"
+                              Binding="{Binding AssignedTo}"
+                              Width="150"/>
+        </DataGrid.Columns>
+      </DataGrid>
+
+      <Border Grid.Column="2"
+              Padding="16"
+              BorderBrush="#D7DEDF"
+              BorderThickness="1"
+              CornerRadius="8">
+        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,*,Auto,Auto">
+          <TextBlock FontSize="19"
+                     FontWeight="SemiBold"
+                     Text="Wiedervorlage bearbeiten"/>
+
+          <ComboBox Grid.Row="1"
+                    Margin="0,12,0,0"
+                    ItemsSource="{Binding Customers}"
+                    SelectedItem="{Binding SelectedCustomer}"
+                    DisplayMemberBinding="{Binding DisplayName}"/>
+
+          <TextBox Grid.Row="2"
+                   Margin="0,10,0,0"
+                   Watermark="Aufgabe / nächster Schritt"
+                   Text="{Binding Title}"/>
+
+          <Grid Grid.Row="3"
+                Margin="0,10,0,0"
+                ColumnDefinitions="*,10,*">
+            <DatePicker SelectedDate="{Binding DueAt}"/>
+            <ComboBox Grid.Column="2"
+                      ItemsSource="{Binding Priorities}"
+                      SelectedItem="{Binding Priority}"/>
+          </Grid>
+
+          <ComboBox Grid.Row="4"
+                    Margin="0,10,0,0"
+                    ItemsSource="{Binding Assignees}"
+                    SelectedItem="{Binding SelectedAssignee}"
+                    DisplayMemberBinding="{Binding DisplayName}"/>
+
+          <TextBox Grid.Row="5"
+                   Margin="0,10,0,0"
+                   AcceptsReturn="True"
+                   TextWrapping="Wrap"
+                   Watermark="Notizen"
+                   Text="{Binding Notes}"/>
+
+          <TextBox Grid.Row="6"
+                   Margin="0,10,0,0"
+                   AcceptsReturn="True"
+                   TextWrapping="Wrap"
+                   Watermark="Abschlussnotiz"
+                   Text="{Binding CompletionNote}"/>
+
+          <Grid Grid.Row="7"
+                Margin="0,14,0,0"
+                RowDefinitions="Auto,Auto"
+                ColumnDefinitions="*,8,*">
+            <Button Content="Neue Wiedervorlage"
+                    Command="{Binding CreateCommand}"/>
+            <Button Grid.Column="2"
+                    Content="Termin aktualisieren"
+                    Command="{Binding RescheduleCommand}"/>
+            <Button Grid.Row="1"
+                    Margin="0,8,0,0"
+                    Content="In Bearbeitung"
+                    Command="{Binding StartCommand}"/>
+            <StackPanel Grid.Row="1"
+                        Grid.Column="2"
+                        Margin="0,8,0,0"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Spacing="8">
+              <Button Content="Abschließen"
+                      Command="{Binding CompleteCommand}"/>
+              <Button Content="Stornieren"
+                      Command="{Binding CancelCommand}"/>
+            </StackPanel>
+          </Grid>
+        </Grid>
+      </Border>
+    </Grid>
+
+    <Border Grid.Row="2" Background="#EEF2F3" Padding="12,0">
+      <TextBlock VerticalAlignment="Center" Text="{Binding StatusText}"/>
+    </Border>
+  </Grid>
+</Window>

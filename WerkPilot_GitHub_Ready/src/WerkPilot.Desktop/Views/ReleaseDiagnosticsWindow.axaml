@@ -1,0 +1,130 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="WerkPilot.Desktop.Views.ReleaseDiagnosticsWindow"
+        x:DataType="vm:ReleaseDiagnosticsViewModel"
+        xmlns:vm="using:WerkPilot.Desktop.ViewModels"
+        Title="WerkPilot 0.12.0 – Systemdiagnose"
+        Width="900"
+        Height="700">
+  <Grid RowDefinitions="64,*,34">
+    <Border Background="#174F54">
+      <Grid ColumnDefinitions="*,Auto">
+        <TextBlock Margin="24,0"
+                   VerticalAlignment="Center"
+                   FontSize="24"
+                   FontWeight="Bold"
+                   Foreground="White"
+                   Text="System- und Release-Diagnose"/>
+        <Button Grid.Column="1"
+                Margin="0,12,18,12"
+                Content="Aktualisieren"
+                Command="{Binding RefreshCommand}"/>
+      </Grid>
+    </Border>
+
+    <ScrollViewer Grid.Row="1">
+      <StackPanel Margin="24"
+                  Spacing="12">
+        <TextBlock FontSize="18"
+                   FontWeight="SemiBold"
+                   Text="Version"/>
+        <Grid ColumnDefinitions="220,*"
+              RowDefinitions="Auto,Auto">
+          <TextBlock Text="Produktversion"/>
+          <TextBlock Grid.Column="1"
+                     Text="{Binding ProductVersion}"/>
+          <TextBlock Grid.Row="1"
+                     Text="Informationsversion"/>
+          <TextBlock Grid.Row="1"
+                     Grid.Column="1"
+                     Text="{Binding InformationalVersion}"/>
+        </Grid>
+
+        <Separator/>
+
+        <TextBlock FontSize="18"
+                   FontWeight="SemiBold"
+                   Text="Laufzeit"/>
+        <Grid ColumnDefinitions="220,*"
+              RowDefinitions="Auto,Auto,Auto">
+          <TextBlock Text=".NET Runtime"/>
+          <TextBlock Grid.Column="1"
+                     Text="{Binding DotnetRuntime}"/>
+          <TextBlock Grid.Row="1"
+                     Text="Betriebssystem"/>
+          <TextBlock Grid.Row="1"
+                     Grid.Column="1"
+                     Text="{Binding OperatingSystem}"/>
+          <TextBlock Grid.Row="2"
+                     Text="Architektur"/>
+          <TextBlock Grid.Row="2"
+                     Grid.Column="1"
+                     Text="{Binding ProcessArchitecture}"/>
+        </Grid>
+
+        <Separator/>
+
+        <TextBlock FontSize="18"
+                   FontWeight="SemiBold"
+                   Text="Konfiguration"/>
+        <Grid ColumnDefinitions="220,*"
+              RowDefinitions="Auto,Auto,Auto,Auto">
+          <TextBlock Text="Umgebung"/>
+          <TextBlock Grid.Column="1"
+                     Text="{Binding EnvironmentName}"/>
+          <TextBlock Grid.Row="1"
+                     Text="DB-Verbindung konfiguriert"/>
+          <CheckBox Grid.Row="1"
+                    Grid.Column="1"
+                    IsEnabled="False"
+                    IsChecked="{Binding DatabaseConnectionConfigured}"/>
+          <TextBlock Grid.Row="2"
+                     Text="Admin-Initialkennwort gesetzt"/>
+          <CheckBox Grid.Row="2"
+                    Grid.Column="1"
+                    IsEnabled="False"
+                    IsChecked="{Binding InitialAdminBootstrapConfigured}"/>
+          <TextBlock Grid.Row="3"
+                     Text="Demo-Daten aktiv"/>
+          <CheckBox Grid.Row="3"
+                    Grid.Column="1"
+                    IsEnabled="False"
+                    IsChecked="{Binding DemoDataEnabled}"/>
+        </Grid>
+
+        <Separator/>
+
+        <TextBlock FontSize="18"
+                   FontWeight="SemiBold"
+                   Text="Dateipfade"/>
+        <Grid ColumnDefinitions="220,*"
+              RowDefinitions="Auto,Auto">
+          <TextBlock Text="Programmverzeichnis"/>
+          <TextBlock Grid.Column="1"
+                     TextWrapping="Wrap"
+                     Text="{Binding BaseDirectory}"/>
+          <TextBlock Grid.Row="1"
+                     Text="Logverzeichnis"/>
+          <TextBlock Grid.Row="1"
+                     Grid.Column="1"
+                     TextWrapping="Wrap"
+                     Text="{Binding LogDirectory}"/>
+        </Grid>
+
+        <Border Padding="12"
+                Background="#FFF4E5"
+                CornerRadius="8">
+          <TextBlock TextWrapping="Wrap"
+                     Text="Diese Ansicht zeigt keine Kennwörter oder Connection-Strings. Für Supportfälle reichen Version, Umgebung, Status und Fehler-ID aus."/>
+        </Border>
+      </StackPanel>
+    </ScrollViewer>
+
+    <Border Grid.Row="2"
+            Background="#EEF2F3"
+            Padding="12,0">
+      <TextBlock VerticalAlignment="Center"
+                 Text="{Binding StatusText}"/>
+    </Border>
+  </Grid>
+</Window>

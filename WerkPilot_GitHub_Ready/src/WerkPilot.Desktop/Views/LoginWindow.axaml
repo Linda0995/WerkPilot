@@ -1,0 +1,26 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="WerkPilot.Desktop.Views.LoginWindow"
+        x:DataType="vm:LoginViewModel"
+        xmlns:vm="using:WerkPilot.Desktop.ViewModels"
+        Title="WerkPilot Anmeldung" Width="460" Height="430"
+        CanResize="False" WindowStartupLocation="CenterScreen">
+  <Grid Background="#F3F6F6">
+    <Border Width="360" Padding="30" Background="White" CornerRadius="14"
+            HorizontalAlignment="Center" VerticalAlignment="Center">
+      <StackPanel Spacing="14">
+        <TextBlock FontSize="28" FontWeight="Bold" Foreground="#174F54" Text="WERKPILOT"/>
+        <TextBlock FontSize="17" Text="Sichere Anmeldung"/>
+        <TextBlock Text="Benutzername"/>
+        <TextBox Text="{Binding UserName}"/>
+        <TextBlock Text="Passwort"/>
+        <TextBox Text="{Binding Password}" PasswordChar="●"/>
+        <Button Height="42" Content="Anmelden" Command="{Binding LoginCommand}"/>
+        <TextBlock TextWrapping="Wrap" Foreground="#5A6668" Text="{Binding StatusText}"/>
+        <Border Padding="10" Background="#FFF4D6" CornerRadius="6">
+          <TextBlock TextWrapping="Wrap" Text="Erststart: Benutzer admin. Das temporäre Kennwort wird bei der Installation über WERKPILOT_ADMIN_INITIAL_PASSWORD festgelegt und muss nach dem ersten Login geändert werden."/>
+        </Border>
+      </StackPanel>
+    </Border>
+  </Grid>
+</Window>

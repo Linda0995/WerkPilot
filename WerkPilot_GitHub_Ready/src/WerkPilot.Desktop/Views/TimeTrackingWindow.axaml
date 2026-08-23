@@ -1,0 +1,158 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="WerkPilot.Desktop.Views.TimeTrackingWindow"
+        x:DataType="vm:TimeTrackingViewModel"
+        xmlns:vm="using:WerkPilot.Desktop.ViewModels"
+        Title="WerkPilot 0.12.24 RC – Zeiterfassung und Zeitcontrolling"
+        Width="1380" Height="840"
+        MinWidth="1080" MinHeight="680">
+  <Grid RowDefinitions="64,*,34">
+    <Border Background="#174F54">
+      <Grid ColumnDefinitions="*,Auto">
+        <StackPanel Margin="24,0" VerticalAlignment="Center">
+          <TextBlock FontSize="24" FontWeight="Bold"
+                     Foreground="White" Text="Projekt-Zeiterfassung"/>
+          <TextBlock Foreground="#D8ECEC" Text="{Binding RunningText}"/>
+        </StackPanel>
+        <Button Grid.Column="1" Margin="0,12,18,12"
+                Content="Aktualisieren" Command="{Binding RefreshCommand}"/>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="1" Margin="22"
+          RowDefinitions="Auto,Auto,*,Auto">
+      <Grid ColumnDefinitions="2*,10,2*">
+        <ComboBox ItemsSource="{Binding Projects}"
+                  SelectedItem="{Binding SelectedProject}"
+                  DisplayMemberBinding="{Binding ProjectNumber}"/>
+        <ComboBox Grid.Column="2"
+                  ItemsSource="{Binding Tasks}"
+                  SelectedItem="{Binding SelectedTask}"
+                  DisplayMemberBinding="{Binding Title}"/>
+      </Grid>
+
+      <Border Grid.Row="1" Margin="0,14"
+              Padding="14" Background="#EAF3F3" CornerRadius="8">
+        <Grid ColumnDefinitions="2*,10,Auto,Auto">
+          <TextBox Watermark="Tätigkeitsbeschreibung"
+                   Text="{Binding Description}"/>
+          <Button Grid.Column="2" Margin="0,0,8,0"
+                  Content="Start" Command="{Binding StartCommand}"/>
+          <Button Grid.Column="3"
+                  Content="Stopp" Command="{Binding StopCommand}"/>
+        </Grid>
+      </Border>
+
+      <DataGrid Grid.Row="2"
+                ItemsSource="{Binding Entries}"
+                SelectedItem="{Binding SelectedEntry}"
+                AutoGenerateColumns="False"
+                IsReadOnly="True">
+        <DataGrid.Columns>
+          <DataGridTextColumn Header="Beschreibung"
+                              Binding="{Binding Description}"
+                              Width="2*"/>
+          <DataGridTextColumn Header="Beginn"
+                              Binding="{Binding StartedAtUtc}"
+                              Width="170"/>
+          <DataGridTextColumn Header="Ende"
+                              Binding="{Binding EndedAtUtc}"
+                              Width="170"/>
+          <DataGridTextColumn Header="Stunden"
+                              Binding="{Binding DurationHours}"
+                              Width="90"/>
+          <DataGridCheckBoxColumn Header="Läuft"
+                                  Binding="{Binding IsRunning}"
+                                  Width="70"/>
+        </DataGrid.Columns>
+      </DataGrid>
+
+      <Grid Grid.Row="3" Margin="0,14,0,0"
+            ColumnDefinitions="2*,14,2*">
+        <Border Padding="14"
+                BorderBrush="#D7DEDF"
+                BorderThickness="1"
+                CornerRadius="8">
+          <StackPanel Spacing="8">
+            <TextBlock FontSize="18" FontWeight="SemiBold"
+                       Text="Manueller Eintrag / Korrektur"/>
+            <Grid ColumnDefinitions="*,10,*">
+              <DatePicker SelectedDate="{Binding ManualStart}"/>
+              <DatePicker Grid.Column="2"
+                          SelectedDate="{Binding ManualEnd}"/>
+            </Grid>
+            <TextBlock FontSize="11"
+                       Foreground="#667174"
+                       Text="Datum und Uhrzeit werden über die gebundenen Zeitwerte gespeichert."/>
+            <WrapPanel HorizontalAlignment="Right">
+              <Button Margin="4"
+                      Content="Manuell hinzufügen"
+                      Command="{Binding AddManualCommand}"/>
+              <Button Margin="4"
+                      Content="Ausgewählten Eintrag aktualisieren"
+                      Command="{Binding UpdateManualCommand}"/>
+            </WrapPanel>
+          </StackPanel>
+        </Border>
+
+        <Border Grid.Column="2"
+                Padding="14"
+                Background="#F5F7F7"
+                CornerRadius="8">
+          <StackPanel Spacing="7">
+            <Grid ColumnDefinitions="*,Auto">
+              <TextBlock FontSize="18" FontWeight="SemiBold"
+                         Text="Soll-/Ist-Zeitcontrolling"/>
+              <TextBlock Grid.Column="1"
+                         FontWeight="Bold"
+                         Text="{Binding ControllingStatusText}"/>
+            </Grid>
+
+            <Grid ColumnDefinitions="*,Auto">
+              <TextBlock Text="Kalkulierte Arbeitsstunden"/>
+              <TextBlock Grid.Column="1" FontWeight="Bold"
+                         Text="{Binding PlannedLaborHours, StringFormat='{}{0:N2} h'}"/>
+            </Grid>
+            <Grid ColumnDefinitions="*,Auto">
+              <TextBlock Text="Erfasste Ist-Stunden"/>
+              <TextBlock Grid.Column="1" FontWeight="Bold"
+                         Text="{Binding TotalHours, StringFormat='{}{0:N2} h'}"/>
+            </Grid>
+            <Grid ColumnDefinitions="*,Auto">
+              <TextBlock Text="Verbleibende Stunden"/>
+              <TextBlock Grid.Column="1"
+                         Text="{Binding RemainingHours, StringFormat='{}{0:N2} h'}"/>
+            </Grid>
+            <Grid ColumnDefinitions="*,Auto">
+              <TextBlock Text="Abweichung"/>
+              <TextBlock Grid.Column="1"
+                         Text="{Binding VarianceHours, StringFormat='{}{0:+0.00;-0.00;0.00} h'}"/>
+            </Grid>
+            <Grid ColumnDefinitions="*,Auto">
+              <TextBlock Text="Budgetverbrauch"/>
+              <TextBlock Grid.Column="1" FontWeight="Bold"
+                         Text="{Binding UtilizationPercent, StringFormat='{}{0:N1} %'}"/>
+            </Grid>
+
+            <Separator Margin="0,4"/>
+
+            <Grid ColumnDefinitions="*,Auto">
+              <TextBlock Text="Kalkulierte Arbeitskosten"/>
+              <TextBlock Grid.Column="1"
+                         Text="{Binding PlannedLaborCost, StringFormat='{}{0:N2} €'}"/>
+            </Grid>
+            <Grid ColumnDefinitions="*,Auto">
+              <TextBlock Text="Ist-Kosten zum Kalkulationssatz"/>
+              <TextBlock Grid.Column="1"
+                         Text="{Binding ActualLaborCostEstimate, StringFormat='{}{0:N2} €'}"/>
+            </Grid>
+          </StackPanel>
+        </Border>
+      </Grid>
+    </Grid>
+
+    <Border Grid.Row="2" Background="#EEF2F3" Padding="12,0">
+      <TextBlock VerticalAlignment="Center" Text="{Binding StatusText}"/>
+    </Border>
+  </Grid>
+</Window>

@@ -1,0 +1,129 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="WerkPilot.Desktop.Views.OffersWindow"
+        x:DataType="vm:OffersViewModel"
+        xmlns:vm="using:WerkPilot.Desktop.ViewModels"
+        Title="WerkPilot 0.12.24 RC – Angebote"
+        Width="1380" Height="820"
+        MinWidth="1050" MinHeight="680">
+  <Grid RowDefinitions="64,*,34">
+    <Border Background="#174F54">
+      <Grid ColumnDefinitions="*,Auto">
+        <TextBlock Margin="24,0" VerticalAlignment="Center" FontSize="24"
+                   FontWeight="Bold" Foreground="White" Text="Angebote"/>
+        <Button Grid.Column="1" Margin="0,12,18,12" Content="Aktualisieren"
+                Command="{Binding RefreshCommand}"/>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="1" Margin="22" ColumnDefinitions="2*,18,3*" RowDefinitions="Auto,*">
+      <Border Grid.ColumnSpan="3" Padding="16" Margin="0,0,0,16"
+              Background="#EAF3F3" CornerRadius="10">
+        <Grid ColumnDefinitions="2*,14,2*,14,160,14,Auto">
+          <ComboBox ItemsSource="{Binding Customers}" SelectedItem="{Binding SelectedCustomer}"
+                    DisplayMemberBinding="{Binding DisplayName}"/>
+          <TextBox Grid.Column="2" Watermark="Angebotstitel" Text="{Binding NewTitle}"/>
+          <DatePicker Grid.Column="4" SelectedDate="{Binding ValidUntil}"/>
+          <Button Grid.Column="6" Content="Neues Angebot" Command="{Binding CreateOfferCommand}"/>
+        </Grid>
+      </Border>
+
+      <Border Grid.Row="1" BorderBrush="#D7DEDF" BorderThickness="1" CornerRadius="8">
+        <DataGrid ItemsSource="{Binding Offers}" SelectedItem="{Binding SelectedOffer}"
+                  AutoGenerateColumns="False" IsReadOnly="True">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="Nummer" Binding="{Binding OfferNumber}" Width="150"/>
+            <DataGridTextColumn Header="Titel" Binding="{Binding Title}" Width="2*"/>
+            <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="110"/>
+            <DataGridTextColumn Header="Brutto" Binding="{Binding GrossTotal}" Width="110"/>
+          </DataGrid.Columns>
+        </DataGrid>
+      </Border>
+
+      <Border Grid.Row="1" Grid.Column="2" BorderBrush="#D7DEDF" BorderThickness="1"
+              CornerRadius="8" Padding="18">
+        <Grid RowDefinitions="Auto,Auto,*,Auto,Auto,Auto">
+          <TextBlock FontSize="22" FontWeight="SemiBold" Text="Angebotspositionen"/>
+
+          <Grid Grid.Row="1" Margin="0,14,0,14" ColumnDefinitions="2*,10,90,10,120,10,Auto,10,Auto">
+            <TextBox Watermark="Beschreibung" Text="{Binding PositionDescription}"/>
+            <NumericUpDown Grid.Column="2" Minimum="0.001" Increment="1"
+                           Value="{Binding PositionQuantity}"/>
+            <NumericUpDown Grid.Column="4" Minimum="0" Increment="1"
+                           Value="{Binding PositionUnitPrice}"/>
+            <CheckBox Grid.Column="6" VerticalAlignment="Center"
+                      Content="Alternativ" IsChecked="{Binding PositionIsOptional}"/>
+            <StackPanel Grid.Column="8" Orientation="Horizontal" Spacing="6">
+              <Button Content="Hinzufügen" Command="{Binding AddPositionCommand}"/>
+              <Button Content="Aktualisieren" Command="{Binding UpdatePositionCommand}"/>
+              <Button Content="Entfernen" Command="{Binding RemovePositionCommand}"/>
+            </StackPanel>
+          </Grid>
+
+          <DataGrid Grid.Row="2" ItemsSource="{Binding Positions}" SelectedItem="{Binding SelectedPosition}"
+                    AutoGenerateColumns="False" IsReadOnly="True">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="Pos." Binding="{Binding PositionNumber}" Width="60"/>
+              <DataGridTextColumn Header="Beschreibung" Binding="{Binding Description}" Width="2*"/>
+              <DataGridTextColumn Header="Menge" Binding="{Binding Quantity}" Width="90"/>
+              <DataGridTextColumn Header="Einzel netto" Binding="{Binding UnitPriceNet}" Width="120"/>
+              <DataGridTextColumn Header="Summe netto" Binding="{Binding TotalNet}" Width="120"/>
+              <DataGridCheckBoxColumn Header="Alternativ" Binding="{Binding IsOptional}" Width="85"/>
+            </DataGrid.Columns>
+          </DataGrid>
+
+          <Grid Grid.Row="3" Margin="0,14,0,10" ColumnDefinitions="*,Auto">
+            <StackPanel Grid.Column="1" Width="240" Spacing="5">
+              <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Text="Rabatt %"/>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="5">
+                  <NumericUpDown Width="90" Minimum="0" Maximum="100" Increment="0.5"
+                                 Value="{Binding DiscountPercent}"/>
+                  <Button Content="Übernehmen" Command="{Binding ApplyDiscountCommand}"/>
+                </StackPanel>
+              </Grid>
+              <Grid ColumnDefinitions="*,Auto"><TextBlock Text="Netto nach Rabatt"/><TextBlock Grid.Column="1" Text="{Binding NetTotal}"/></Grid>
+              <Grid ColumnDefinitions="*,Auto"><TextBlock Text="Umsatzsteuer"/><TextBlock Grid.Column="1" Text="{Binding TaxTotal}"/></Grid>
+              <Grid ColumnDefinitions="*,Auto"><TextBlock FontWeight="Bold" Text="Brutto"/><TextBlock Grid.Column="1" FontWeight="Bold" Text="{Binding GrossTotal}"/></Grid>
+            </StackPanel>
+          </Grid>
+
+          <Border Grid.Row="4" Margin="0,12,0,8" Padding="12"
+                  Background="#F5F7F7" CornerRadius="8">
+            <StackPanel Spacing="8">
+              <Grid ColumnDefinitions="*,Auto">
+                <TextBlock FontSize="18" FontWeight="SemiBold" Text="Angebot per E-Mail senden"/>
+                <Button Grid.Column="1" Content="Vorlage neu laden"
+                        Command="{Binding LoadEmailPreviewCommand}"/>
+              </Grid>
+              <TextBox Watermark="Empfänger" Text="{Binding EmailRecipient}"/>
+              <TextBox Watermark="Betreff" Text="{Binding EmailSubject}"/>
+              <TextBox Watermark="Nachricht" Text="{Binding EmailBody}"
+                       AcceptsReturn="True" TextWrapping="Wrap" MinHeight="105"/>
+              <TextBlock FontSize="11" Foreground="#667174"
+                         Text="Das aktuelle Angebots-PDF wird automatisch angehängt."/>
+            </StackPanel>
+          </Border>
+
+          <Grid Grid.Row="5" ColumnDefinitions="Auto,*,Auto">
+            <WrapPanel>
+              <Button Margin="4" Content="PDF-Vorschau" Command="{Binding PreviewPdfCommand}"/>
+              <Button Margin="4" Content="PDF exportieren" Command="{Binding ExportPdfCommand}"/>
+              <Button Margin="4" Content="E-Mail senden" Command="{Binding SendEmailCommand}"/>
+              <Button Margin="4" Content="Angebot duplizieren" Command="{Binding DuplicateOfferCommand}"/>
+            </WrapPanel>
+            <WrapPanel Grid.Column="2">
+              <Button Margin="4" Content="Als gesendet markieren" Command="{Binding MarkSentCommand}"/>
+              <Button Margin="4" Content="Angenommen" Command="{Binding AcceptCommand}"/>
+              <Button Margin="4" Content="Abgelehnt" Command="{Binding RejectCommand}"/>
+            </WrapPanel>
+          </Grid>
+        </Grid>
+      </Border>
+    </Grid>
+
+    <Border Grid.Row="2" Background="#EEF2F3" Padding="12,0">
+      <TextBlock VerticalAlignment="Center" Text="{Binding StatusText}"/>
+    </Border>
+  </Grid>
+</Window>

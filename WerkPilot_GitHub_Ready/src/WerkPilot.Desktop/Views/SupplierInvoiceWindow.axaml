@@ -1,0 +1,194 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="WerkPilot.Desktop.Views.SupplierInvoiceWindow"
+        x:DataType="vm:SupplierInvoiceViewModel"
+        xmlns:vm="using:WerkPilot.Desktop.ViewModels"
+        Title="WerkPilot 0.12.24 RC – Zahlungs- und Liquiditätsmanagement"
+        Width="1500" Height="920"
+        MinWidth="1200" MinHeight="740">
+  <Grid RowDefinitions="64,*,34">
+    <Border Background="#174F54">
+      <Grid ColumnDefinitions="*,Auto">
+        <TextBlock Margin="24,0" VerticalAlignment="Center"
+                   FontSize="24" FontWeight="Bold" Foreground="White"
+                   Text="Zahlungs- und Liquiditätsmanagement"/>
+        <StackPanel Grid.Column="1" Margin="0,10,18,10"
+                    Orientation="Horizontal" Spacing="8">
+          <Button Content="CSV-Prüfprotokoll" Command="{Binding ExportCommand}"/>
+          <Button Content="Aktualisieren" Command="{Binding RefreshCommand}"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="1" Margin="22"
+          RowDefinitions="Auto,*"
+          ColumnDefinitions="2*,18,5*">
+      <Border Grid.ColumnSpan="3"
+              Padding="12"
+              Margin="0,0,0,14"
+              Background="#EAF3F3"
+              CornerRadius="8">
+        <Grid ColumnDefinitions="2*,10,170,10,140,10,140,10,90,10,140,10,Auto">
+          <ComboBox ItemsSource="{Binding Orders}"
+                    SelectedItem="{Binding SelectedOrder}"
+                    DisplayMemberBinding="{Binding OrderNumber}"/>
+          <TextBox Grid.Column="2"
+                   Watermark="Rechnungsnummer"
+                   Text="{Binding InvoiceNumber}"/>
+          <DatePicker Grid.Column="4"
+                      SelectedDate="{Binding InvoiceDate}"/>
+          <DatePicker Grid.Column="6"
+                      SelectedDate="{Binding DueDate}"/>
+          <NumericUpDown Grid.Column="8"
+                         Minimum="0"
+                         Maximum="100"
+                         Increment="0.5"
+                         Value="{Binding CashDiscountPercent}"/>
+          <DatePicker Grid.Column="10"
+                      SelectedDate="{Binding CashDiscountDueDate}"/>
+          <Button Grid.Column="12"
+                  Content="Rechnung aus Bestellung anlegen"
+                  Command="{Binding CreateCommand}"/>
+        </Grid>
+      </Border>
+
+      <DataGrid Grid.Row="1"
+                ItemsSource="{Binding Invoices}"
+                SelectedItem="{Binding SelectedInvoice}"
+                AutoGenerateColumns="False"
+                IsReadOnly="True">
+        <DataGrid.Columns>
+          <DataGridTextColumn Header="Rechnung" Binding="{Binding InvoiceNumber}" Width="120"/>
+          <DataGridTextColumn Header="Bestellung" Binding="{Binding SupplierOrderNumber}" Width="115"/>
+          <DataGridTextColumn Header="Lieferant" Binding="{Binding SupplierName}" Width="2*"/>
+          <DataGridTextColumn Header="Datum" Binding="{Binding InvoiceDate}" Width="90"/>
+          <DataGridTextColumn Header="Fällig" Binding="{Binding DueDate}" Width="90"/>
+          <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100"/>
+          <DataGridTextColumn Header="Prüfung" Binding="{Binding MatchStatus}" Width="90"/>
+          <DataGridTextColumn Header="Netto" Binding="{Binding TotalNet}" Width="90"/>
+        </DataGrid.Columns>
+      </DataGrid>
+
+      <Grid Grid.Row="1" Grid.Column="2"
+            RowDefinitions="Auto,Auto,*,Auto,Auto,Auto">
+        <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto">
+          <TextBlock VerticalAlignment="Center"
+                     FontSize="18"
+                     FontWeight="SemiBold"
+                     Text="Drei-Wege-Abgleich"/>
+          <Button Grid.Column="1" Margin="4"
+                  Content="Zur Prüfung"
+                  Command="{Binding SubmitCommand}"/>
+          <Button Grid.Column="2" Margin="4"
+                  Content="Freigeben"
+                  Command="{Binding ApproveCommand}"/>
+          <Button Grid.Column="3" Margin="4"
+                  Content="Ablehnen"
+                  Command="{Binding RejectCommand}"/>
+          <Button Grid.Column="4" Margin="4"
+                  Content="Bezahlt"
+                  Command="{Binding MarkPaidCommand}"/>
+        </Grid>
+
+        <Grid Grid.Row="1" Margin="0,8"
+              ColumnDefinitions="*,8,*,8,*,8,*,8,*">
+          <Border Padding="10" Background="#F5F7F7" CornerRadius="6">
+            <StackPanel>
+              <TextBlock Text="Gesamtabweichung"/>
+              <TextBlock FontSize="20" FontWeight="Bold"
+                         Text="{Binding SelectedInvoice.TotalVariance, StringFormat='{}{0:+0.00;-0.00;0.00} €'}"/>
+            </StackPanel>
+          </Border>
+          <Border Grid.Column="2" Padding="10" Background="#FFF4E5" CornerRadius="6">
+            <StackPanel>
+              <TextBlock Text="Warnungen"/>
+              <TextBlock FontSize="20" FontWeight="Bold"
+                         Text="{Binding SelectedInvoice.WarningCount}"/>
+            </StackPanel>
+          </Border>
+          <Border Grid.Column="4" Padding="10" Background="#FCE8E6" CornerRadius="6">
+            <StackPanel>
+              <TextBlock Text="Kritische Abweichungen"/>
+              <TextBlock FontSize="20" FontWeight="Bold"
+                         Text="{Binding SelectedInvoice.CriticalCount}"/>
+            </StackPanel>
+          </Border>
+        </Grid>
+
+        <DataGrid Grid.Row="2"
+                  ItemsSource="{Binding Lines}"
+                  SelectedItem="{Binding SelectedLine}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="Artikel" Binding="{Binding ArticleNumber}" Width="100"/>
+            <DataGridTextColumn Header="Beschreibung" Binding="{Binding Description}" Width="2*"/>
+            <DataGridTextColumn Header="Bestellt" Binding="{Binding OrderedQuantity}" Width="70"/>
+            <DataGridTextColumn Header="Eingang" Binding="{Binding ReceivedQuantity}" Width="70"/>
+            <DataGridTextColumn Header="Rechnung" Binding="{Binding InvoicedQuantity}" Width="75"/>
+            <DataGridTextColumn Header="Bestellpreis" Binding="{Binding OrderedUnitPriceNet}" Width="85"/>
+            <DataGridTextColumn Header="Rechnungspreis" Binding="{Binding InvoicedUnitPriceNet}" Width="95"/>
+            <DataGridTextColumn Header="Mengenabw." Binding="{Binding QuantityVariance}" Width="80"/>
+            <DataGridTextColumn Header="Preisabw." Binding="{Binding PriceVariancePerUnit}" Width="80"/>
+            <DataGridTextColumn Header="Wertabw." Binding="{Binding ValueVariance}" Width="80"/>
+            <DataGridTextColumn Header="Status" Binding="{Binding MatchStatus}" Width="80"/>
+          </DataGrid.Columns>
+        </DataGrid>
+
+        <Border Grid.Row="3" Margin="0,10,0,0"
+                Padding="12" BorderBrush="#D7DEDF"
+                BorderThickness="1" CornerRadius="8">
+          <Grid ColumnDefinitions="150,10,150,10,Auto">
+            <NumericUpDown Minimum="0"
+                           Increment="1"
+                           Value="{Binding InvoicedQuantity}"/>
+            <NumericUpDown Grid.Column="2"
+                           Minimum="0"
+                           Increment="0.1"
+                           Value="{Binding UnitPriceNet}"/>
+            <Button Grid.Column="4"
+                    Content="Position aktualisieren"
+                    Command="{Binding UpdateLineCommand}"/>
+          </Grid>
+        </Border>
+
+        <Grid Grid.Row="4" Margin="0,10,0,0"
+              ColumnDefinitions="*,Auto,Auto">
+          <TextBox AcceptsReturn="True"
+                   MinHeight="70"
+                   Watermark="Prüf- oder Ablehnungsnotiz"
+                   Text="{Binding ReviewNote}"/>
+          <CheckBox Grid.Column="1" Margin="12,0"
+                    VerticalAlignment="Center"
+                    Content="Warnungen bewusst freigeben"
+                    IsChecked="{Binding AllowWarnings}"/>
+          <Button Grid.Column="2"
+                  VerticalAlignment="Center"
+                  Content="Stornieren"
+                  Command="{Binding CancelCommand}"/>
+        </Grid>
+
+        <Border Grid.Row="5" Margin="0,10,0,0"
+                Padding="12" Background="#EAF3F3" CornerRadius="8">
+          <Grid ColumnDefinitions="130,10,130,10,*,10,Auto">
+            <NumericUpDown Minimum="0"
+                           Increment="10"
+                           Value="{Binding PaymentAmount}"/>
+            <DatePicker Grid.Column="2"
+                        SelectedDate="{Binding PaymentDate}"/>
+            <TextBox Grid.Column="4"
+                     Watermark="Zahlungsreferenz"
+                     Text="{Binding PaymentReference}"/>
+            <Button Grid.Column="6"
+                    Content="Teil-/Vollzahlung erfassen"
+                    Command="{Binding RegisterPaymentCommand}"/>
+          </Grid>
+        </Border>
+      </Grid>
+    </Grid>
+
+    <Border Grid.Row="2" Background="#EEF2F3" Padding="12,0">
+      <TextBlock VerticalAlignment="Center" Text="{Binding StatusText}"/>
+    </Border>
+  </Grid>
+</Window>

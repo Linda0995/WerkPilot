@@ -1,0 +1,213 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="WerkPilot.Desktop.Views.InventoryWindow"
+        x:DataType="vm:InventoryViewModel"
+        xmlns:vm="using:WerkPilot.Desktop.ViewModels"
+        Title="WerkPilot 0.12.24 RC – Lagerbedarf und Nachbestellung"
+        Width="1450" Height="900"
+        MinWidth="1150" MinHeight="720">
+  <Grid RowDefinitions="64,*,34">
+    <Border Background="#174F54">
+      <Grid ColumnDefinitions="*,Auto">
+        <TextBlock Margin="24,0"
+                   VerticalAlignment="Center"
+                   FontSize="24"
+                   FontWeight="Bold"
+                   Foreground="White"
+                   Text="Lagerbedarf und Nachbestellung"/>
+        <Button Grid.Column="1"
+                Margin="0,12,18,12"
+                Content="Aktualisieren"
+                Command="{Binding RefreshCommand}"/>
+      </Grid>
+    </Border>
+
+    <TabControl Grid.Row="1" Margin="22">
+      <TabItem Header="Bestand und Bewegungen">
+        <Grid RowDefinitions="*,18,220"
+              ColumnDefinitions="3*,18,2*">
+          <DataGrid ItemsSource="{Binding Items}"
+                    SelectedItem="{Binding SelectedItem}"
+                    AutoGenerateColumns="False"
+                    IsReadOnly="True">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="Artikel" Binding="{Binding ArticleNumber}" Width="120"/>
+              <DataGridTextColumn Header="Beschreibung" Binding="{Binding Description}" Width="2*"/>
+              <DataGridTextColumn Header="Lagerort" Binding="{Binding StorageLocation}" Width="*"/>
+              <DataGridTextColumn Header="Bestand" Binding="{Binding QuantityOnHand}" Width="85"/>
+              <DataGridTextColumn Header="Reserviert" Binding="{Binding ReservedQuantity}" Width="85"/>
+              <DataGridTextColumn Header="Verfügbar" Binding="{Binding AvailableQuantity}" Width="85"/>
+              <DataGridTextColumn Header="Mindestbestand" Binding="{Binding MinimumStock}" Width="100"/>
+              <DataGridCheckBoxColumn Header="Nachbestellen" Binding="{Binding IsBelowMinimum}" Width="95"/>
+            </DataGrid.Columns>
+          </DataGrid>
+
+          <Border Grid.Column="2"
+                  Padding="16"
+                  BorderBrush="#D7DEDF"
+                  BorderThickness="1"
+                  CornerRadius="8">
+            <ScrollViewer>
+              <StackPanel Spacing="9">
+                <TextBlock FontSize="19" FontWeight="SemiBold"
+                           Text="Lagerartikel und Buchung"/>
+                <ComboBox ItemsSource="{Binding Materials}"
+                          SelectedItem="{Binding SelectedMaterial}"
+                          DisplayMemberBinding="{Binding ArticleNumber}"/>
+                <TextBox Watermark="Lagerort" Text="{Binding StorageLocation}"/>
+                <NumericUpDown Minimum="0" Increment="1" Value="{Binding MinimumStock}"/>
+                <WrapPanel HorizontalAlignment="Right">
+                  <Button Margin="4" Content="Lagerartikel anlegen"
+                          Command="{Binding CreateItemCommand}"/>
+                  <Button Margin="4" Content="Stammdaten speichern"
+                          Command="{Binding SaveMasterDataCommand}"/>
+                </WrapPanel>
+
+                <Separator Margin="0,6"/>
+
+                <ComboBox ItemsSource="{Binding MovementTypes}"
+                          SelectedItem="{Binding MovementType}"/>
+                <NumericUpDown Minimum="0" Increment="1"
+                               Value="{Binding MovementQuantity}"/>
+                <TextBox Watermark="Buchungsgrund"
+                         Text="{Binding MovementReason}"/>
+                <ComboBox ItemsSource="{Binding Projects}"
+                          SelectedItem="{Binding SelectedProject}"
+                          DisplayMemberBinding="{Binding ProjectNumber}"/>
+                <TextBox Watermark="Referenz, Lieferschein, Inventur"
+                         Text="{Binding Reference}"/>
+                <Button HorizontalAlignment="Right"
+                        Content="Lagerbewegung buchen"
+                        Command="{Binding BookMovementCommand}"/>
+              </StackPanel>
+            </ScrollViewer>
+          </Border>
+
+          <DataGrid Grid.Row="2"
+                    Grid.ColumnSpan="3"
+                    ItemsSource="{Binding Movements}"
+                    SelectedItem="{Binding SelectedMovement}"
+                    AutoGenerateColumns="False"
+                    IsReadOnly="True">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="Zeitpunkt" Binding="{Binding OccurredAtUtc}" Width="170"/>
+              <DataGridTextColumn Header="Art" Binding="{Binding MovementType}" Width="150"/>
+              <DataGridTextColumn Header="Menge" Binding="{Binding Quantity}" Width="90"/>
+              <DataGridTextColumn Header="Grund" Binding="{Binding Reason}" Width="2*"/>
+              <DataGridTextColumn Header="Referenz" Binding="{Binding Reference}" Width="*"/>
+              <DataGridTextColumn Header="Gebucht von" Binding="{Binding CreatedBy}" Width="*"/>
+            </DataGrid.Columns>
+          </DataGrid>
+        </Grid>
+      </TabItem>
+
+      <TabItem Header="Nachbestellvorschläge">
+        <Grid RowDefinitions="Auto,*">
+          <Grid ColumnDefinitions="*,Auto,Auto" Margin="0,0,0,10">
+            <TextBlock VerticalAlignment="Center"
+                       FontSize="18"
+                       FontWeight="SemiBold"
+                       Text="Fehlmengen aus Bestand, Reservierungen, Mindestbestand und offenen Bestelllisten"/>
+            <Button Grid.Column="1" Margin="8,0"
+                    Content="Neu berechnen"
+                    Command="{Binding RefreshReorderSuggestionsCommand}"/>
+            <Button Grid.Column="2"
+                    Content="CSV exportieren"
+                    Command="{Binding ExportReorderSuggestionsCommand}"/>
+          </Grid>
+
+          <DataGrid Grid.Row="1"
+                    ItemsSource="{Binding ReorderSuggestions}"
+                    AutoGenerateColumns="False"
+                    IsReadOnly="True">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="Lieferant" Binding="{Binding Supplier}" Width="*"/>
+              <DataGridTextColumn Header="Artikel" Binding="{Binding ArticleNumber}" Width="115"/>
+              <DataGridTextColumn Header="Beschreibung" Binding="{Binding Description}" Width="2*"/>
+              <DataGridTextColumn Header="Verfügbar" Binding="{Binding AvailableQuantity}" Width="85"/>
+              <DataGridTextColumn Header="Offener Bedarf" Binding="{Binding OpenDemandQuantity}" Width="105"/>
+              <DataGridTextColumn Header="Mindestbestand" Binding="{Binding MinimumStock}" Width="105"/>
+              <DataGridTextColumn Header="Bestellvorschlag" Binding="{Binding SuggestedOrderQuantity}" Width="115"/>
+              <DataGridTextColumn Header="Einheit" Binding="{Binding Unit}" Width="65"/>
+              <DataGridTextColumn Header="Bestellwert" Binding="{Binding EstimatedOrderValue}" Width="100"/>
+              <DataGridCheckBoxColumn Header="Preis prüfen" Binding="{Binding IsPriceOutdated}" Width="85"/>
+            </DataGrid.Columns>
+          </DataGrid>
+        </Grid>
+      </TabItem>
+
+      <TabItem Header="Lagerbewertung">
+        <Grid RowDefinitions="Auto,Auto,*">
+          <Grid ColumnDefinitions="*,Auto,Auto" Margin="0,0,0,10">
+            <TextBlock VerticalAlignment="Center"
+                       FontSize="18"
+                       FontWeight="SemiBold"
+                       Text="Bewertung auf Basis der Einkaufspreise im Materialstamm"/>
+            <Button Grid.Column="1" Margin="8,0"
+                    Content="Neu berechnen"
+                    Command="{Binding RefreshValuationCommand}"/>
+            <Button Grid.Column="2"
+                    Content="CSV exportieren"
+                    Command="{Binding ExportValuationCommand}"/>
+          </Grid>
+
+          <Grid Grid.Row="1" Margin="0,0,0,12"
+                ColumnDefinitions="*,10,*,10,*,10,*">
+            <Border Padding="12" Background="#EAF3F3" CornerRadius="8">
+              <StackPanel>
+                <TextBlock Text="Gesamter Lagerwert"/>
+                <TextBlock FontSize="22" FontWeight="Bold"
+                           Text="{Binding TotalStockValue, StringFormat='{}{0:N2} €'}"/>
+              </StackPanel>
+            </Border>
+            <Border Grid.Column="2" Padding="12" Background="#FFF4E5" CornerRadius="8">
+              <StackPanel>
+                <TextBlock Text="Reservierungswert"/>
+                <TextBlock FontSize="22" FontWeight="Bold"
+                           Text="{Binding TotalReservedValue, StringFormat='{}{0:N2} €'}"/>
+              </StackPanel>
+            </Border>
+            <Border Grid.Column="4" Padding="12" Background="#EAF3F3" CornerRadius="8">
+              <StackPanel>
+                <TextBlock Text="Verfügbarer Lagerwert"/>
+                <TextBlock FontSize="22" FontWeight="Bold"
+                           Text="{Binding TotalAvailableValue, StringFormat='{}{0:N2} €'}"/>
+              </StackPanel>
+            </Border>
+            <Border Grid.Column="6" Padding="12" Background="#F5F7F7" CornerRadius="8">
+              <StackPanel>
+                <TextBlock Text="Veraltete Preise"/>
+                <TextBlock FontSize="22" FontWeight="Bold"
+                           Text="{Binding OutdatedValuationPriceCount}"/>
+              </StackPanel>
+            </Border>
+          </Grid>
+
+          <DataGrid Grid.Row="2"
+                    ItemsSource="{Binding ValuationItems}"
+                    AutoGenerateColumns="False"
+                    IsReadOnly="True">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="Artikel" Binding="{Binding ArticleNumber}" Width="110"/>
+              <DataGridTextColumn Header="Beschreibung" Binding="{Binding Description}" Width="2*"/>
+              <DataGridTextColumn Header="Lagerort" Binding="{Binding StorageLocation}" Width="100"/>
+              <DataGridTextColumn Header="Bestand" Binding="{Binding QuantityOnHand}" Width="80"/>
+              <DataGridTextColumn Header="Reserviert" Binding="{Binding ReservedQuantity}" Width="80"/>
+              <DataGridTextColumn Header="Verfügbar" Binding="{Binding AvailableQuantity}" Width="80"/>
+              <DataGridTextColumn Header="Einkaufspreis" Binding="{Binding PurchasePrice}" Width="100"/>
+              <DataGridTextColumn Header="Lagerwert" Binding="{Binding StockValue}" Width="100"/>
+              <DataGridTextColumn Header="Reservierungswert" Binding="{Binding ReservedValue}" Width="115"/>
+              <DataGridTextColumn Header="Verfügbarer Wert" Binding="{Binding AvailableValue}" Width="115"/>
+              <DataGridTextColumn Header="Preisalter" Binding="{Binding PriceAgeDays}" Width="75"/>
+              <DataGridCheckBoxColumn Header="Preis prüfen" Binding="{Binding IsPriceOutdated}" Width="85"/>
+            </DataGrid.Columns>
+          </DataGrid>
+        </Grid>
+      </TabItem>
+    </TabControl>
+
+    <Border Grid.Row="2" Background="#EEF2F3" Padding="12,0">
+      <TextBlock VerticalAlignment="Center" Text="{Binding StatusText}"/>
+    </Border>
+  </Grid>
+</Window>

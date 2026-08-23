@@ -1,0 +1,7 @@
+Falls du GitHub Desktop verwendest:
+1. File > Add local repository / Create repository from existing folder.
+2. Diesen WerkPilot-Ordner auswählen.
+3. Repository als PRIVATE zu GitHub veröffentlichen.
+4. Danach GitHub im Browser öffnen > Actions.
+
+Wenn du Git nicht kennst: GitHub Desktop ist der einfachste Weg.

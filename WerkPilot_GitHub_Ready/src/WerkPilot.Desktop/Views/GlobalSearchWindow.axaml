@@ -1,0 +1,36 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="WerkPilot.Desktop.Views.GlobalSearchWindow"
+        x:DataType="vm:GlobalSearchViewModel"
+        xmlns:vm="using:WerkPilot.Desktop.ViewModels"
+        Title="WerkPilot 0.12.24 RC – Globale Suche"
+        Width="1050" Height="720" MinWidth="800" MinHeight="520">
+  <Grid RowDefinitions="64,Auto,*,34">
+    <Border Background="#174F54">
+      <TextBlock Margin="24,0" VerticalAlignment="Center" FontSize="24"
+                 FontWeight="Bold" Foreground="White" Text="Globale Suche"/>
+    </Border>
+    <Grid Grid.Row="1" Margin="22,18,22,12" ColumnDefinitions="*,10,Auto">
+      <TextBox Watermark="Kunde, Angebotsnummer, Projekt, Material oder Datei suchen …"
+               Text="{Binding SearchText}"/>
+      <Button Grid.Column="2" Content="Suchen" Command="{Binding SearchCommand}"/>
+    </Grid>
+    <DataGrid Grid.Row="2" Margin="22,0,22,14"
+              ItemsSource="{Binding Results}" SelectedItem="{Binding SelectedResult}"
+              AutoGenerateColumns="False" IsReadOnly="True" DoubleTapped="OnResultDoubleTapped">
+      <DataGrid.Columns>
+        <DataGridTextColumn Header="Bereich" Binding="{Binding TargetModule}" Width="125"/>
+        <DataGridTextColumn Header="Nummer" Binding="{Binding SearchNumber}" Width="145"/>
+        <DataGridTextColumn Header="Treffer" Binding="{Binding PrimaryText}" Width="2*"/>
+        <DataGridTextColumn Header="Information" Binding="{Binding SecondaryText}" Width="2*"/>
+      </DataGrid.Columns>
+    </DataGrid>
+    <Border Grid.Row="3" Background="#EEF2F3" Padding="12,0">
+      <Grid ColumnDefinitions="*,Auto">
+        <TextBlock VerticalAlignment="Center" Text="{Binding StatusText}"/>
+        <Button Grid.Column="1" Margin="0,3" Content="Treffer öffnen"
+                Command="{Binding OpenResultCommand}"/>
+      </Grid>
+    </Border>
+  </Grid>
+</Window>

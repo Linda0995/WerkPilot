@@ -1,0 +1,159 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="WerkPilot.Desktop.Views.CustomerInvoiceWindow"
+        x:DataType="vm:CustomerInvoiceViewModel"
+        xmlns:vm="using:WerkPilot.Desktop.ViewModels"
+        Title="WerkPilot 0.12.24 RC – Ausgangsrechnungen"
+        Width="1500" Height="920">
+  <Grid RowDefinitions="64,*,34">
+    <Border Background="#174F54">
+      <Grid ColumnDefinitions="*,Auto">
+        <TextBlock Margin="24,0" VerticalAlignment="Center"
+                   FontSize="24" FontWeight="Bold" Foreground="White"
+                   Text="Ausgangsrechnungen"/>
+        <StackPanel Grid.Column="1" Margin="0,10,18,10"
+                    Orientation="Horizontal" Spacing="8">
+          <Button Content="PDF-Beleg" Command="{Binding ExportPdfCommand}"/>
+          <Button Content="CSV exportieren" Command="{Binding ExportCommand}"/>
+          <Button Content="Aktualisieren" Command="{Binding RefreshCommand}"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="1" Margin="22"
+          RowDefinitions="Auto,*"
+          ColumnDefinitions="2*,18,5*">
+      <Border Grid.ColumnSpan="3"
+              Padding="12"
+              Margin="0,0,0,14"
+              Background="#EAF3F3"
+              CornerRadius="8">
+        <Grid ColumnDefinitions="2*,10,2*,10,140,10,140,10,90,10,Auto,10,Auto">
+          <ComboBox ItemsSource="{Binding Offers}"
+                    SelectedItem="{Binding SelectedOffer}"
+                    DisplayMemberBinding="{Binding OfferNumber}"/>
+          <ComboBox Grid.Column="2"
+                    ItemsSource="{Binding Projects}"
+                    SelectedItem="{Binding SelectedProject}"
+                    DisplayMemberBinding="{Binding ProjectNumber}"/>
+          <DatePicker Grid.Column="4" SelectedDate="{Binding InvoiceDate}"/>
+          <DatePicker Grid.Column="6" SelectedDate="{Binding DueDate}"/>
+          <NumericUpDown Grid.Column="8"
+                         Minimum="0"
+                         Maximum="100"
+                         Increment="1"
+                         Value="{Binding VatRatePercent}"/>
+          <Button Grid.Column="10"
+                  Content="Aus Angebot"
+                  Command="{Binding CreateFromOfferCommand}"/>
+          <Button Grid.Column="12"
+                  Content="Aus Projekt"
+                  Command="{Binding CreateFromProjectCommand}"/>
+        </Grid>
+      </Border>
+
+      <DataGrid Grid.Row="1"
+                ItemsSource="{Binding Invoices}"
+                SelectedItem="{Binding SelectedInvoice}"
+                AutoGenerateColumns="False"
+                IsReadOnly="True">
+        <DataGrid.Columns>
+          <DataGridTextColumn Header="Rechnung" Binding="{Binding InvoiceNumber}" Width="120"/>
+          <DataGridTextColumn Header="Kunde" Binding="{Binding CustomerName}" Width="2*"/>
+          <DataGridTextColumn Header="Datum" Binding="{Binding InvoiceDate}" Width="90"/>
+          <DataGridTextColumn Header="Fällig" Binding="{Binding DueDate}" Width="90"/>
+          <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100"/>
+          <DataGridTextColumn Header="Mahnstufe" Binding="{Binding DunningLevel}" Width="100"/>
+          <DataGridTextColumn Header="Brutto" Binding="{Binding GrossTotal}" Width="95"/>
+          <DataGridTextColumn Header="Offen" Binding="{Binding OpenAmount}" Width="95"/>
+          <DataGridCheckBoxColumn Header="Überfällig" Binding="{Binding IsOverdue}" Width="80"/>
+        </DataGrid.Columns>
+      </DataGrid>
+
+      <Grid Grid.Row="1" Grid.Column="2"
+            RowDefinitions="Auto,Auto,*,Auto,Auto">
+        <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+          <TextBlock VerticalAlignment="Center"
+                     FontSize="18"
+                     FontWeight="SemiBold"
+                     Text="Rechnungspositionen"/>
+          <Button Grid.Column="1" Margin="4"
+                  Content="Ausstellen"
+                  Command="{Binding IssueCommand}"/>
+          <Button Grid.Column="2" Margin="4"
+                  Content="Mahnstufe erhöhen"
+                  Command="{Binding AdvanceDunningCommand}"/>
+          <Button Grid.Column="3" Margin="4"
+                  Content="Stornieren"
+                  Command="{Binding CancelCommand}"/>
+        </Grid>
+
+        <Grid Grid.Row="1" Margin="0,8"
+              ColumnDefinitions="*,8,*,8,*,8,*,8,*">
+          <Border Padding="10" Background="#EAF3F3" CornerRadius="6">
+            <StackPanel><TextBlock Text="Netto"/><TextBlock FontSize="20" FontWeight="Bold" Text="{Binding SelectedInvoice.NetTotal, StringFormat='{}{0:N2} €'}"/></StackPanel>
+          </Border>
+          <Border Grid.Column="2" Padding="10" Background="#F5F7F7" CornerRadius="6">
+            <StackPanel><TextBlock Text="USt"/><TextBlock FontSize="20" FontWeight="Bold" Text="{Binding SelectedInvoice.VatTotal, StringFormat='{}{0:N2} €'}"/></StackPanel>
+          </Border>
+          <Border Grid.Column="4" Padding="10" Background="#EAF3F3" CornerRadius="6">
+            <StackPanel><TextBlock Text="Brutto"/><TextBlock FontSize="20" FontWeight="Bold" Text="{Binding SelectedInvoice.GrossTotal, StringFormat='{}{0:N2} €'}"/></StackPanel>
+          </Border>
+          <Border Grid.Column="6" Padding="10" Background="#F5F7F7" CornerRadius="6">
+            <StackPanel><TextBlock Text="Gutgeschrieben"/><TextBlock FontSize="20" FontWeight="Bold" Text="{Binding SelectedInvoice.CreditedAmount, StringFormat='{}{0:N2} €'}"/></StackPanel>
+          </Border>
+          <Border Grid.Column="8" Padding="10" Background="#FFF4E5" CornerRadius="6">
+            <StackPanel><TextBlock Text="Offen"/><TextBlock FontSize="20" FontWeight="Bold" Text="{Binding SelectedInvoice.OpenAmount, StringFormat='{}{0:N2} €'}"/></StackPanel>
+          </Border>
+        </Grid>
+
+        <DataGrid Grid.Row="2"
+                  ItemsSource="{Binding Lines}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="Beschreibung" Binding="{Binding Description}" Width="2*"/>
+            <DataGridTextColumn Header="Menge" Binding="{Binding Quantity}" Width="75"/>
+            <DataGridTextColumn Header="Einheit" Binding="{Binding Unit}" Width="65"/>
+            <DataGridTextColumn Header="Preis netto" Binding="{Binding UnitPriceNet}" Width="95"/>
+            <DataGridTextColumn Header="USt %" Binding="{Binding VatRatePercent}" Width="70"/>
+            <DataGridTextColumn Header="Netto" Binding="{Binding NetTotal}" Width="90"/>
+            <DataGridTextColumn Header="Brutto" Binding="{Binding GrossTotal}" Width="90"/>
+          </DataGrid.Columns>
+        </DataGrid>
+
+        <DataGrid Grid.Row="3" Margin="0,10,0,0" Height="130"
+                  ItemsSource="{Binding Payments}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="Zahlungsdatum" Binding="{Binding PaymentDate}" Width="110"/>
+            <DataGridTextColumn Header="Betrag" Binding="{Binding Amount}" Width="95"/>
+            <DataGridTextColumn Header="Referenz" Binding="{Binding Reference}" Width="2*"/>
+            <DataGridTextColumn Header="Erfasst von" Binding="{Binding CreatedBy}" Width="*"/>
+          </DataGrid.Columns>
+        </DataGrid>
+
+        <Border Grid.Row="4" Margin="0,10,0,0"
+                Padding="12" Background="#EAF3F3" CornerRadius="8">
+          <Grid ColumnDefinitions="130,10,130,10,*,10,Auto">
+            <NumericUpDown Minimum="0" Increment="10"
+                           Value="{Binding PaymentAmount}"/>
+            <DatePicker Grid.Column="2"
+                        SelectedDate="{Binding PaymentDate}"/>
+            <TextBox Grid.Column="4"
+                     Watermark="Zahlungsreferenz"
+                     Text="{Binding PaymentReference}"/>
+            <Button Grid.Column="6"
+                    Content="Kundenzahlung erfassen"
+                    Command="{Binding RegisterPaymentCommand}"/>
+          </Grid>
+        </Border>
+      </Grid>
+    </Grid>
+
+    <Border Grid.Row="2" Background="#EEF2F3" Padding="12,0">
+      <TextBlock VerticalAlignment="Center" Text="{Binding StatusText}"/>
+    </Border>
+  </Grid>
+</Window>

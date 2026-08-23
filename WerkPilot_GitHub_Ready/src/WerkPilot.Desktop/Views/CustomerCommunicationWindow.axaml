@@ -1,0 +1,157 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="WerkPilot.Desktop.Views.CustomerCommunicationWindow"
+        x:DataType="vm:CustomerCommunicationViewModel"
+        xmlns:vm="using:WerkPilot.Desktop.ViewModels"
+        Title="WerkPilot 0.12.24 RC – Kundenkommunikationsakte"
+        Width="1500" Height="900">
+  <Grid RowDefinitions="64,*,34">
+    <Border Background="#174F54">
+      <Grid ColumnDefinitions="*,340,12,Auto">
+        <TextBlock Margin="24,0"
+                   VerticalAlignment="Center"
+                   FontSize="24"
+                   FontWeight="Bold"
+                   Foreground="White"
+                   Text="Kundenkommunikationsakte"/>
+        <TextBox Grid.Column="1"
+                 Margin="0,12"
+                 Watermark="Kunde, Nummer oder E-Mail suchen"
+                 Text="{Binding SearchText}"/>
+        <Button Grid.Column="3"
+                Margin="0,12,18,12"
+                Content="Aktualisieren"
+                Command="{Binding RefreshCommand}"/>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="1"
+          Margin="22"
+          ColumnDefinitions="2*,18,5*">
+      <DataGrid ItemsSource="{Binding Customers}"
+                SelectedItem="{Binding SelectedCustomer}"
+                AutoGenerateColumns="False"
+                IsReadOnly="True">
+        <DataGrid.Columns>
+          <DataGridTextColumn Header="Kundennr."
+                              Binding="{Binding CustomerNumber}"
+                              Width="105"/>
+          <DataGridTextColumn Header="Kunde"
+                              Binding="{Binding CustomerName}"
+                              Width="2*"/>
+          <DataGridTextColumn Header="Letzter Kontakt"
+                              Binding="{Binding LastCommunicationAtUtc}"
+                              Width="145"/>
+          <DataGridTextColumn Header="Gesamt"
+                              Binding="{Binding TotalCount}"
+                              Width="65"/>
+          <DataGridTextColumn Header="Fehler"
+                              Binding="{Binding FailedCount}"
+                              Width="60"/>
+        </DataGrid.Columns>
+      </DataGrid>
+
+      <Grid Grid.Column="2"
+            RowDefinitions="Auto,Auto,*">
+        <TextBlock FontSize="20"
+                   FontWeight="SemiBold"
+                   Text="{Binding SelectedCustomer.CustomerName}"/>
+
+        <Grid Grid.Row="1"
+              Margin="0,10"
+              ColumnDefinitions="*,8,*,8,*,8,*,8,*">
+          <Border Padding="10"
+                  Background="#EAF3F3"
+                  CornerRadius="7">
+            <StackPanel>
+              <TextBlock Text="Gesamt"/>
+              <TextBlock FontSize="20"
+                         FontWeight="Bold"
+                         Text="{Binding SelectedCustomer.TotalCount}"/>
+            </StackPanel>
+          </Border>
+          <Border Grid.Column="2"
+                  Padding="10"
+                  Background="#F5F7F7"
+                  CornerRadius="7">
+            <StackPanel>
+              <TextBlock Text="Angebote"/>
+              <TextBlock FontSize="20"
+                         FontWeight="Bold"
+                         Text="{Binding SelectedCustomer.OfferCount}"/>
+            </StackPanel>
+          </Border>
+          <Border Grid.Column="4"
+                  Padding="10"
+                  Background="#F5F7F7"
+                  CornerRadius="7">
+            <StackPanel>
+              <TextBlock Text="Rechnungen"/>
+              <TextBlock FontSize="20"
+                         FontWeight="Bold"
+                         Text="{Binding SelectedCustomer.InvoiceCount}"/>
+            </StackPanel>
+          </Border>
+          <Border Grid.Column="6"
+                  Padding="10"
+                  Background="#F5F7F7"
+                  CornerRadius="7">
+            <StackPanel>
+              <TextBlock Text="Gutschriften"/>
+              <TextBlock FontSize="20"
+                         FontWeight="Bold"
+                         Text="{Binding SelectedCustomer.CreditNoteCount}"/>
+            </StackPanel>
+          </Border>
+          <Border Grid.Column="8"
+                  Padding="10"
+                  Background="#FFF4E5"
+                  CornerRadius="7">
+            <StackPanel>
+              <TextBlock Text="Mahnungen"/>
+              <TextBlock FontSize="20"
+                         FontWeight="Bold"
+                         Text="{Binding SelectedCustomer.DunningCount}"/>
+            </StackPanel>
+          </Border>
+        </Grid>
+
+        <DataGrid Grid.Row="2"
+                  ItemsSource="{Binding Timeline}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="Zeitpunkt"
+                                Binding="{Binding OccurredAtUtc}"
+                                Width="155"/>
+            <DataGridTextColumn Header="Art"
+                                Binding="{Binding TypeText}"
+                                Width="100"/>
+            <DataGridTextColumn Header="Beleg"
+                                Binding="{Binding DocumentNumber}"
+                                Width="125"/>
+            <DataGridTextColumn Header="Betreff / Titel"
+                                Binding="{Binding Title}"
+                                Width="2*"/>
+            <DataGridTextColumn Header="Empfänger"
+                                Binding="{Binding Recipient}"
+                                Width="180"/>
+            <DataGridTextColumn Header="Status"
+                                Binding="{Binding Status}"
+                                Width="85"/>
+            <DataGridTextColumn Header="Fehler"
+                                Binding="{Binding ErrorMessage}"
+                                Width="2*"/>
+          </DataGrid.Columns>
+        </DataGrid>
+      </Grid>
+    </Grid>
+
+    <Border Grid.Row="2"
+            Background="#EEF2F3"
+            Padding="12,0">
+      <TextBlock VerticalAlignment="Center"
+                 Text="{Binding StatusText}"/>
+    </Border>
+  </Grid>
+</Window>

@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\WerkPilot.Domain\WerkPilot.Domain.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,120 @@
+name: WerkPilot CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-test-db:
+    name: Build, Tests, PostgreSQL, EF
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: werkpilot
+          POSTGRES_PASSWORD: werkpilot_ci
+          POSTGRES_DB: werkpilot_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U werkpilot -d werkpilot_ci"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      WERKPILOT_CONNECTION_STRING: Host=localhost;Port=5432;Database=werkpilot_ci;Username=werkpilot;Password=werkpilot_ci
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore tools
+        run: dotnet tool restore
+
+      - name: Restore
+        run: dotnet restore WerkPilot.sln
+
+      - name: Build Release
+        run: dotnet build WerkPilot.sln -c Release --no-restore
+
+      - name: Unit tests
+        run: dotnet test tests/WerkPilot.UnitTests/WerkPilot.UnitTests.csproj -c Release --no-build --logger "trx;LogFileName=unit-tests.trx"
+
+      - name: Verify EF model
+        run: |
+          dotnet ef migrations has-pending-model-changes             --project src/WerkPilot.Infrastructure/WerkPilot.Infrastructure.csproj             --startup-project src/WerkPilot.Desktop/WerkPilot.Desktop.csproj             --context WerkPilotDbContext
+
+      - name: Apply EF migrations to clean PostgreSQL
+        run: |
+          dotnet ef database update             --project src/WerkPilot.Infrastructure/WerkPilot.Infrastructure.csproj             --startup-project src/WerkPilot.Desktop/WerkPilot.Desktop.csproj             --context WerkPilotDbContext
+
+      - name: Verify database tables
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+          TABLE_COUNT=$(PGPASSWORD=werkpilot_ci psql -h localhost -U werkpilot -d werkpilot_ci -t -A -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='public';")
+          echo "Public tables: $TABLE_COUNT"
+          test "$TABLE_COUNT" -gt 0
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: werkpilot-test-results
+          path: |
+            **/TestResults/**
+          if-no-files-found: ignore
+
+  windows-publish:
+    name: Windows x64 Publish
+    runs-on: windows-latest
+    needs: build-test-db
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore
+        run: dotnet restore WerkPilot.sln
+
+      - name: Publish Windows x64
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path artifacts/publish/win-x64 | Out-Null
+          dotnet publish src/WerkPilot.Desktop/WerkPilot.Desktop.csproj `
+            -c Release `
+            -r win-x64 `
+            --self-contained true `
+            -o artifacts/publish/win-x64
+
+      - name: Package release
+        shell: pwsh
+        run: |
+          $zip = "artifacts/WerkPilot-Windows-x64.zip"
+          if (Test-Path $zip) { Remove-Item $zip -Force }
+          Compress-Archive -Path "artifacts/publish/win-x64/*" -DestinationPath $zip -CompressionLevel Optimal
+
+      - name: Upload Windows product
+        uses: actions/upload-artifact@v4
+        with:
+          name: WerkPilot-Windows-x64
+          path: artifacts/WerkPilot-Windows-x64.zip

@@ -1,0 +1,112 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="WerkPilot.Desktop.Views.BasicWorkflowAuditWindow"
+        x:DataType="vm:BasicWorkflowAuditViewModel"
+        xmlns:vm="using:WerkPilot.Desktop.ViewModels"
+        Title="WerkPilot 0.12.24 RC – Basic-Prozessprüfung"
+        Width="1560"
+        Height="900">
+  <Grid RowDefinitions="64,Auto,3*,12,2*,34">
+    <Border Background="#174F54">
+      <Grid ColumnDefinitions="*,Auto,Auto">
+        <TextBlock Margin="24,0"
+                   VerticalAlignment="Center"
+                   FontSize="24"
+                   FontWeight="Bold"
+                   Foreground="White"
+                   Text="WerkPilot Basic – Geschäftsablauf prüfen"/>
+        <CheckBox Grid.Column="1"
+                  Margin="0,0,16,0"
+                  VerticalAlignment="Center"
+                  Foreground="White"
+                  Content="Nur Probleme"
+                  IsChecked="{Binding OnlyIssues}"/>
+        <Button Grid.Column="2"
+                Margin="0,12,18,12"
+                Content="Prüfen"
+                Command="{Binding RefreshCommand}"/>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="1"
+          Margin="22,16,22,0"
+          ColumnDefinitions="*,10,*,10,*,10,*,10,*">
+      <Border Padding="12" Background="#EAF3F3" CornerRadius="8">
+        <StackPanel>
+          <TextBlock Text="Kunden"/>
+          <TextBlock FontSize="24" FontWeight="Bold" Text="{Binding CustomerCount}"/>
+        </StackPanel>
+      </Border>
+      <Border Grid.Column="2" Padding="12" Background="#F5F7F7" CornerRadius="8">
+        <StackPanel>
+          <TextBlock Text="Angebote"/>
+          <TextBlock FontSize="24" FontWeight="Bold" Text="{Binding OfferCount}"/>
+        </StackPanel>
+      </Border>
+      <Border Grid.Column="4" Padding="12" Background="#EAF3F3" CornerRadius="8">
+        <StackPanel>
+          <TextBlock Text="Abgeschlossen"/>
+          <TextBlock FontSize="24" FontWeight="Bold" Text="{Binding CompletedCount}"/>
+        </StackPanel>
+      </Border>
+      <Border Grid.Column="6" Padding="12" Background="#FFF4E5" CornerRadius="8">
+        <StackPanel>
+          <TextBlock Text="Workflowprobleme"/>
+          <TextBlock FontSize="24" FontWeight="Bold" Text="{Binding IssueCount}"/>
+        </StackPanel>
+      </Border>
+      <Border Grid.Column="8" Padding="12" Background="#FCE8E6" CornerRadius="8">
+        <StackPanel>
+          <TextBlock Text="Verwaiste Bezüge"/>
+          <TextBlock FontSize="24" FontWeight="Bold" Text="{Binding OrphanCount}"/>
+        </StackPanel>
+      </Border>
+    </Grid>
+
+    <DataGrid Grid.Row="2"
+              Margin="22,16,22,0"
+              ItemsSource="{Binding Workflows}"
+              AutoGenerateColumns="False"
+              IsReadOnly="True">
+      <DataGrid.Columns>
+        <DataGridCheckBoxColumn Header="Problem" Binding="{Binding HasIssue}" Width="65"/>
+        <DataGridTextColumn Header="Angebot" Binding="{Binding OfferNumber}" Width="110"/>
+        <DataGridTextColumn Header="Kunde" Binding="{Binding CustomerName}" Width="180"/>
+        <DataGridTextColumn Header="Titel" Binding="{Binding Title}" Width="2*"/>
+        <DataGridCheckBoxColumn Header="Kalk." Binding="{Binding HasCalculation}" Width="60"/>
+        <DataGridTextColumn Header="Projekt" Binding="{Binding ProjectNumber}" Width="110"/>
+        <DataGridTextColumn Header="Rechnung" Binding="{Binding InvoiceNumber}" Width="115"/>
+        <DataGridTextColumn Header="Re.-Status" Binding="{Binding InvoiceStatus}" Width="95"/>
+        <DataGridCheckBoxColumn Header="Zahlung" Binding="{Binding HasPayment}" Width="65"/>
+        <DataGridCheckBoxColumn Header="Mahnung" Binding="{Binding HasDunning}" Width="65"/>
+        <DataGridTextColumn Header="Phase" Binding="{Binding Stage}" Width="135"/>
+        <DataGridTextColumn Header="Fortschritt %" Binding="{Binding CompletionPercent}" Width="90"/>
+        <DataGridTextColumn Header="Problem / Hinweis" Binding="{Binding IssueText}" Width="3*"/>
+      </DataGrid.Columns>
+    </DataGrid>
+
+    <Grid Grid.Row="4"
+          Margin="22,0,22,16"
+          RowDefinitions="Auto,*">
+      <TextBlock FontSize="17"
+                 FontWeight="SemiBold"
+                 Text="Verwaiste Referenzen"/>
+      <DataGrid Grid.Row="1"
+                Margin="0,8,0,0"
+                ItemsSource="{Binding Orphans}"
+                AutoGenerateColumns="False"
+                IsReadOnly="True">
+        <DataGrid.Columns>
+          <DataGridTextColumn Header="Typ" Binding="{Binding EntityType}" Width="100"/>
+          <DataGridTextColumn Header="Nummer" Binding="{Binding Number}" Width="120"/>
+          <DataGridTextColumn Header="Beschreibung" Binding="{Binding Description}" Width="2*"/>
+          <DataGridTextColumn Header="Problem" Binding="{Binding Problem}" Width="3*"/>
+        </DataGrid.Columns>
+      </DataGrid>
+    </Grid>
+
+    <Border Grid.Row="5" Background="#EEF2F3" Padding="12,0">
+      <TextBlock VerticalAlignment="Center" Text="{Binding StatusText}"/>
+    </Border>
+  </Grid>
+</Window>

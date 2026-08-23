@@ -1,0 +1,81 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="WerkPilot.Desktop.Views.TeamWorkWindow"
+        x:DataType="vm:TeamWorkViewModel"
+        xmlns:vm="using:WerkPilot.Desktop.ViewModels"
+        Title="WerkPilot 0.12.24 RC – Team-Arbeit"
+        Width="1500" Height="900">
+  <Grid RowDefinitions="64,Auto,*,34">
+    <Border Background="#174F54">
+      <Grid ColumnDefinitions="*,Auto">
+        <TextBlock Margin="24,0" VerticalAlignment="Center"
+                   FontSize="24" FontWeight="Bold" Foreground="White"
+                   Text="Team-Arbeit und Auslastung"/>
+        <Button Grid.Column="1" Margin="0,12,18,12"
+                Content="Aktualisieren" Command="{Binding RefreshCommand}"/>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="1" Margin="22,18,22,0"
+          ColumnDefinitions="*,10,*,10,*,10,*,10,*">
+      <Border Padding="12" Background="#EAF3F3" CornerRadius="8">
+        <StackPanel><TextBlock Text="Aktive Benutzer"/><TextBlock FontSize="24" FontWeight="Bold" Text="{Binding ActiveUserCount}"/></StackPanel>
+      </Border>
+      <Border Grid.Column="2" Padding="12" Background="#F5F7F7" CornerRadius="8">
+        <StackPanel><TextBlock Text="Offene Aufgaben"/><TextBlock FontSize="24" FontWeight="Bold" Text="{Binding OpenCount}"/></StackPanel>
+      </Border>
+      <Border Grid.Column="4" Padding="12" Background="#FFF4E5" CornerRadius="8">
+        <StackPanel><TextBlock Text="Heute fällig"/><TextBlock FontSize="24" FontWeight="Bold" Text="{Binding DueTodayCount}"/></StackPanel>
+      </Border>
+      <Border Grid.Column="6" Padding="12" Background="#FCE8E6" CornerRadius="8">
+        <StackPanel><TextBlock Text="Überfällig"/><TextBlock FontSize="24" FontWeight="Bold" Text="{Binding OverdueCount}"/></StackPanel>
+      </Border>
+      <Border Grid.Column="8" Padding="12" Background="#FCE8E6" CornerRadius="8">
+        <StackPanel><TextBlock Text="Dringend"/><TextBlock FontSize="24" FontWeight="Bold" Text="{Binding UrgentCount}"/></StackPanel>
+      </Border>
+    </Grid>
+
+    <Grid Grid.Row="2" Margin="22,16,22,18" ColumnDefinitions="2*,18,5*">
+      <DataGrid ItemsSource="{Binding Users}"
+                SelectedItem="{Binding SelectedUser}"
+                AutoGenerateColumns="False" IsReadOnly="True">
+        <DataGrid.Columns>
+          <DataGridTextColumn Header="Mitarbeiter" Binding="{Binding DisplayName}" Width="2*"/>
+          <DataGridTextColumn Header="Rolle" Binding="{Binding Role}" Width="90"/>
+          <DataGridTextColumn Header="Offen" Binding="{Binding OpenCount}" Width="55"/>
+          <DataGridTextColumn Header="Heute" Binding="{Binding DueTodayCount}" Width="55"/>
+          <DataGridTextColumn Header="Überfällig" Binding="{Binding OverdueCount}" Width="70"/>
+          <DataGridTextColumn Header="Dringend" Binding="{Binding UrgentCount}" Width="65"/>
+        </DataGrid.Columns>
+      </DataGrid>
+
+      <Grid Grid.Column="2" RowDefinitions="Auto,*">
+        <Grid ColumnDefinitions="*,Auto,Auto">
+          <TextBlock FontSize="20" FontWeight="SemiBold"
+                     Text="{Binding SelectedUser.DisplayName}"/>
+          <TextBlock Grid.Column="1" Margin="10,0"
+                     Text="{Binding SelectedUser.CustomerFollowUpCount, StringFormat='Kunden: {0}'}"/>
+          <TextBlock Grid.Column="2"
+                     Text="{Binding SelectedUser.ProjectTaskCount, StringFormat='Projekte: {0}'}"/>
+        </Grid>
+        <DataGrid Grid.Row="1" Margin="0,10,0,0"
+                  ItemsSource="{Binding Items}"
+                  AutoGenerateColumns="False" IsReadOnly="True">
+          <DataGrid.Columns>
+            <DataGridCheckBoxColumn Header="Überfällig" Binding="{Binding IsOverdue}" Width="75"/>
+            <DataGridTextColumn Header="Art" Binding="{Binding TypeText}" Width="110"/>
+            <DataGridTextColumn Header="Referenz" Binding="{Binding Reference}" Width="115"/>
+            <DataGridTextColumn Header="Kontext" Binding="{Binding Context}" Width="2*"/>
+            <DataGridTextColumn Header="Aufgabe" Binding="{Binding Title}" Width="3*"/>
+            <DataGridTextColumn Header="Prio" Binding="{Binding Priority}" Width="75"/>
+            <DataGridTextColumn Header="Fällig" Binding="{Binding DueAtUtc}" Width="145"/>
+          </DataGrid.Columns>
+        </DataGrid>
+      </Grid>
+    </Grid>
+
+    <Border Grid.Row="3" Background="#EEF2F3" Padding="12,0">
+      <TextBlock VerticalAlignment="Center" Text="{Binding StatusText}"/>
+    </Border>
+  </Grid>
+</Window>
