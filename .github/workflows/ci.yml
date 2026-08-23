@@ -216,6 +216,11 @@ jobs:
           3. WerkPilot öffnet sich automatisch.
 
           Die lokale PostgreSQL-Datenbank wird automatisch gestartet.
+
+          STARTDIAGNOSE
+          Falls WerkPilot kein Fenster öffnet, entsteht im selben Ordner automatisch:
+          WerkPilot-Startdiagnose.txt
+          Diese Datei enthält den tatsächlichen Startfehler.
           '@ | Set-Content "artifacts/publish/win-x64/START_HIER.txt" -Encoding utf8
 
       - name: Package release
