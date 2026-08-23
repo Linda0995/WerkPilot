@@ -130,6 +130,15 @@ jobs:
           Remove-Item "$migrationDir/*.cs" -Force
           Copy-Item "artifacts/ci-baseline/*.cs" $migrationDir -Force
 
+
+      - name: Verify release configuration
+        shell: pwsh
+        run: |
+          $config = Get-Content "src/WerkPilot.Desktop/appsettings.json" -Raw | ConvertFrom-Json
+          if ([string]::IsNullOrWhiteSpace($config.ConnectionStrings.WerkPilot)) {
+            throw "Release ConnectionStrings:WerkPilot ist leer."
+          }
+
       - name: Restore Windows Desktop
         run: dotnet restore src/WerkPilot.Desktop/WerkPilot.Desktop.csproj -r win-x64
 
@@ -146,6 +155,39 @@ jobs:
             --self-contained true `
             --no-restore `
             -o artifacts/publish/win-x64
+
+      - name: Prepare runnable Windows product
+        shell: pwsh
+        run: |
+          Copy-Item "deploy/docker-compose.yml" "artifacts/publish/win-x64/docker-compose.yml" -Force
+
+          @'
+          @echo off
+          cd /d "%~dp0"
+          echo Starte WerkPilot-Datenbank...
+          docker compose -f docker-compose.yml up -d
+          if errorlevel 1 (
+            echo.
+            echo Docker konnte nicht gestartet werden.
+            echo Bitte Docker Desktop starten und diese Datei erneut doppelklicken.
+            pause
+            exit /b 1
+          )
+          echo Warte kurz auf PostgreSQL...
+          timeout /t 5 /nobreak >nul
+          echo Starte WerkPilot...
+          start "" "WerkPilot.Desktop.exe"
+          '@ | Set-Content "artifacts/publish/win-x64/START_WERKPILOT.cmd" -Encoding ascii
+
+          @'
+          WERKPILOT STARTEN
+
+          1. Docker Desktop starten.
+          2. START_WERKPILOT.cmd doppelklicken.
+          3. WerkPilot öffnet sich automatisch.
+
+          Die lokale PostgreSQL-Datenbank wird automatisch gestartet.
+          '@ | Set-Content "artifacts/publish/win-x64/START_HIER.txt" -Encoding utf8
 
       - name: Package release
         shell: pwsh
