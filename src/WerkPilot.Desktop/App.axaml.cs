@@ -179,8 +179,7 @@ public partial class App : Avalonia.Application
 
                 changeViewModel.PasswordChanged += (_, _) =>
                 {
-                    changeWindow.Close();
-                    ShowMainWindow(desktop);
+                    ShowMainWindow(desktop, changeWindow);
                 };
 
                 desktop.MainWindow = changeWindow;
@@ -189,8 +188,7 @@ public partial class App : Avalonia.Application
                 return;
             }
 
-            ShowMainWindow(desktop);
-            loginWindow.Close();
+            ShowMainWindow(desktop, loginWindow);
         };
 
         desktop.MainWindow = loginWindow;
@@ -202,7 +200,9 @@ public partial class App : Avalonia.Application
             previousWindow.Close();
     }
 
-    private void ShowMainWindow(IClassicDesktopStyleApplicationLifetime desktop)
+    private void ShowMainWindow(
+        IClassicDesktopStyleApplicationLifetime desktop,
+        Avalonia.Controls.Window? previousWindow = null)
     {
         if (_host is null)
             return;
@@ -571,6 +571,9 @@ public partial class App : Avalonia.Application
 
         desktop.MainWindow = mainWindow;
         mainWindow.Show();
+
+        if (previousWindow is not null && !ReferenceEquals(previousWindow, mainWindow))
+            previousWindow.Close();
     }
 
     private static IHost CreateHost()
