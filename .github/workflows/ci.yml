@@ -164,17 +164,46 @@ jobs:
           @'
           @echo off
           cd /d "%~dp0"
+
+          set WERKPILOT_ADMIN_INITIAL_PASSWORD=WerkPilot!2026Start
+          set WERKPILOT_SEED_DEMO_DATA=true
+          set WERKPILOT_CONNECTION_STRING=Host=localhost;Port=5432;Database=werkpilot;Username=werkpilot;Password=werkpilot_dev
+
           echo Starte WerkPilot-Datenbank...
-          docker compose -f docker-compose.yml up -d
-          if errorlevel 1 (
+
+          docker inspect werkpilot-postgres >nul 2>&1
+          if %errorlevel%==0 (
+            docker start werkpilot-postgres >nul 2>&1
+          ) else (
+            docker compose -f docker-compose.yml up -d
+            if errorlevel 1 (
+              echo.
+              echo Docker konnte die WerkPilot-Datenbank nicht starten.
+              echo Bitte Docker Desktop starten und diese Datei erneut doppelklicken.
+              pause
+              exit /b 1
+            )
+          )
+
+          echo Warte auf PostgreSQL...
+          set READY=0
+          for /L %%i in (1,1,30) do (
+            docker exec werkpilot-postgres pg_isready -U werkpilot -d werkpilot >nul 2>&1
+            if not errorlevel 1 (
+              set READY=1
+              goto :dbready
+            )
+            timeout /t 2 /nobreak >nul
+          )
+
+          :dbready
+          if "%READY%"=="0" (
             echo.
-            echo Docker konnte nicht gestartet werden.
-            echo Bitte Docker Desktop starten und diese Datei erneut doppelklicken.
+            echo PostgreSQL wurde nicht rechtzeitig bereit.
             pause
             exit /b 1
           )
-          echo Warte kurz auf PostgreSQL...
-          timeout /t 5 /nobreak >nul
+
           echo Starte WerkPilot...
           start "" "WerkPilot.Desktop.exe"
           '@ | Set-Content "artifacts/publish/win-x64/START_WERKPILOT.cmd" -Encoding ascii
