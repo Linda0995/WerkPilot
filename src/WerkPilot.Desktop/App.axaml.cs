@@ -81,18 +81,21 @@ public partial class App : Avalonia.Application
             return;
         }
 
-        // Always create a visible window first. This prevents a startup path
-        // where the process stays alive without ever showing UI.
-        var bootstrapWindow = new MainWindow
+        // Create a plain visible Avalonia window first. It deliberately has
+        // no application services or view model dependencies.
+        var bootstrapWindow = new Avalonia.Controls.Window
         {
-            DataContext = new MainWindowViewModel(
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                "WerkPilot wird gestartet ...")
+            Title = "WerkPilot",
+            Width = 520,
+            Height = 220,
+            WindowStartupLocation = Avalonia.Controls.WindowStartupLocation.CenterScreen,
+            Content = new Avalonia.Controls.TextBlock
+            {
+                Text = "WerkPilot wird gestartet ...",
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                FontSize = 22
+            }
         };
 
         desktop.MainWindow = bootstrapWindow;
@@ -105,7 +108,7 @@ public partial class App : Avalonia.Application
 
     private async Task InitializeApplicationAsync(
         IClassicDesktopStyleApplicationLifetime desktop,
-        MainWindow bootstrapWindow)
+        Avalonia.Controls.Window bootstrapWindow)
     {
         try
         {
@@ -130,22 +133,14 @@ public partial class App : Avalonia.Application
         {
             Log.Fatal(exception, "WerkPilot konnte nicht vollständig initialisiert werden.");
 
-            try
+            bootstrapWindow.Title = "WerkPilot – Startfehler";
+            bootstrapWindow.Content = new Avalonia.Controls.TextBlock
             {
-                bootstrapWindow.DataContext = new MainWindowViewModel(
-                    _host?.Services.GetService<CustomerService>(),
-                    _host?.Services.GetService<AuthenticationService>(),
-                    _host?.Services.GetService<AuthorizationService>(),
-                    _host?.Services.GetService<SessionContext>(),
-                    _host?.Services.GetService<DashboardService>(),
-                    _host?.Services.GetService<NotificationService>(),
-                    UiErrorFormatter.Startup(exception, "Start"));
-            }
-            catch
-            {
-                // Keep the already visible bootstrap window alive even if
-                // dependency resolution also fails.
-            }
+                Text = UiErrorFormatter.Startup(exception, "Start"),
+                TextWrapping = Avalonia.Media.TextWrapping.Wrap,
+                Margin = new Avalonia.Thickness(24),
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center
+            };
         }
     }
 
