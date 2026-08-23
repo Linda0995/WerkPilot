@@ -134,12 +134,18 @@ public partial class App : Avalonia.Application
             Log.Fatal(exception, "WerkPilot konnte nicht vollständig initialisiert werden.");
 
             bootstrapWindow.Title = "WerkPilot – Startfehler";
-            bootstrapWindow.Content = new Avalonia.Controls.TextBlock
+            bootstrapWindow.Width = 900;
+            bootstrapWindow.Height = 600;
+            bootstrapWindow.Content = new Avalonia.Controls.ScrollViewer
             {
-                Text = UiErrorFormatter.Startup(exception, "Start"),
-                TextWrapping = Avalonia.Media.TextWrapping.Wrap,
-                Margin = new Avalonia.Thickness(24),
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center
+                Content = new Avalonia.Controls.TextBlock
+                {
+                    Text =
+                        "WerkPilot konnte nicht gestartet werden.\n\n"
+                        + exception.ToString(),
+                    TextWrapping = Avalonia.Media.TextWrapping.Wrap,
+                    Margin = new Avalonia.Thickness(24)
+                }
             };
         }
     }
