@@ -23,6 +23,7 @@ internal static class Program
                 + $"Runtime: {Environment.Version}{Environment.NewLine}"
                 + $"Status: Programmstart erreicht.{Environment.NewLine}");
 
+            File.AppendAllText(DiagnosticFile, $"Status: Avalonia Start wird aufgerufen.{Environment.NewLine}");
             BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
 
             File.AppendAllText(

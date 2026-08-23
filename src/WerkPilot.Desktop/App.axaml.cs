@@ -73,46 +73,80 @@ public partial class App : Avalonia.Application
         AvaloniaXamlLoader.Load(this);
     }
 
-    public override async void OnFrameworkInitializationCompleted()
+    public override void OnFrameworkInitializationCompleted()
     {
-        _host = CreateHost();
-        await _host.StartAsync();
-
-        try
+        if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
         {
-            using var scope = _host.Services.CreateScope();
-            var db = scope.ServiceProvider.GetRequiredService<WerkPilotDbContext>();
-            await DbInitializer.InitializeAsync(db);
-        }
-        catch (Exception exception)
-        {
-            Log.Fatal(exception, "WerkPilot konnte die Datenbank nicht initialisieren.");
-            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime failedDesktop)
-            {
-                failedDesktop.MainWindow = new MainWindow
-                {
-                    DataContext = new MainWindowViewModel(
-                        _host.Services.GetRequiredService<CustomerService>(),
-                        _host.Services.GetRequiredService<AuthenticationService>(),
-                        _host.Services.GetRequiredService<AuthorizationService>(),
-                        _host.Services.GetRequiredService<SessionContext>(),
-                        _host.Services.GetRequiredService<DashboardService>(),
-                        _host.Services.GetRequiredService<NotificationService>(),
-                        UiErrorFormatter.Startup(exception, "Datenbank"))
-                };
-            }
-
             base.OnFrameworkInitializationCompleted();
             return;
         }
 
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        // Always create a visible window first. This prevents a startup path
+        // where the process stays alive without ever showing UI.
+        var bootstrapWindow = new MainWindow
         {
-            ShowLogin(desktop);
-            desktop.Exit += async (_, _) => await _host.StopAsync();
-        }
+            DataContext = new MainWindowViewModel(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                "WerkPilot wird gestartet ...")
+        };
+
+        desktop.MainWindow = bootstrapWindow;
+        bootstrapWindow.Show();
 
         base.OnFrameworkInitializationCompleted();
+
+        _ = InitializeApplicationAsync(desktop, bootstrapWindow);
+    }
+
+    private async Task InitializeApplicationAsync(
+        IClassicDesktopStyleApplicationLifetime desktop,
+        MainWindow bootstrapWindow)
+    {
+        try
+        {
+            _host = CreateHost();
+            await _host.StartAsync();
+
+            using var scope = _host.Services.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<WerkPilotDbContext>();
+            await DbInitializer.InitializeAsync(db);
+
+            // Bootstrap succeeded: close placeholder and show login.
+            bootstrapWindow.Close();
+            ShowLogin(desktop);
+
+            desktop.Exit += async (_, _) =>
+            {
+                if (_host is not null)
+                    await _host.StopAsync();
+            };
+        }
+        catch (Exception exception)
+        {
+            Log.Fatal(exception, "WerkPilot konnte nicht vollständig initialisiert werden.");
+
+            try
+            {
+                bootstrapWindow.DataContext = new MainWindowViewModel(
+                    _host?.Services.GetService<CustomerService>(),
+                    _host?.Services.GetService<AuthenticationService>(),
+                    _host?.Services.GetService<AuthorizationService>(),
+                    _host?.Services.GetService<SessionContext>(),
+                    _host?.Services.GetService<DashboardService>(),
+                    _host?.Services.GetService<NotificationService>(),
+                    UiErrorFormatter.Startup(exception, "Start"));
+            }
+            catch
+            {
+                // Keep the already visible bootstrap window alive even if
+                // dependency resolution also fails.
+            }
+        }
     }
 
 
