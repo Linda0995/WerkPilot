@@ -130,11 +130,11 @@ jobs:
           Remove-Item "$migrationDir/*.cs" -Force
           Copy-Item "artifacts/ci-baseline/*.cs" $migrationDir -Force
 
-      - name: Restore
-        run: dotnet restore WerkPilot.sln
+      - name: Restore Windows Desktop
+        run: dotnet restore src/WerkPilot.Desktop/WerkPilot.Desktop.csproj -r win-x64
 
-      - name: Build Release
-        run: dotnet build WerkPilot.sln -c Release --no-restore
+      - name: Build Windows Desktop
+        run: dotnet build src/WerkPilot.Desktop/WerkPilot.Desktop.csproj -c Release -r win-x64 --no-restore
 
       - name: Publish Windows x64
         shell: pwsh
