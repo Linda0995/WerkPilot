@@ -14,8 +14,9 @@
         <TextBlock Text="Benutzername"/>
         <TextBox Text="{Binding UserName}"/>
         <TextBlock Text="Passwort"/>
-        <TextBox Text="{Binding Password}" PasswordChar="●"/>
-        <Button Height="42" Content="Anmelden" Command="{Binding LoginCommand}"/>
+        <TextBox x:Name="PasswordBox" Text="{Binding Password}" PasswordChar="●"/>
+        <CheckBox Content="Kennwort anzeigen" Checked="ShowPassword_Checked" Unchecked="ShowPassword_Unchecked"/>
+        <Button Height="42" Content="Anmelden" Command="{Binding LoginCommand}" IsDefault="True"/>
         <TextBlock TextWrapping="Wrap" Foreground="#5A6668" Text="{Binding StatusText}"/>
         <Border Padding="10" Background="#FFF4D6" CornerRadius="6">
           <TextBlock TextWrapping="Wrap" Text="Erststart: Benutzer admin. Das temporäre Kennwort wird bei der Installation über WERKPILOT_ADMIN_INITIAL_PASSWORD festgelegt und muss nach dem ersten Login geändert werden."/>

@@ -57,7 +57,7 @@ public static partial class CustomerValidator
             null,
             null,
             null,
-            Domain.Customers.TaxProfile.Domestic,
+            Domain.Customers.TaxProfile.Inland,
             null);
 
         return Validate(request);

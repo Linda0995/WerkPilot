@@ -25,7 +25,7 @@ public sealed class Customer360DtoTests
             "office@muster.at",
             null,
             null,
-            TaxProfile.Domestic,
+            TaxProfile.Inland,
             null,
             false,
             false,
