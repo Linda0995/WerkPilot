@@ -1,2 +1,10 @@
 namespace WerkPilot.Domain.Customers;
-public enum TaxProfile { Domestic = 1, IntraCommunitySupply = 2, ReverseCharge = 3 }
+
+public enum TaxProfile
+{
+    Inland = 1,
+    EuUnternehmenMitUid = 2,
+    ReverseCharge = 3,
+    EuOhneUid = 4,
+    Drittland = 5
+}

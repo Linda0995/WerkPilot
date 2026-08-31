@@ -3,7 +3,7 @@
         x:Class="WerkPilot.Desktop.Views.Customer360Window"
         x:DataType="vm:Customer360ViewModel"
         xmlns:vm="using:WerkPilot.Desktop.ViewModels"
-        Title="WerkPilot 0.12.24 RC – Kundenübersicht 360°"
+        Title="WerkPilot 0.13.2 – Kundenübersicht 360°"
         Width="1480" Height="900"
         MinWidth="1180" MinHeight="720">
   <Grid RowDefinitions="64,*,34">

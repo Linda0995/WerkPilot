@@ -3,7 +3,7 @@
         x:Class="WerkPilot.Desktop.Views.ProjectsWindow"
         x:DataType="vm:ProjectsViewModel"
         xmlns:vm="using:WerkPilot.Desktop.ViewModels"
-        Title="WerkPilot 0.12.24 RC – Projekte"
+        Title="WerkPilot 0.13.2 – Projekte"
         Width="1450" Height="880"
         MinWidth="1120" MinHeight="700">
   <Grid RowDefinitions="64,*,34">

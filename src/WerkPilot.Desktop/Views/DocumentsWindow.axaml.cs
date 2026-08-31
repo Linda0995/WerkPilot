@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
+using Avalonia.Interactivity;
 using WerkPilot.Desktop.ViewModels;
 
 namespace WerkPilot.Desktop.Views;
@@ -23,6 +24,45 @@ public partial class DocumentsWindow : Window
 
         if (_subscribedViewModel is not null)
             _subscribedViewModel.SelectFilesRequested += OnSelectFilesRequested;
+    }
+
+
+    private async void ImportPathBox_GotFocus(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        if (string.IsNullOrWhiteSpace(_subscribedViewModel?.ImportPath))
+            await SelectManualImportPathAsync();
+    }
+
+    private async void BrowseImportPath_Click(object? sender, RoutedEventArgs e)
+    {
+        await SelectManualImportPathAsync();
+    }
+
+    private async Task SelectManualImportPathAsync()
+    {
+        if (_subscribedViewModel is null || !StorageProvider.CanOpen)
+            return;
+
+        var files = await StorageProvider.OpenFilePickerAsync(
+            new FilePickerOpenOptions
+            {
+                Title = "Beleg oder Datei auswählen",
+                AllowMultiple = false,
+                FileTypeFilter =
+                [
+                    FilePickerFileTypes.Pdf,
+                    FilePickerFileTypes.ImageAll,
+                    FilePickerFileTypes.All
+                ]
+            });
+
+        var path = files.FirstOrDefault()?.TryGetLocalPath();
+        if (string.IsNullOrWhiteSpace(path))
+            return;
+
+        _subscribedViewModel.ImportPath = path;
+        if (string.IsNullOrWhiteSpace(_subscribedViewModel.ImportDisplayName))
+            _subscribedViewModel.ImportDisplayName = Path.GetFileName(path);
     }
 
     private async void OnSelectFilesRequested(object? sender, EventArgs eventArgs)

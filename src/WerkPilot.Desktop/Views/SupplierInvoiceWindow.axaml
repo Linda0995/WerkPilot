@@ -3,7 +3,7 @@
         x:Class="WerkPilot.Desktop.Views.SupplierInvoiceWindow"
         x:DataType="vm:SupplierInvoiceViewModel"
         xmlns:vm="using:WerkPilot.Desktop.ViewModels"
-        Title="WerkPilot 0.12.24 RC – Zahlungs- und Liquiditätsmanagement"
+        Title="WerkPilot 0.13.2 – Zahlungs- und Liquiditätsmanagement"
         Width="1500" Height="920"
         MinWidth="1200" MinHeight="740">
   <Grid RowDefinitions="64,*,34">

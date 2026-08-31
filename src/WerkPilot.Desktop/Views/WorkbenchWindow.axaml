@@ -3,7 +3,7 @@
         x:Class="WerkPilot.Desktop.Views.WorkbenchWindow"
         x:DataType="vm:WorkbenchViewModel"
         xmlns:vm="using:WerkPilot.Desktop.ViewModels"
-        Title="WerkPilot 0.12.24 RC – Schnellzugriff"
+        Title="WerkPilot 0.13.2 – Schnellzugriff"
         Width="1050" Height="720">
   <Grid RowDefinitions="64,*,34">
     <Border Background="#174F54">

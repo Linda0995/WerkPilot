@@ -3,7 +3,7 @@
         x:Class="WerkPilot.Desktop.Views.FirstRunReadinessWindow"
         x:DataType="vm:FirstRunReadinessViewModel"
         xmlns:vm="using:WerkPilot.Desktop.ViewModels"
-        Title="WerkPilot 0.12.24 RC – Erststart-Prüfung"
+        Title="WerkPilot 0.13.2 – Erststart-Prüfung"
         Width="820"
         Height="620">
   <Grid RowDefinitions="64,*,34">

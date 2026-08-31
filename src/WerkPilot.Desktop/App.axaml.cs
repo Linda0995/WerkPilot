@@ -211,7 +211,7 @@ public partial class App : Avalonia.Application
         var mainWindow = new MainWindow
         {
             DataContext = viewModel,
-            Title = $"WerkPilot 0.12.24 RC – {viewModel.SignedInUser}"
+            Title = $"WerkPilot 0.13.0 – {viewModel.SignedInUser}"
         };
 
         viewModel.LogoutRequested += (_, _) =>
@@ -226,7 +226,7 @@ public partial class App : Avalonia.Application
             {
                 DataContext = _host.Services.GetRequiredService<OffersViewModel>()
             };
-            offersWindow.Show(mainWindow);
+            mainWindow.ShowEmbedded(offersWindow, "Angebote");
         };
 
         viewModel.OpenCompanySettingsRequested += (_, _) =>
@@ -235,7 +235,7 @@ public partial class App : Avalonia.Application
             {
                 DataContext = _host.Services.GetRequiredService<CompanySettingsViewModel>()
             };
-            settingsWindow.Show(mainWindow);
+            mainWindow.ShowEmbedded(settingsWindow, "Firmenstammdaten");
         };
 
         viewModel.OpenCalculationRequested += (_, _) =>
@@ -244,7 +244,7 @@ public partial class App : Avalonia.Application
             {
                 DataContext = _host.Services.GetRequiredService<CalculationViewModel>()
             };
-            calculationWindow.Show(mainWindow);
+            mainWindow.ShowEmbedded(calculationWindow, "Kalkulation");
         };
 
         viewModel.OpenMaterialRequested += (_, _) =>
@@ -253,7 +253,7 @@ public partial class App : Avalonia.Application
             {
                 DataContext = _host.Services.GetRequiredService<MaterialViewModel>()
             };
-            materialWindow.Show(mainWindow);
+            mainWindow.ShowEmbedded(materialWindow, "Material & Preise");
         };
 
         viewModel.OpenPurchaseListsRequested += (_, _) =>
@@ -262,7 +262,7 @@ public partial class App : Avalonia.Application
             {
                 DataContext = _host.Services.GetRequiredService<PurchaseListsViewModel>()
             };
-            purchaseListsWindow.Show(mainWindow);
+            mainWindow.ShowEmbedded(purchaseListsWindow, "Bestelllisten");
         };
 
         viewModel.OpenProjectsRequested += (_, _) =>
@@ -271,7 +271,7 @@ public partial class App : Avalonia.Application
             {
                 DataContext = _host.Services.GetRequiredService<ProjectsViewModel>()
             };
-            projectsWindow.Show(mainWindow);
+            mainWindow.ShowEmbedded(projectsWindow, "Projekte");
         };
 
         viewModel.OpenDocumentsRequested += (_, _) =>
@@ -280,7 +280,7 @@ public partial class App : Avalonia.Application
             {
                 DataContext = _host.Services.GetRequiredService<DocumentsViewModel>()
             };
-            documentsWindow.Show(mainWindow);
+            mainWindow.ShowEmbedded(documentsWindow, "Belege & Dokumente");
         };
 
         viewModel.OpenNotificationsRequested += (_, _) =>
@@ -289,45 +289,40 @@ public partial class App : Avalonia.Application
             {
                 DataContext = _host.Services.GetRequiredService<NotificationsViewModel>()
             };
-            window.Show(mainWindow);
+            mainWindow.ShowEmbedded(window, "Benachrichtigungen");
         };
 
 
 
-        viewModel.OpenGlobalSearchRequested += (_, _) =>
+        var globalSearchViewModel = _host.Services.GetRequiredService<GlobalSearchViewModel>();
+        mainWindow.ConfigureGlobalSearch(globalSearchViewModel);
+
+        globalSearchViewModel.ResultOpenRequested += async (_, result) =>
         {
-            var searchViewModel = _host.Services.GetRequiredService<GlobalSearchViewModel>();
-            var searchWindow = new GlobalSearchWindow { DataContext = searchViewModel };
-
-            searchViewModel.ResultOpenRequested += async (_, result) =>
+            await _host.Services.GetRequiredService<WorkbenchService>().RecordOpenAsync(result);
+            switch (result.Type)
             {
-                await _host.Services.GetRequiredService<WorkbenchService>().RecordOpenAsync(result);
-                switch (result.Type)
-                {
-                    case SearchResultType.Customer:
-                        var customer = viewModel.Customers.FirstOrDefault(x => x.Id == result.EntityId);
-                        if (customer is not null)
-                            viewModel.SelectedCustomer = customer;
-                        searchWindow.Close();
-                        break;
-                    case SearchResultType.Offer:
-                        viewModel.OpenOffersCommand.Execute(null);
-                        break;
-                    case SearchResultType.Project:
-                        viewModel.OpenProjectsCommand.Execute(null);
-                        break;
-                    case SearchResultType.Material:
-                        viewModel.OpenMaterialCommand.Execute(null);
-                        break;
-                    case SearchResultType.Document:
-                        viewModel.OpenDocumentsCommand.Execute(null);
-                        break;
-                }
-            };
-
-            searchWindow.Show(mainWindow);
+                case SearchResultType.Customer:
+                    var customer = viewModel.Customers.FirstOrDefault(x => x.Id == result.EntityId);
+                    if (customer is not null)
+                        viewModel.SelectedCustomer = customer;
+                    break;
+                case SearchResultType.Offer:
+                    viewModel.OpenOffersCommand.Execute(null);
+                    break;
+                case SearchResultType.Project:
+                    viewModel.OpenProjectsCommand.Execute(null);
+                    break;
+                case SearchResultType.Material:
+                    viewModel.OpenMaterialCommand.Execute(null);
+                    break;
+                case SearchResultType.Document:
+                    viewModel.OpenDocumentsCommand.Execute(null);
+                    break;
+            }
         };
 
+        viewModel.OpenGlobalSearchRequested += (_, _) => mainWindow.FocusGlobalSearch();
 
         viewModel.OpenWorkbenchRequested += (_, _) =>
         {
@@ -359,7 +354,7 @@ public partial class App : Avalonia.Application
                 }
             };
 
-            window.Show(mainWindow);
+            mainWindow.ShowEmbedded(window, "Schnellzugriff");
         };
 
         viewModel.OpenCrmJournalRequested += (_, _) =>
@@ -368,7 +363,7 @@ public partial class App : Avalonia.Application
             {
                 DataContext = _host.Services.GetRequiredService<CrmJournalViewModel>()
             };
-            window.Show(mainWindow);
+            mainWindow.ShowEmbedded(window, "Kundenverlauf");
         };
 
         viewModel.OpenCustomer360Requested += (_, _) =>
@@ -377,7 +372,7 @@ public partial class App : Avalonia.Application
             {
                 DataContext = _host.Services.GetRequiredService<Customer360ViewModel>()
             };
-            window.Show(mainWindow);
+            mainWindow.ShowEmbedded(window, "Kundenübersicht 360°");
         };
 
         viewModel.OpenTimeTrackingRequested += (_, _) =>
@@ -395,7 +390,7 @@ public partial class App : Avalonia.Application
             {
                 DataContext = _host.Services.GetRequiredService<ProjectCostControllingViewModel>()
             };
-            window.Show(mainWindow);
+            mainWindow.ShowEmbedded(window, "Nachkalkulation");
         };
 
         viewModel.OpenInventoryRequested += (_, _) =>
@@ -404,7 +399,7 @@ public partial class App : Avalonia.Application
             {
                 DataContext = _host.Services.GetRequiredService<InventoryViewModel>()
             };
-            window.Show(mainWindow);
+            mainWindow.ShowEmbedded(window, "Lager & Inventur");
         };
 
         viewModel.OpenInventoryCountRequested += (_, _) =>
@@ -413,7 +408,7 @@ public partial class App : Avalonia.Application
             {
                 DataContext = _host.Services.GetRequiredService<InventoryCountViewModel>()
             };
-            window.Show(mainWindow);
+            mainWindow.ShowEmbedded(window, "Inventur");
         };
 
         viewModel.OpenSupplierOrdersRequested += (_, _) =>
@@ -422,7 +417,7 @@ public partial class App : Avalonia.Application
             {
                 DataContext = _host.Services.GetRequiredService<SupplierOrderViewModel>()
             };
-            window.Show(mainWindow);
+            mainWindow.ShowEmbedded(window, "Lieferantenbestellungen");
         };
 
         viewModel.OpenSupplierInvoicesRequested += (_, _) =>
@@ -431,7 +426,7 @@ public partial class App : Avalonia.Application
             {
                 DataContext = _host.Services.GetRequiredService<SupplierInvoiceViewModel>()
             };
-            window.Show(mainWindow);
+            mainWindow.ShowEmbedded(window, "Eingangsrechnungen & Ausgaben");
         };
 
         viewModel.OpenSupplierLiquidityRequested += (_, _) =>
@@ -440,7 +435,7 @@ public partial class App : Avalonia.Application
             {
                 DataContext = _host.Services.GetRequiredService<SupplierLiquidityViewModel>()
             };
-            window.Show(mainWindow);
+            mainWindow.ShowEmbedded(window, "Liquiditätsvorschau");
         };
 
         viewModel.OpenCustomerInvoicesRequested += (_, _) =>
@@ -449,7 +444,7 @@ public partial class App : Avalonia.Application
             {
                 DataContext = _host.Services.GetRequiredService<CustomerInvoiceViewModel>()
             };
-            window.Show(mainWindow);
+            mainWindow.ShowEmbedded(window, "Ausgangsrechnungen & Einnahmen");
         };
 
         viewModel.OpenReceivablesRequested += (_, _) =>
@@ -458,7 +453,7 @@ public partial class App : Avalonia.Application
             {
                 DataContext = _host.Services.GetRequiredService<ReceivablesViewModel>()
             };
-            window.Show(mainWindow);
+            mainWindow.ShowEmbedded(window, "Offene Forderungen");
         };
 
         viewModel.OpenCustomerCreditNotesRequested += (_, _) =>
@@ -467,7 +462,7 @@ public partial class App : Avalonia.Application
             {
                 DataContext = _host.Services.GetRequiredService<CustomerCreditNoteViewModel>()
             };
-            window.Show(mainWindow);
+            mainWindow.ShowEmbedded(window, "Gutschriften");
         };
 
         viewModel.OpenDunningNoticesRequested += (_, _) =>
@@ -476,7 +471,7 @@ public partial class App : Avalonia.Application
             {
                 DataContext = _host.Services.GetRequiredService<DunningNoticeViewModel>()
             };
-            window.Show(mainWindow);
+            mainWindow.ShowEmbedded(window, "Mahnwesen");
         };
 
         viewModel.OpenDocumentEmailRequested += (_, _) =>
@@ -485,7 +480,7 @@ public partial class App : Avalonia.Application
             {
                 DataContext = _host.Services.GetRequiredService<DocumentEmailViewModel>()
             };
-            window.Show(mainWindow);
+            mainWindow.ShowEmbedded(window, "Belegversand");
         };
 
         viewModel.OpenCustomerCommunicationRequested += (_, _) =>
@@ -494,7 +489,7 @@ public partial class App : Avalonia.Application
             {
                 DataContext = _host.Services.GetRequiredService<CustomerCommunicationViewModel>()
             };
-            window.Show(mainWindow);
+            mainWindow.ShowEmbedded(window, "Kommunikation");
         };
 
         viewModel.OpenCustomerFollowUpsRequested += (_, _) =>
@@ -503,7 +498,7 @@ public partial class App : Avalonia.Application
             {
                 DataContext = _host.Services.GetRequiredService<CustomerFollowUpViewModel>()
             };
-            window.Show(mainWindow);
+            mainWindow.ShowEmbedded(window, "Wiedervorlagen");
         };
 
         viewModel.OpenMyWorkRequested += (_, _) =>
@@ -512,7 +507,7 @@ public partial class App : Avalonia.Application
             {
                 DataContext = _host.Services.GetRequiredService<MyWorkViewModel>()
             };
-            window.Show(mainWindow);
+            mainWindow.ShowEmbedded(window, "Meine Arbeit");
         };
 
         viewModel.OpenTeamWorkRequested += (_, _) =>
@@ -521,7 +516,7 @@ public partial class App : Avalonia.Application
             {
                 DataContext = _host.Services.GetRequiredService<TeamWorkViewModel>()
             };
-            window.Show(mainWindow);
+            mainWindow.ShowEmbedded(window, "Team-Arbeit");
         };
 
         viewModel.OpenWorkReassignmentRequested += (_, _) =>
@@ -530,7 +525,7 @@ public partial class App : Avalonia.Application
             {
                 DataContext = _host.Services.GetRequiredService<WorkReassignmentViewModel>()
             };
-            window.Show(mainWindow);
+            mainWindow.ShowEmbedded(window, "Aufgabenübergabe");
         };
 
         viewModel.OpenUserAbsencesRequested += (_, _) =>
@@ -539,7 +534,7 @@ public partial class App : Avalonia.Application
             {
                 DataContext = _host.Services.GetRequiredService<UserAbsenceViewModel>()
             };
-            window.Show(mainWindow);
+            mainWindow.ShowEmbedded(window, "Abwesenheiten");
         };
 
         viewModel.OpenBasicWorkflowAuditRequested += (_, _) =>
@@ -548,7 +543,7 @@ public partial class App : Avalonia.Application
             {
                 DataContext = _host.Services.GetRequiredService<BasicWorkflowAuditViewModel>()
             };
-            window.Show(mainWindow);
+            mainWindow.ShowEmbedded(window, "Prozessprüfung");
         };
 
         viewModel.OpenReleaseDiagnosticsRequested += (_, _) =>
@@ -557,7 +552,7 @@ public partial class App : Avalonia.Application
             {
                 DataContext = _host.Services.GetRequiredService<ReleaseDiagnosticsViewModel>()
             };
-            window.Show(mainWindow);
+            mainWindow.ShowEmbedded(window, "Systemdiagnose");
         };
 
         viewModel.OpenFirstRunReadinessRequested += (_, _) =>
@@ -566,7 +561,7 @@ public partial class App : Avalonia.Application
             {
                 DataContext = _host.Services.GetRequiredService<FirstRunReadinessViewModel>()
             };
-            window.Show(mainWindow);
+            mainWindow.ShowEmbedded(window, "Erststart-Prüfung");
         };
 
         desktop.MainWindow = mainWindow;
