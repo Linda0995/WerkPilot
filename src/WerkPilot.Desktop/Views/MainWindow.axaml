@@ -1,73 +1,105 @@
-﻿<Window xmlns="https://github.com/avaloniaui"
+<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="WerkPilot.Desktop.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         xmlns:vm="using:WerkPilot.Desktop.ViewModels"
-        Title="WerkPilot 0.12.0"
+        Title="WerkPilot 0.13.1 · UI Refresh"
         Width="1500" Height="900"
         MinWidth="1180" MinHeight="720">
   <Grid RowDefinitions="64,*,34" ColumnDefinitions="220,*">
     <Border Grid.Row="0" Grid.ColumnSpan="2" Background="#174F54">
-      <Grid ColumnDefinitions="220,*,Auto,Auto">
+      <Grid ColumnDefinitions="220,*,Auto,Auto,Auto">
         <TextBlock Margin="24,0" VerticalAlignment="Center" FontSize="24"
                    FontWeight="Bold" Foreground="White" Text="WERKPILOT"/>
         <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="18"
-                   Foreground="White" Text="Version 0.12.24 RC · Basic Release Candidate"/>
+                   Foreground="White" Text="Version 0.13.1 · UI Refresh"/>
         <StackPanel Grid.Column="2" Margin="20,0" VerticalAlignment="Center">
           <TextBlock Foreground="White" FontWeight="SemiBold" Text="{Binding SignedInUser}"/>
           <TextBlock Foreground="#CFE4E5" FontSize="11" Text="{Binding SignedInRole}"/>
         </StackPanel>
-        <Button Grid.Column="3" Margin="0,12,16,12" Content="Abmelden"
+        <StackPanel Grid.Column="3" Margin="8,7" Spacing="4" Width="390">
+          <Button Height="30" Padding="16,2" HorizontalContentAlignment="Left"
+                  Content="🔍  Kunden, Angebote, Rechnungen, Projekte, Material suchen …"
+                  Command="{Binding OpenGlobalSearchCommand}"/>
+          <Button Height="24" Padding="16,1" HorizontalContentAlignment="Left"
+                  Content="⚡ Schnellzugriff" Command="{Binding OpenWorkbenchCommand}"/>
+        </StackPanel>
+        <Button Grid.Column="4" Margin="4,12,16,12" Content="Abmelden"
                 Command="{Binding LogoutCommand}"/>
       </Grid>
     </Border>
 
-    <Border Grid.Row="1" Background="#123E42" Padding="14">
-      <StackPanel Spacing="8">
-        <Button Content="Dashboard" HorizontalContentAlignment="Left"/>
-        <Button Content="Benachrichtigungen" HorizontalContentAlignment="Left" Command="{Binding OpenNotificationsCommand}"/>
-        <Button Content="Globale Suche" HorizontalContentAlignment="Left" Command="{Binding OpenGlobalSearchCommand}"/>
-        <Button Content="Schnellzugriff" HorizontalContentAlignment="Left" Command="{Binding OpenWorkbenchCommand}"/>
-        <Button Content="CRM-Kontaktjournal" HorizontalContentAlignment="Left" Command="{Binding OpenCrmJournalCommand}"/>
-        <Button Content="Kundenübersicht 360°" HorizontalContentAlignment="Left" Command="{Binding OpenCustomer360Command}"/>
-        <Button Content="Zeiterfassung" HorizontalContentAlignment="Left" Command="{Binding OpenTimeTrackingCommand}"/>
-        <Button Content="Nachkalkulation" HorizontalContentAlignment="Left" Command="{Binding OpenProjectCostControllingCommand}"/>
-        <Button Content="Lagerbestand" HorizontalContentAlignment="Left" Command="{Binding OpenInventoryCommand}"/>
-        <Button Content="Inventur" HorizontalContentAlignment="Left" Command="{Binding OpenInventoryCountCommand}"/>
-        <Button Content="Lieferantenbestellungen" HorizontalContentAlignment="Left" Command="{Binding OpenSupplierOrdersCommand}"/>
-        <Button Content="Eingangsrechnungen" HorizontalContentAlignment="Left" Command="{Binding OpenSupplierInvoicesCommand}"/>
-        <Button Content="Liquiditätsvorschau" HorizontalContentAlignment="Left" Command="{Binding OpenSupplierLiquidityCommand}"/>
-        <Button Content="Ausgangsrechnungen" HorizontalContentAlignment="Left" Command="{Binding OpenCustomerInvoicesCommand}"/>
-        <Button Content="Forderungen" HorizontalContentAlignment="Left" Command="{Binding OpenReceivablesCommand}"/>
-        <Button Content="Gutschriften" HorizontalContentAlignment="Left" Command="{Binding OpenCustomerCreditNotesCommand}"/>
-        <Button Content="Mahnwesen" HorizontalContentAlignment="Left" Command="{Binding OpenDunningNoticesCommand}"/>
-        <Button Content="Belegversand" HorizontalContentAlignment="Left" Command="{Binding OpenDocumentEmailCommand}"/>
-        <Button Content="Kommunikationsakte" HorizontalContentAlignment="Left" Command="{Binding OpenCustomerCommunicationCommand}"/>
-        <Button Content="Wiedervorlagen" HorizontalContentAlignment="Left" Command="{Binding OpenCustomerFollowUpsCommand}"/>
-        <Button Content="Meine Arbeit" HorizontalContentAlignment="Left" Command="{Binding OpenMyWorkCommand}"/>
-        <Button Content="Team-Arbeit" HorizontalContentAlignment="Left" Command="{Binding OpenTeamWorkCommand}"/>
-        <Button Content="Aufgabenübergabe" HorizontalContentAlignment="Left" Command="{Binding OpenWorkReassignmentCommand}"/>
-        <Button Content="Abwesenheiten" HorizontalContentAlignment="Left" Command="{Binding OpenUserAbsencesCommand}"/>
-        <Button Content="Basic-Prozessprüfung" HorizontalContentAlignment="Left" Command="{Binding OpenBasicWorkflowAuditCommand}"/>
-        <Button Content="Systemdiagnose" HorizontalContentAlignment="Left" Command="{Binding OpenReleaseDiagnosticsCommand}"/>
-        <Button Content="Erststart-Prüfung" HorizontalContentAlignment="Left" Command="{Binding OpenFirstRunReadinessCommand}"/>
-        <TextBlock Margin="14,-5,0,4" Foreground="#CFE4E5" FontSize="11" Text="{Binding UnreadNotificationCount, StringFormat='Ungelesen: {0}'}"/>
-        <Button Content="Kunden" HorizontalContentAlignment="Left"/>
-        <Button Content="Angebote" HorizontalContentAlignment="Left" Command="{Binding OpenOffersCommand}"/>
-        <Button Content="Kalkulation" HorizontalContentAlignment="Left" Command="{Binding OpenCalculationCommand}"/>
-        <Button Content="Materialstamm" HorizontalContentAlignment="Left" Command="{Binding OpenMaterialCommand}"/>
-        <Button Content="Bestelllisten" HorizontalContentAlignment="Left" Command="{Binding OpenPurchaseListsCommand}"/>
-        <Button Content="Projekte" HorizontalContentAlignment="Left" Command="{Binding OpenProjectsCommand}"/>
-        <Button Content="Dokumente" HorizontalContentAlignment="Left" Command="{Binding OpenDocumentsCommand}"/>
-        <Button Content="Firmenstammdaten" HorizontalContentAlignment="Left"
-                Command="{Binding OpenCompanySettingsCommand}"/>
-        <Separator Margin="0,12"/>
-        <TextBlock Foreground="#CFE4E5" Text="WerkPilot 0.12.0"/>
-        <TextBlock Foreground="#9FC1C3" FontSize="12" Text="PostgreSQL · Avalonia · .NET 9"/>
-      </StackPanel>
+    <Border Grid.Row="1" Background="#E8EEEE" BorderBrush="#B7C4C5" BorderThickness="0,0,1,0" Padding="12">
+      <Grid RowDefinitions="*,Auto">
+        <ScrollViewer Grid.Row="0">
+          <StackPanel Spacing="6">
+          <Button Content="Dashboard" FontWeight="Bold" Foreground="Black" HorizontalContentAlignment="Left" Click="Dashboard_Click"/>
+          <Expander Header="Kunden" FontWeight="Bold" Foreground="Black" IsExpanded="True">
+            <StackPanel Margin="12,4,0,4" Spacing="4">
+              <Button Content="Kundenübersicht" Foreground="Black" HorizontalContentAlignment="Left" Click="Dashboard_Click"/>
+              <Button Content="Kundenverlauf" Foreground="Black" HorizontalContentAlignment="Left" Command="{Binding OpenCrmJournalCommand}"/>
+              <Button Content="Kundenübersicht 360°" Foreground="Black" HorizontalContentAlignment="Left" Command="{Binding OpenCustomer360Command}"/>
+              <Button Content="Wiedervorlagen" Foreground="Black" HorizontalContentAlignment="Left" Command="{Binding OpenCustomerFollowUpsCommand}"/>
+            </StackPanel>
+          </Expander>
+          <Expander Header="Kalkulation &amp; Angebote" FontWeight="Bold" Foreground="Black">
+            <StackPanel Margin="12,4,0,4" Spacing="4">
+              <Button Content="Kalkulation" Foreground="Black" HorizontalContentAlignment="Left" Command="{Binding OpenCalculationCommand}"/>
+              <Button Content="Angebote" Foreground="Black" HorizontalContentAlignment="Left" Command="{Binding OpenOffersCommand}"/>
+            </StackPanel>
+          </Expander>
+          <Expander Header="Projekte" FontWeight="Bold" Foreground="Black">
+            <StackPanel Margin="12,4,0,4" Spacing="4">
+              <Button Content="Projektübersicht" Foreground="Black" HorizontalContentAlignment="Left" Command="{Binding OpenProjectsCommand}"/>
+              <Button Content="Nachkalkulation" Foreground="Black" HorizontalContentAlignment="Left" Command="{Binding OpenProjectCostControllingCommand}"/>
+              <Button Content="Meine Arbeit" Foreground="Black" HorizontalContentAlignment="Left" Command="{Binding OpenMyWorkCommand}"/>
+              <Button Content="Team-Arbeit" Foreground="Black" HorizontalContentAlignment="Left" Command="{Binding OpenTeamWorkCommand}"/>
+            </StackPanel>
+          </Expander>
+          <Expander Header="Material &amp; Einkauf" FontWeight="Bold" Foreground="Black">
+            <StackPanel Margin="12,4,0,4" Spacing="4">
+              <Button Content="Material &amp; Preise" Foreground="Black" HorizontalContentAlignment="Left" Command="{Binding OpenMaterialCommand}"/>
+              <Button Content="Bestelllisten" Foreground="Black" HorizontalContentAlignment="Left" Command="{Binding OpenPurchaseListsCommand}"/>
+              <Button Content="Lager &amp; Inventur" Foreground="Black" HorizontalContentAlignment="Left" Command="{Binding OpenInventoryCommand}"/>
+              <Button Content="Inventur" Foreground="Black" HorizontalContentAlignment="Left" Command="{Binding OpenInventoryCountCommand}"/>
+              <Button Content="Lieferantenbestellungen" Foreground="Black" HorizontalContentAlignment="Left" Command="{Binding OpenSupplierOrdersCommand}"/>
+            </StackPanel>
+          </Expander>
+          <Expander Header="Finanzen" FontWeight="Bold" Foreground="Black">
+            <StackPanel Margin="12,4,0,4" Spacing="4">
+              <Button Content="Eingangsrechnungen &amp; Ausgaben" Foreground="Black" HorizontalContentAlignment="Left" Command="{Binding OpenSupplierInvoicesCommand}"/>
+              <Button Content="Ausgangsrechnungen &amp; Einnahmen" Foreground="Black" HorizontalContentAlignment="Left" Command="{Binding OpenCustomerInvoicesCommand}"/>
+              <Button Content="Offene Forderungen" Foreground="Black" HorizontalContentAlignment="Left" Command="{Binding OpenReceivablesCommand}"/>
+              <Button Content="Gutschriften" Foreground="Black" HorizontalContentAlignment="Left" Command="{Binding OpenCustomerCreditNotesCommand}"/>
+              <Button Content="Mahnwesen" Foreground="Black" HorizontalContentAlignment="Left" Command="{Binding OpenDunningNoticesCommand}"/>
+              <Button Content="Liquiditätsvorschau" Foreground="Black" HorizontalContentAlignment="Left" Command="{Binding OpenSupplierLiquidityCommand}"/>
+              <Button Content="Belege" Foreground="Black" HorizontalContentAlignment="Left" Command="{Binding OpenDocumentsCommand}"/>
+            </StackPanel>
+          </Expander>
+          <Expander Header="Organisation" FontWeight="Bold" Foreground="Black">
+            <StackPanel Margin="12,4,0,4" Spacing="4">
+              <Button Content="Benachrichtigungen" Foreground="Black" HorizontalContentAlignment="Left" Command="{Binding OpenNotificationsCommand}"/>
+              <Button Content="Kommunikation" Foreground="Black" HorizontalContentAlignment="Left" Command="{Binding OpenCustomerCommunicationCommand}"/>
+              <Button Content="Abwesenheiten" Foreground="Black" HorizontalContentAlignment="Left" Command="{Binding OpenUserAbsencesCommand}"/>
+              <Button Content="Aufgabenübergabe" Foreground="Black" HorizontalContentAlignment="Left" Command="{Binding OpenWorkReassignmentCommand}"/>
+            </StackPanel>
+          </Expander>
+          </StackPanel>
+        </ScrollViewer>
+        <Border Grid.Row="1" Margin="0,10,0,0" Padding="0,10,0,0" BorderBrush="#B7C4C5" BorderThickness="0,1,0,0">
+          <Expander Header="⚙ Einstellungen" FontWeight="Bold" Foreground="Black">
+            <StackPanel Margin="12,4,0,4" Spacing="4">
+              <Button Content="Firmenstammdaten" Foreground="Black" HorizontalContentAlignment="Left" Command="{Binding OpenCompanySettingsCommand}"/>
+              <Button Content="Systemdiagnose" Foreground="Black" HorizontalContentAlignment="Left" Command="{Binding OpenReleaseDiagnosticsCommand}"/>
+              <Button Content="Erststart-Prüfung" Foreground="Black" HorizontalContentAlignment="Left" Command="{Binding OpenFirstRunReadinessCommand}"/>
+            </StackPanel>
+          </Expander>
+        </Border>
+      </Grid>
     </Border>
 
-    <Grid Grid.Row="1" Grid.Column="1" Margin="24" RowDefinitions="Auto,Auto,Auto,Auto,*">
+    <Grid Grid.Row="1" Grid.Column="1">
+      <Grid x:Name="DashboardPanel" Margin="24" RowDefinitions="Auto,Auto,Auto,Auto,*">
       <TextBlock FontSize="30" FontWeight="SemiBold" Text="Dashboard &amp; Kunden"/>
 
       <Grid Grid.Row="1" Margin="0,18,0,18" ColumnDefinitions="*,16,*,16,*,16,*">
@@ -290,6 +322,8 @@
           </ScrollViewer>
         </Border>
       </Grid>
+      </Grid>
+      <ContentControl x:Name="PageHost" IsVisible="False" Margin="18"/>
     </Grid>
 
     <Border Grid.Row="2" Grid.ColumnSpan="2" Background="#EEF2F3" Padding="12,0">

@@ -185,7 +185,7 @@ public static class DbInitializer
 
         customer.UpdateTax(
             "ATU12345678",
-            TaxProfile.Domestic);
+            TaxProfile.Inland);
 
         customer.UpdateNotes(
             "Demo-Kunde für WerkPilot 0.12.24 RC.");

@@ -60,6 +60,6 @@ public sealed class CustomerValidatorTests
             email,
             "+43 123",
             "ATU12345678",
-            TaxProfile.Domestic,
+            TaxProfile.Inland,
             null);
 }
