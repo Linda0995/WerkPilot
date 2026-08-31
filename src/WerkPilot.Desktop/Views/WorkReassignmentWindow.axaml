@@ -3,7 +3,7 @@
         x:Class="WerkPilot.Desktop.Views.WorkReassignmentWindow"
         x:DataType="vm:WorkReassignmentViewModel"
         xmlns:vm="using:WerkPilot.Desktop.ViewModels"
-        Title="WerkPilot 0.12.24 RC – Aufgabenübergabe"
+        Title="WerkPilot 0.13.2 – Aufgabenübergabe"
         Width="820"
         Height="600">
   <Grid RowDefinitions="64,*,34">

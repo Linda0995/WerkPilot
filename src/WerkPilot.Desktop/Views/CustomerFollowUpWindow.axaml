@@ -3,7 +3,7 @@
         x:Class="WerkPilot.Desktop.Views.CustomerFollowUpWindow"
         x:DataType="vm:CustomerFollowUpViewModel"
         xmlns:vm="using:WerkPilot.Desktop.ViewModels"
-        Title="WerkPilot 0.12.24 RC – Wiedervorlagen"
+        Title="WerkPilot 0.13.2 – Wiedervorlagen"
         Width="1520" Height="900">
   <Grid RowDefinitions="64,*,34">
     <Border Background="#174F54">

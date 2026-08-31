@@ -3,7 +3,7 @@
         x:Class="WerkPilot.Desktop.Views.TeamWorkWindow"
         x:DataType="vm:TeamWorkViewModel"
         xmlns:vm="using:WerkPilot.Desktop.ViewModels"
-        Title="WerkPilot 0.12.24 RC – Team-Arbeit"
+        Title="WerkPilot 0.13.2 – Team-Arbeit"
         Width="1500" Height="900">
   <Grid RowDefinitions="64,Auto,*,34">
     <Border Background="#174F54">

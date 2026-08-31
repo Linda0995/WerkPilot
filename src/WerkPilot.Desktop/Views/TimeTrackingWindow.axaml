@@ -3,7 +3,7 @@
         x:Class="WerkPilot.Desktop.Views.TimeTrackingWindow"
         x:DataType="vm:TimeTrackingViewModel"
         xmlns:vm="using:WerkPilot.Desktop.ViewModels"
-        Title="WerkPilot 0.12.24 RC – Zeiterfassung und Zeitcontrolling"
+        Title="WerkPilot 0.13.2 – Zeiterfassung und Zeitcontrolling"
         Width="1380" Height="840"
         MinWidth="1080" MinHeight="680">
   <Grid RowDefinitions="64,*,34">

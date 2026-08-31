@@ -3,7 +3,7 @@
         x:Class="WerkPilot.Desktop.Views.CompanySettingsWindow"
         x:DataType="vm:CompanySettingsViewModel"
         xmlns:vm="using:WerkPilot.Desktop.ViewModels"
-        Title="WerkPilot 0.12.24 RC – Firmenstammdaten"
+        Title="WerkPilot 0.13.2 – Firmenstammdaten"
         Width="760" Height="820"
         MinWidth="650" MinHeight="650">
   <Grid RowDefinitions="64,*,34">

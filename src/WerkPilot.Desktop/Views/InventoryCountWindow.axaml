@@ -3,7 +3,7 @@
         x:Class="WerkPilot.Desktop.Views.InventoryCountWindow"
         x:DataType="vm:InventoryCountViewModel"
         xmlns:vm="using:WerkPilot.Desktop.ViewModels"
-        Title="WerkPilot 0.12.24 RC – Geführte Inventur"
+        Title="WerkPilot 0.13.2 – Geführte Inventur"
         Width="1450" Height="900"
         MinWidth="1160" MinHeight="720">
   <Grid RowDefinitions="64,*,34">

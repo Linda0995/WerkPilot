@@ -3,7 +3,7 @@
         x:Class="WerkPilot.Desktop.Views.DocumentEmailWindow"
         x:DataType="vm:DocumentEmailViewModel"
         xmlns:vm="using:WerkPilot.Desktop.ViewModels"
-        Title="WerkPilot 0.12.24 RC – Belegversand"
+        Title="WerkPilot 0.13.2 – Belegversand"
         Width="1540" Height="960">
   <Grid RowDefinitions="64,*,34">
     <Border Background="#174F54">
