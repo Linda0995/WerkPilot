@@ -3,7 +3,7 @@
         x:Class="WerkPilot.Desktop.Views.CustomerCommunicationWindow"
         x:DataType="vm:CustomerCommunicationViewModel"
         xmlns:vm="using:WerkPilot.Desktop.ViewModels"
-        Title="WerkPilot 0.12.24 RC – Kundenkommunikationsakte"
+        Title="WerkPilot 0.13.2 – Kundenkommunikationsakte"
         Width="1500" Height="900">
   <Grid RowDefinitions="64,*,34">
     <Border Background="#174F54">

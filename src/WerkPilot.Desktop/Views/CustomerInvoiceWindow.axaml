@@ -3,7 +3,7 @@
         x:Class="WerkPilot.Desktop.Views.CustomerInvoiceWindow"
         x:DataType="vm:CustomerInvoiceViewModel"
         xmlns:vm="using:WerkPilot.Desktop.ViewModels"
-        Title="WerkPilot 0.12.24 RC – Ausgangsrechnungen"
+        Title="WerkPilot 0.13.2 – Ausgangsrechnungen"
         Width="1500" Height="920">
   <Grid RowDefinitions="64,*,34">
     <Border Background="#174F54">

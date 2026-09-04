@@ -3,7 +3,7 @@
         x:Class="WerkPilot.Desktop.Views.BasicWorkflowAuditWindow"
         x:DataType="vm:BasicWorkflowAuditViewModel"
         xmlns:vm="using:WerkPilot.Desktop.ViewModels"
-        Title="WerkPilot 0.12.24 RC – Basic-Prozessprüfung"
+        Title="WerkPilot 0.13.2 – Basic-Prozessprüfung"
         Width="1560"
         Height="900">
   <Grid RowDefinitions="64,Auto,3*,12,2*,34">

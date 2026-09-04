@@ -3,7 +3,7 @@
         x:Class="WerkPilot.Desktop.Views.ReceivablesWindow"
         x:DataType="vm:ReceivablesViewModel"
         xmlns:vm="using:WerkPilot.Desktop.ViewModels"
-        Title="WerkPilot 0.12.24 RC – Forderungsmanagement"
+        Title="WerkPilot 0.13.2 – Forderungsmanagement"
         Width="1400" Height="820">
   <Grid RowDefinitions="64,Auto,*,34">
     <Border Background="#174F54">

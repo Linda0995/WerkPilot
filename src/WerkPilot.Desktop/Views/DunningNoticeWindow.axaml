@@ -3,7 +3,7 @@
         x:Class="WerkPilot.Desktop.Views.DunningNoticeWindow"
         x:DataType="vm:DunningNoticeViewModel"
         xmlns:vm="using:WerkPilot.Desktop.ViewModels"
-        Title="WerkPilot 0.12.24 RC – Mahnwesen"
+        Title="WerkPilot 0.13.2 – Mahnwesen"
         Width="1480" Height="880">
   <Grid RowDefinitions="64,*,34">
     <Border Background="#174F54">

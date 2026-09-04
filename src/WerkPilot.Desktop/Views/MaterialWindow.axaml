@@ -3,7 +3,7 @@
         x:Class="WerkPilot.Desktop.Views.MaterialWindow"
         x:DataType="vm:MaterialViewModel"
         xmlns:vm="using:WerkPilot.Desktop.ViewModels"
-        Title="WerkPilot 0.12.24 RC – Materialstamm"
+        Title="WerkPilot 0.13.2 – Materialstamm"
         Width="1280" Height="780"
         MinWidth="980" MinHeight="620">
   <Grid RowDefinitions="64,*,34">

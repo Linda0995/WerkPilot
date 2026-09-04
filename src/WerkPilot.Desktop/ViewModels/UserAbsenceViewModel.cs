@@ -14,7 +14,7 @@ public sealed class UserAbsenceViewModel : INotifyPropertyChanged
     private UserDto? _selectedUser;
     private UserDto? _selectedSubstitute;
     private UserAbsenceDto? _selectedAbsence;
-    private UserAbsenceType _absenceType = UserAbsenceType.Vacation;
+    private UserAbsenceType _absenceType = UserAbsenceType.Urlaub;
     private DateTimeOffset? _startDate = DateTimeOffset.Now.Date;
     private DateTimeOffset? _endDate = DateTimeOffset.Now.Date.AddDays(1);
     private string? _note;

@@ -3,7 +3,7 @@
         x:Class="WerkPilot.Desktop.Views.ProjectCostControllingWindow"
         x:DataType="vm:ProjectCostControllingViewModel"
         xmlns:vm="using:WerkPilot.Desktop.ViewModels"
-        Title="WerkPilot 0.12.24 RC – Projektabschluss und Nachkalkulation"
+        Title="WerkPilot 0.13.2 – Projektabschluss und Nachkalkulation"
         Width="1450" Height="900">
   <Grid RowDefinitions="64,*,34">
     <Border Background="#174F54">

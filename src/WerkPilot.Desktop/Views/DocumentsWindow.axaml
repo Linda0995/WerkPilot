@@ -3,7 +3,7 @@
         x:Class="WerkPilot.Desktop.Views.DocumentsWindow"
         x:DataType="vm:DocumentsViewModel"
         xmlns:vm="using:WerkPilot.Desktop.ViewModels"
-        Title="WerkPilot 0.12.24 RC – Digitale Projektakte"
+        Title="WerkPilot 0.13.2 – Belege &amp; Dokumente"
         Width="1420" Height="860"
         MinWidth="1120" MinHeight="700">
   <Grid RowDefinitions="64,*,34">
@@ -140,8 +140,11 @@
 
             <Expander Header="Manueller Pfadimport">
               <StackPanel Spacing="8">
-                <TextBox Watermark="Vollständiger Dateipfad"
-                         Text="{Binding ImportPath}"/>
+                <Grid ColumnDefinitions="*,Auto">
+                  <TextBox x:Name="ImportPathBox" Watermark="Vollständiger Dateipfad – anklicken zum Auswählen"
+                           Text="{Binding ImportPath}" GotFocus="ImportPathBox_GotFocus"/>
+                  <Button Grid.Column="1" Margin="8,0,0,0" Content="Durchsuchen …" Click="BrowseImportPath_Click"/>
+                </Grid>
                 <TextBox Watermark="Anzeigename, optional"
                          Text="{Binding ImportDisplayName}"/>
                 <Button HorizontalAlignment="Right"
