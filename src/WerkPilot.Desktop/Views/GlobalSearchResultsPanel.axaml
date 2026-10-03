@@ -1,0 +1,34 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:WerkPilot.Desktop.ViewModels"
+             x:Class="WerkPilot.Desktop.Views.GlobalSearchResultsPanel"
+             x:DataType="vm:GlobalSearchViewModel">
+  <Border Background="White" BorderBrush="#B7C4C5" BorderThickness="1"
+          CornerRadius="10" Padding="12">
+    <Grid RowDefinitions="Auto,*,Auto">
+      <Grid ColumnDefinitions="*,Auto" Margin="4,2,2,8">
+        <TextBlock FontWeight="SemiBold" FontSize="16" Text="Suchergebnisse"/>
+        <Button Grid.Column="1" Padding="8,2" Content="Schließen"
+                Click="Close_Click"/>
+      </Grid>
+      <DataGrid Grid.Row="1" x:Name="ResultsGrid"
+                MinHeight="120" MaxHeight="350"
+                ItemsSource="{Binding Results}"
+                SelectedItem="{Binding SelectedResult}"
+                AutoGenerateColumns="False" IsReadOnly="True"
+                DoubleTapped="ResultsGrid_DoubleTapped">
+        <DataGrid.Columns>
+          <DataGridTextColumn Header="Bereich" Binding="{Binding TargetModule}" Width="130"/>
+          <DataGridTextColumn Header="Nummer" Binding="{Binding SearchNumber}" Width="140"/>
+          <DataGridTextColumn Header="Treffer" Binding="{Binding PrimaryText}" Width="2*"/>
+          <DataGridTextColumn Header="Information" Binding="{Binding SecondaryText}" Width="2*"/>
+        </DataGrid.Columns>
+      </DataGrid>
+      <Grid Grid.Row="2" ColumnDefinitions="*,Auto" Margin="2,8,2,0">
+        <TextBlock VerticalAlignment="Center" Text="{Binding StatusText}"/>
+        <Button Grid.Column="1" Padding="12,4" Content="Treffer öffnen"
+                Command="{Binding OpenResultCommand}"/>
+      </Grid>
+    </Grid>
+  </Border>
+</UserControl>

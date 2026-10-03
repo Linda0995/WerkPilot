@@ -3,7 +3,7 @@
         x:Class="WerkPilot.Desktop.Views.CrmJournalWindow"
         x:DataType="vm:CrmJournalViewModel"
         xmlns:vm="using:WerkPilot.Desktop.ViewModels"
-        Title="WerkPilot 0.12.24 RC – CRM-Kontaktjournal"
+        Title="WerkPilot 0.12.24 RC – Kundenverlauf"
         Width="1400" Height="840"
         MinWidth="1100" MinHeight="680">
   <Grid RowDefinitions="64,*,34">
@@ -11,7 +11,7 @@
       <Grid ColumnDefinitions="*,Auto">
         <TextBlock Margin="24,0" VerticalAlignment="Center" FontSize="24"
                    FontWeight="Bold" Foreground="White"
-                   Text="CRM-Kontaktjournal"/>
+                   Text="Kundenverlauf"/>
         <Button Grid.Column="1" Margin="0,12,18,12"
                 Content="Aktualisieren" Command="{Binding RefreshCommand}"/>
       </Grid>

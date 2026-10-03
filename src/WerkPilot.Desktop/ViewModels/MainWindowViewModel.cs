@@ -56,7 +56,7 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
     private string? _editPhone;
     private string? _editVatId;
     private string? _editNotes;
-    private TaxProfile _editTaxProfile = TaxProfile.Domestic;
+    private TaxProfile _editTaxProfile = TaxProfile.Inland;
 
     private string _newContactLabel = string.Empty;
     private string? _newContactEmail;
@@ -508,7 +508,7 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
         EditEmail = customer?.Email;
         EditPhone = customer?.Phone;
         EditVatId = customer?.VatId;
-        EditTaxProfile = customer?.TaxProfile ?? TaxProfile.Domestic;
+        EditTaxProfile = customer?.TaxProfile ?? TaxProfile.Inland;
         EditNotes = customer?.Notes;
 
         Contacts.Clear();

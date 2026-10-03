@@ -38,7 +38,7 @@ public sealed class UserAbsenceTests
             new UserAbsence(
                 userId,
                 "Linda",
-                UserAbsenceType.Vacation,
+                UserAbsenceType.Urlaub,
                 new DateOnly(2026, 8, 10),
                 new DateOnly(2026, 8, 12),
                 userId,
@@ -53,7 +53,7 @@ public sealed class UserAbsenceTests
         new(
             Guid.NewGuid(),
             "Linda",
-            UserAbsenceType.Vacation,
+            UserAbsenceType.Urlaub,
             start,
             end,
             Guid.NewGuid(),

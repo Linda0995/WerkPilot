@@ -1,0 +1,24 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:WerkPilot.Desktop.ViewModels"
+             x:Class="WerkPilot.Desktop.Views.GlobalSearchBar"
+             x:DataType="vm:GlobalSearchViewModel">
+  <Border Background="White" BorderBrush="#D6E1E2" BorderThickness="1"
+          CornerRadius="9" Padding="10,0">
+    <Grid ColumnDefinitions="Auto,*,Auto">
+      <TextBlock VerticalAlignment="Center" Margin="0,0,8,0"
+                 FontSize="18" Foreground="#174F54" Text="⌕"/>
+      <TextBox x:Name="SearchBox"
+               Grid.Column="1"
+               BorderThickness="0"
+               Background="Transparent"
+               VerticalContentAlignment="Center"
+               Watermark="Kunden, Angebote, Rechnungen, Projekte, Material, Belege …"
+               Text="{Binding SearchText}"
+               GotFocus="SearchBox_GotFocus"
+               KeyDown="SearchBox_KeyDown"/>
+      <Button Grid.Column="2" Margin="8,4,0,4" Padding="12,0"
+              Content="Suchen" Command="{Binding SearchCommand}"/>
+    </Grid>
+  </Border>
+</UserControl>

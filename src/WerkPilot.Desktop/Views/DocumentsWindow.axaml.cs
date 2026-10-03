@@ -1,4 +1,6 @@
 using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using WerkPilot.Desktop.ViewModels;
 
@@ -25,12 +27,59 @@ public partial class DocumentsWindow : Window
             _subscribedViewModel.SelectFilesRequested += OnSelectFilesRequested;
     }
 
-    private async void OnSelectFilesRequested(object? sender, EventArgs eventArgs)
+    private async void ImportPathBox_GotFocus(object? sender, GotFocusEventArgs e)
     {
-        if (_subscribedViewModel is null || !StorageProvider.CanOpen)
+        if (string.IsNullOrWhiteSpace(_subscribedViewModel?.ImportPath))
+            await SelectManualImportPathAsync();
+    }
+
+    private async void BrowseImportPath_Click(object? sender, RoutedEventArgs e)
+        => await SelectManualImportPathAsync();
+
+    private Avalonia.Platform.Storage.IStorageProvider? ActiveStorageProvider()
+        => TopLevel.GetTopLevel(ImportPathBox)?.StorageProvider;
+
+    private async Task SelectManualImportPathAsync()
+    {
+        if (_subscribedViewModel is null)
             return;
 
-        var files = await StorageProvider.OpenFilePickerAsync(
+        var storageProvider = ActiveStorageProvider();
+        if (storageProvider is null || !storageProvider.CanOpen)
+            return;
+
+        var files = await storageProvider.OpenFilePickerAsync(
+            new FilePickerOpenOptions
+            {
+                Title = "Beleg oder Datei auswählen",
+                AllowMultiple = false,
+                FileTypeFilter =
+                [
+                    FilePickerFileTypes.Pdf,
+                    FilePickerFileTypes.ImageAll,
+                    FilePickerFileTypes.All
+                ]
+            });
+
+        var path = files.FirstOrDefault()?.TryGetLocalPath();
+        if (string.IsNullOrWhiteSpace(path))
+            return;
+
+        _subscribedViewModel.ImportPath = path;
+        if (string.IsNullOrWhiteSpace(_subscribedViewModel.ImportDisplayName))
+            _subscribedViewModel.ImportDisplayName = Path.GetFileName(path);
+    }
+
+    private async void OnSelectFilesRequested(object? sender, EventArgs eventArgs)
+    {
+        if (_subscribedViewModel is null)
+            return;
+
+        var storageProvider = ActiveStorageProvider();
+        if (storageProvider is null || !storageProvider.CanOpen)
+            return;
+
+        var files = await storageProvider.OpenFilePickerAsync(
             new FilePickerOpenOptions
             {
                 Title = "Dateien für die WerkPilot-Projektakte auswählen",

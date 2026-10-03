@@ -21,7 +21,7 @@ public sealed class Customer : Entity
     public string? Email { get; private set; }
     public string? Phone { get; private set; }
     public string? VatId { get; private set; }
-    public TaxProfile TaxProfile { get; private set; } = TaxProfile.Domestic;
+    public TaxProfile TaxProfile { get; private set; } = TaxProfile.Inland;
     public string? Notes { get; private set; }
     public bool IsFavorite { get; private set; }
     public DateTimeOffset? LastContactAtUtc { get; private set; }
